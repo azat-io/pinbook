@@ -1,0 +1,34 @@
+# AI
+
+.claude/
+.crush/
+*crush.json
+
+# Build
+
+dist/
+
+# Editor
+
+.vscode/
+.vim/
+.idea/
+
+# Node.js
+
+.pnpm_store/
+node_modules/
+.nvmrc
+
+# Mise
+
+mise.local.toml
+mise.*.local.toml
+
+# Test
+
+coverage/
+
+# Misc
+
+.DS_Store

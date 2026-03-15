@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Tokyo First Week</name>
+    <description>Example trip config for a week in Tokyo with a mix of neighborhoods, viewpoints, food stops, and one hotel pin.</description>
+    <Style id="icon-1523-F44336-normal">
+      <IconStyle>
+        <color>ff3643f4</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1523-F44336-highlight">
+      <IconStyle>
+        <color>ff3643f4</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1523-F44336">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1523-F44336-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1523-F44336-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1523-4527A0-normal">
+      <IconStyle>
+        <color>ffa02745</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1523-4527A0-highlight">
+      <IconStyle>
+        <color>ffa02745</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1523-4527A0">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1523-4527A0-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1523-4527A0-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1636-303F9F-normal">
+      <IconStyle>
+        <color>ff9f3f30</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1636-303F9F-highlight">
+      <IconStyle>
+        <color>ff9f3f30</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1636-303F9F">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1636-303F9F-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1636-303F9F-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1577-E64A19-normal">
+      <IconStyle>
+        <color>ff194ae6</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1577-E64A19-highlight">
+      <IconStyle>
+        <color>ff194ae6</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1577-E64A19">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1577-E64A19-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1577-E64A19-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1577-00897B-normal">
+      <IconStyle>
+        <color>ff7b8900</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1577-00897B-highlight">
+      <IconStyle>
+        <color>ff7b8900</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1577-00897B">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1577-00897B-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1577-00897B-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1602-FFA000-normal">
+      <IconStyle>
+        <color>ff00a0ff</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1602-FFA000-highlight">
+      <IconStyle>
+        <color>ff00a0ff</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1602-FFA000">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1602-FFA000-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1602-FFA000-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Folder>
+      <name>Sights</name>
+      <description>Major landmarks, gardens, and observation points.</description>
+      <Placemark>
+        <name>Senso-ji</name>
+        <description><![CDATA[<img src="https://example.com/photos/senso-ji.jpg" height="200" width="auto" /><br><br>Good early-morning stop before the street gets crowded. Combine with a short walk around Asakusa.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://example.com/photos/senso-ji.jpg]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1523-F44336</styleUrl>
+        <Point>
+          <coordinates>139.7966553,35.7147651,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Shibuya Sky</name>
+        <description>Best booked around sunset. Strong first-night option if the weather is clear.</description>
+        <styleUrl>#icon-1523-4527A0</styleUrl>
+        <Point>
+          <coordinates>139.7019848,35.6586719,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>teamLab Planets</name>
+        <description>Indoor slot for a rainy day. Reserve in advance to avoid sold-out times.</description>
+        <styleUrl>#icon-1636-303F9F</styleUrl>
+        <Point>
+          <coordinates>139.7897739,35.6491207,0</coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+    <Folder>
+      <name>Food</name>
+      <description>Casual meals, coffee breaks, and reservation targets.</description>
+      <Placemark>
+        <name>Gyukatsu Motomura Shibuya</name>
+        <description>Popular beef cutlet spot near Shibuya. Queue risk is high at peak lunch hours.</description>
+        <styleUrl>#icon-1577-E64A19</styleUrl>
+        <Point>
+          <coordinates>139.703795,35.6619707,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Onibus Coffee Nakameguro</name>
+        <description>Good morning coffee stop before exploring Nakameguro and Daikanyama.</description>
+        <styleUrl>#icon-1577-00897B</styleUrl>
+        <Point>
+          <coordinates>139.6980318,35.6431767,0</coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+    <Folder>
+      <name>Stay</name>
+      <description>Hotel and logistics-related pins.</description>
+      <Placemark>
+        <name>Hotel Groove Shinjuku</name>
+        <description>Central base for evening plans in Shinjuku. Useful anchor point for daily route planning.</description>
+        <styleUrl>#icon-1602-FFA000</styleUrl>
+        <Point>
+          <coordinates>139.7004066,35.6958759,0</coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+  </Document>
+</kml>

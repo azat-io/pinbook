@@ -1,0 +1,68 @@
+import { z } from 'zod'
+
+import { coordinatesSchema } from './coordinates-schema'
+import { pinColorSchema } from './pin-color-schema'
+import { pinIconSchema } from './pin-icon-schema'
+
+let httpUrlPattern = /^https?:\/\//u
+
+/**
+ * A single point of interest shown on the map.
+ */
+export let pinSchema = z
+  .object({
+    photo: z
+      .string()
+      .min(1)
+      .refine(value => httpUrlPattern.test(value), {
+        message: 'Photo must be a full http:// or https:// URL',
+      })
+      .optional()
+      .describe('Optional public photo URL associated with the pin'),
+    address: z
+      .string()
+      .min(1)
+      .optional()
+      .describe(
+        'Optional human-readable address that can be resolved to coordinates',
+      ),
+    description: z
+      .string()
+      .min(1)
+      .optional()
+      .describe('Optional human-readable description of the pin'),
+    layer: z
+      .string()
+      .min(1)
+      .optional()
+      .describe('Optional layer identifier this pin belongs to'),
+    id: z
+      .string()
+      .min(1)
+      .describe('Stable unique identifier of the pin used in references'),
+    coords: coordinatesSchema
+      .optional()
+      .describe('Optional geographic coordinates of the pin'),
+    icon: pinIconSchema
+      .default('shapes-pin')
+      .describe('Google My Maps icon used for the pin'),
+    color: pinColorSchema
+      .default('red-500')
+      .describe('Visual color used for the pin'),
+    title: z.string().min(1).describe('Human-readable title of the pin'),
+  })
+  .strict()
+  .superRefine((pin, context) => {
+    if (pin.address || pin.coords) {
+      return
+    }
+
+    context.addIssue({
+      message: 'Pin must include either coords or address',
+      code: z.ZodIssueCode.custom,
+      path: ['coords'],
+    })
+  })
+  .describe('A single point of interest shown on the map')
+
+export type PinSchema = z.infer<typeof pinSchema>
