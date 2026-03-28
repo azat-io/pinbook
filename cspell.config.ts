@@ -14,6 +14,7 @@ export default defineConfig({
     'inari',
     'kitesurfing',
     'nakameguro',
+    'narita',
     'nishiki',
     'onibus',
     'placemark',

@@ -1,0 +1,10 @@
+pins:
+  - id: hotel-groove-shinjuku
+    title: Hotel Groove Shinjuku
+    address: Hotel Groove Shinjuku, Tokyo
+    layer: stay
+    color: amber-700
+    icon: places-hotel
+    description: >
+      Central base for evening plans in Shinjuku. Useful anchor point for daily
+      route planning.

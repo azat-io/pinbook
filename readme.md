@@ -52,6 +52,59 @@ npx skills add azat-io/pinbook
 4. Import `.pinbook/map.kml` into Google My Maps.
 5. Repeat as the trip plan changes.
 
+## Multi-File Maps
+
+Pinbook also supports root-level `imports` so one map can be split across
+multiple YAML files.
+
+This works well for trips organized by city:
+
+```text
+index.yaml
+cities/
+  tokyo/
+    food.yaml
+    sights.yaml
+  kyoto.yaml
+  osaka.yaml
+```
+
+Recommended convention:
+
+- use the file structure for geography such as `tokyo`, `kyoto`, and `osaka`
+- use `layers` for categories such as `food`, `sights`, and `entertainment`
+
+Example root config:
+
+```yaml
+map:
+  title: Japan Trip
+
+layers:
+  - id: food
+    title: Food
+
+  - id: sights
+    title: Sights
+
+imports:
+  - ./cities/tokyo/*.yaml
+  - ./cities/kyoto.yaml
+  - ./cities/osaka.yaml
+
+pins: []
+```
+
+Imported files may contain only `pins`:
+
+```yaml
+pins:
+  - id: onibus-coffee-nakameguro
+    title: Onibus Coffee Nakameguro
+    address: Onibus Coffee Nakameguro, Tokyo
+    layer: food
+```
+
 ## Minimal Example
 
 ```yaml
@@ -76,14 +129,15 @@ pins:
     photo: https://example.com/photos/senso-ji.jpg
 ```
 
-For a full example, see [example/index.yaml](./example/index.yaml).
+For a canonical example, see [example/index.yaml](./example/index.yaml).
 
 ## Config Shape
 
-Pinbook maps use three top-level keys:
+Pinbook maps use four top-level keys:
 
 - `map` for the map title and optional description
 - `layers` for optional logical groups such as `food`, `stay`, or `sights`
+- `imports` for optional relative YAML paths or glob patterns
 - `pins` for the actual places that should appear on the map
 
 Each pin should describe a real place using either:
@@ -92,6 +146,8 @@ Each pin should describe a real place using either:
 - `coords` when no reliable address is available
 
 Pins can also define `color`, `icon`, `description`, `layer`, and `photo`.
+
+`imports` is root-only. Imported files may contain only `pins`.
 
 ## Schema Stability
 
@@ -112,6 +168,8 @@ For the future `1.x` line:
   the Google Geocoding API during build.
 - If a pin includes both `address` and `coords`, `coords` are authoritative and
   are used as the final coordinates.
+- If `imports` is present, Pinbook expands the imported YAML files before final
+  validation and build.
 - Resolved addresses are stored in the local resolution cache so later builds
   stay faster and more repeatable.
 
@@ -153,6 +211,7 @@ icon, layer, and photo conventions.
 - Large maps may hit Google My Maps import limits.
 - Address-based builds depend on network access to Google Geocoding unless the
   required coordinates are already present in the local cache.
+- Imported files may contain only `pins`; nested imports are not supported.
 
 ## AI-Assisted Workflow
 

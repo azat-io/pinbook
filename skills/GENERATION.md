@@ -11,6 +11,8 @@ The Pinbook skill is maintained from these sources:
 - [readme.md](../readme.md): product contract and user-facing behavior
 - [example/index.yaml](../example/index.yaml): canonical example map
 - [schema/](../schema): public YAML shape and validation rules
+- [config/load-config.ts](../config/load-config.ts): root-only `imports`
+  expansion and imported pins-only file validation
 - [commands/create.ts](../commands/create.ts): starter project shape
 - [commands/build.ts](../commands/build.ts) and [serializers/](../serializers):
   build/output behavior
@@ -45,6 +47,7 @@ These files are hand-written and should be updated deliberately:
 Update the skill whenever any of these change:
 
 - public YAML fields or validation rules
+- import semantics or multi-file composition rules
 - build behavior or geocoding behavior
 - supported colors or icons
 - canonical example map shape

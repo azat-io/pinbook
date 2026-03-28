@@ -1,78 +1,29 @@
 map:
-  title: Tokyo First Week
+  title: Japan Trip
   description: >
-    Example trip config for a week in Tokyo with a mix of neighborhoods,
-    viewpoints, food stops, and one hotel pin.
+    Canonical multi-file example split by city, with Tokyo further split by
+    category.
 
 layers:
-  - id: sights
-    title: Sights
-    description: Major landmarks, gardens, and observation points.
-
   - id: food
     title: Food
-    description: Casual meals, coffee breaks, and reservation targets.
+    description: Restaurants, cafes, and snack stops.
+
+  - id: sights
+    title: Sights
+    description: Major landmarks, temples, and viewpoints.
 
   - id: stay
     title: Stay
     description: Hotel and logistics-related pins.
 
-pins:
-  - id: senso-ji
-    title: Senso-ji
-    address: Senso-ji Temple, Asakusa, Tokyo
-    layer: sights
-    color: red-500
-    icon: places-viewpoint
-    description: >
-      Good early-morning stop before the street gets crowded. Combine with a
-      short walk around Asakusa.
-    photo: https://example.com/photos/senso-ji.jpg
+  - id: entertainment
+    title: Entertainment
+    description: Evening plans and activity-focused stops.
 
-  - id: shibuya-sky
-    title: Shibuya Sky
-    address: Shibuya Sky, Shibuya, Tokyo
-    layer: sights
-    color: deep-purple-800
-    icon: places-viewpoint
-    description: >
-      Best booked around sunset. Strong first-night option if the weather is
-      clear.
+imports:
+  - ./cities/tokyo/*.yaml
+  - ./cities/kyoto.yaml
+  - ./cities/osaka.yaml
 
-  - id: teamlab-planets
-    title: teamLab Planets
-    address: teamLab Planets TOKYO DMM, Toyosu, Tokyo
-    layer: sights
-    color: indigo-700
-    icon: places-museum
-    description: >
-      Indoor slot for a rainy day. Reserve in advance to avoid sold-out times.
-
-  - id: gyukatsu-motomura-shibuya
-    title: Gyukatsu Motomura Shibuya
-    address: Gyukatsu Motomura Shibuya, Tokyo
-    layer: food
-    color: deep-orange-700
-    icon: places-restaurant
-    description: >
-      Popular beef cutlet spot near Shibuya. Queue risk is high at peak lunch
-      hours.
-
-  - id: onibus-coffee-nakameguro
-    title: Onibus Coffee Nakameguro
-    address: Onibus Coffee Nakameguro, Tokyo
-    layer: food
-    color: teal-600
-    icon: places-restaurant
-    description: >
-      Good morning coffee stop before exploring Nakameguro and Daikanyama.
-
-  - id: hotel-groove-shinjuku
-    title: Hotel Groove Shinjuku
-    address: Hotel Groove Shinjuku, Tokyo
-    layer: stay
-    color: amber-700
-    icon: places-hotel
-    description: >
-      Central base for evening plans in Shinjuku. Useful anchor point for daily
-      route planning.
+pins: []

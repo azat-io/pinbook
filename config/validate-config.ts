@@ -5,6 +5,21 @@ import type { MapConfigSchema } from '../schema/map-config-schema'
 import { mapConfigSchema } from '../schema/map-config-schema'
 
 /**
+ * A single human-readable validation issue.
+ */
+export interface ConfigIssue {
+  /**
+   * Human-readable validation error message.
+   */
+  message: string
+
+  /**
+   * Dot-delimited path to the invalid config value.
+   */
+  path: string
+}
+
+/**
  * Validation result returned when the config is invalid.
  */
 interface ConfigValidationFailure {
@@ -32,21 +47,6 @@ interface ConfigValidationSuccess {
    * Indicates that validation succeeded.
    */
   success: true
-}
-
-/**
- * A single human-readable validation issue.
- */
-interface ConfigIssue {
-  /**
-   * Human-readable validation error message.
-   */
-  message: string
-
-  /**
-   * Dot-delimited path to the invalid config value.
-   */
-  path: string
 }
 
 /**
@@ -83,7 +83,7 @@ export function validateConfig(input: unknown): ConfigValidationResult {
  * @param error - Raw Zod validation error.
  * @returns Human-readable validation issues with dot-delimited paths.
  */
-function formatZodIssues(error: ZodError): ConfigIssue[] {
+export function formatZodIssues(error: ZodError): ConfigIssue[] {
   return error.issues.map(issue => ({
     path: issue.path.length > 0 ? issue.path.join('.') : 'root',
     message: issue.message,

@@ -1,0 +1,11 @@
+pins:
+  - id: kiyomizu-dera
+    title: Kiyomizu-dera
+    coords: [34.9948561, 135.7850463]
+    layer: sights
+    color: orange-600
+    icon: places-viewpoint
+    photo: https://images.unsplash.com/photo-1593297305192-ed4e59dd5777
+    description: >
+      Best paired with an early walk through Higashiyama before the streets fill
+      up.

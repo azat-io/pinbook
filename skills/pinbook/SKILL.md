@@ -18,12 +18,14 @@ Prefer configs that are:
 - easy for AI to extend
 - valid against the project schema
 - ready to build into KML for Google My Maps
+- easy to split across files for larger trips
 
 ## Core Rules
 
 - Always write YAML, not JSON.
-- Always use the root keys `map`, `layers`, and `pins`.
-- Always include at least one pin.
+- Root config files use `map`, `layers`, `pins`, and optional `imports`.
+- Imported config files may contain only `pins`.
+- The final map must include at least one pin after imports are expanded.
 - Every pin must include `id` and `title`.
 - Every pin must include either `address` or `coords`.
 - Prefer `address` over `coords` when a clear human-readable address is known.
@@ -37,6 +39,11 @@ Prefer configs that are:
   `places-restaurant`.
 - Never invent fields that are not defined in the schema.
 - If a pin uses `layer`, that value must match an existing layer `id`.
+- `imports` is allowed only in the root config file.
+- Import paths are relative to the root config file.
+- Import paths may be exact file paths or simple glob patterns such as
+  `./cities/tokyo/*.yaml`.
+- Nested imports are not supported.
 
 ## Stability
 
@@ -46,6 +53,8 @@ Prefer configs that are:
 ## Build Behavior
 
 - `pinbook build` reads `index.yaml`.
+- If the root config includes `imports`, Pinbook expands the imported YAML files
+  before final validation and build.
 - If a pin includes `coords`, Pinbook uses them directly and skips geocoding.
 - If a pin has `address` but no `coords`, Pinbook geocodes the address during
   build.
@@ -72,6 +81,9 @@ layers:
   - id: food
     title: Food
     description: Optional layer description.
+
+imports:
+  - ./cities/tokyo/*.yaml
 
 pins:
   - id: sample-pin
@@ -104,9 +116,26 @@ Each layer supports:
 - `title`: required string
 - `description`: optional string
 
+### `imports`
+
+Optional list of relative YAML file paths or glob patterns.
+
+Rules:
+
+- only allowed in the root config
+- imported files may contain only `pins`
+- supports exact file paths and simple glob patterns
+- nested imports are not supported
+
 ### `pins`
 
-Required list of pins. At least one item is required.
+List of pins defined directly in the current file.
+
+Rules:
+
+- root `pins` may be empty when `imports` provides the final pins
+- imported files must contain at least one pin
+- the final composed map must contain at least one pin
 
 Each pin supports:
 
@@ -133,12 +162,15 @@ Pin validation rule:
 - Prefer explicit `color` and `icon` values when the place type is clear.
 - Use `layers` only when they improve navigation or grouping.
 - If a map is small, `layers: []` is acceptable.
+- For larger trips, prefer file structure for geography and `layers` for
+  categories.
 
 ## References
 
 - Colors: [references/colors.md](./references/colors.md)
 - Icons index: [references/icons/index.md](./references/icons/index.md)
-- Example project: [../../example/index.yaml](../../example/index.yaml)
+- Canonical example project:
+  [../../example/index.yaml](../../example/index.yaml)
 
 Before choosing an icon:
 
@@ -153,10 +185,11 @@ When helping with a Pinbook map:
 
 1. Understand the map purpose.
 2. Decide whether layers are useful.
-3. Prefer addresses for real-world places.
-4. Pick explicit colors from the colors reference.
-5. Pick explicit icons from the icons reference.
-6. Return valid YAML with no extra fields.
+3. If the trip is large, split files by geography such as cities.
+4. Prefer addresses for real-world places.
+5. Pick explicit colors from the colors reference.
+6. Pick explicit icons from the icons reference.
+7. Return valid YAML with no extra fields.
 
 If required details are missing, ask only for the minimum needed information.
 
@@ -237,6 +270,42 @@ pins:
       Central base for evening plans in Shinjuku.
 ```
 
+### Multi-File Travel Map
+
+Use this when a trip is large enough to split by geography.
+
+Root `index.yaml`:
+
+```yaml
+map:
+  title: Japan Trip
+
+layers:
+  - id: food
+    title: Food
+
+  - id: sights
+    title: Sights
+
+imports:
+  - ./cities/tokyo/*.yaml
+  - ./cities/kyoto.yaml
+
+pins: []
+```
+
+Imported file `cities/tokyo/food.yaml`:
+
+```yaml
+pins:
+  - id: onibus-coffee-nakameguro
+    title: Onibus Coffee Nakameguro
+    address: Onibus Coffee Nakameguro, Tokyo
+    layer: food
+    color: brown-600
+    icon: places-cafe
+```
+
 ### Coordinates-Only Pin
 
 Use this only when no reliable address is available.
@@ -263,3 +332,4 @@ pins:
 - Using icon display names such as `Museum` instead of ids such as
   `places-museum`
 - Using a local path such as `./photos/image.jpg` instead of a full image URL
+- Putting `map`, `layers`, or `imports` into an imported pins file

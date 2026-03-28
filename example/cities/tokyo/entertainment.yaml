@@ -1,0 +1,10 @@
+pins:
+  - id: teamlab-planets
+    title: TeamLab Planets
+    address: TeamLab Planets TOKYO DMM, Toyosu, Tokyo
+    layer: entertainment
+    color: indigo-700
+    icon: places-museum
+    photo: https://images.unsplash.com/photo-1556173251-cab2c1e8abe2
+    description: >
+      Indoor slot for a rainy day. Reserve in advance to avoid sold-out times.
