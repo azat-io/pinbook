@@ -3,8 +3,8 @@
 <img
   src="https://raw.githubusercontent.com/azat-io/pinbook/main/assets/logo.svg"
   alt="Pinbook logo"
-  width="140"
-  height="140"
+  width="160"
+  height="160"
   align="right"
 />
 
@@ -16,6 +16,8 @@ Pinbook is a YAML-first CLI for building Google My Maps-ready KML.
 
 It is designed for travel planning workflows where you want a map format that is
 readable by humans, easy to generate with AI, and safe to keep in git.
+
+Plan the trip in plain YAML first, then turn it into a visual map.
 
 ## What It Does
 
@@ -85,6 +87,28 @@ Each pin should describe a real place using either:
 
 Pins can also define `color`, `icon`, `description`, `layer`, and `photo`.
 
+## Schema Stability
+
+Pinbook treats the current YAML shape as the public map format.
+
+For the future `1.x` line:
+
+- all current root keys and documented fields are considered stable
+- new fields may be added in minor releases
+- removing, renaming, or changing the meaning of an existing field requires a
+  major release
+
+## Build Behavior
+
+- If a pin includes `coords`, Pinbook uses them as the final coordinates and
+  does not geocode the pin.
+- If a pin includes `address` and does not include `coords`, Pinbook may call
+  the Google Geocoding API during build.
+- If a pin includes both `address` and `coords`, `coords` are authoritative and
+  are used as the final coordinates.
+- Resolved addresses are stored in the local resolution cache so later builds
+  stay faster and more repeatable.
+
 ## Photos
 
 `photo` is supported as a full public `http://` or `https://` image URL.
@@ -106,6 +130,22 @@ for the key and save it for you.
 Resolved addresses are cached locally at
 `node_modules/.cache/pinbook/cache.json` so repeated builds stay fast and
 stable.
+
+## Compatibility Target
+
+Pinbook targets manual KML import into Google My Maps.
+
+The generated KML is designed around that workflow, including Pinbook's color,
+icon, layer, and photo conventions.
+
+## Known Limitations
+
+- Import behavior ultimately depends on Google My Maps.
+- Rich import details such as folders, custom icon rendering, photos, and
+  description HTML may vary with My Maps behavior.
+- Large maps may hit Google My Maps import limits.
+- Address-based builds depend on network access to Google Geocoding unless the
+  required coordinates are already present in the local cache.
 
 ## AI-Assisted Workflow
 

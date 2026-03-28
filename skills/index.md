@@ -24,6 +24,8 @@ Prefer configs that are:
 - Prefer `address` over `coords` when a clear human-readable address is known.
 - Use `coords` only when the user explicitly provides coordinates or the place
   does not have a reliable address.
+- If a pin includes both `address` and `coords`, treat `coords` as the
+  authoritative final coordinates.
 - Use only `color-tone` values such as `red-500` or `deep-purple-800`.
 - Never use bare color ids such as `red` or `blue`.
 - Use only canonical icon `id` values such as `places-museum` or
@@ -31,13 +33,26 @@ Prefer configs that are:
 - Never invent fields that are not defined in the schema.
 - If a pin uses `layer`, that value must match an existing layer `id`.
 
+## Stability
+
+- Treat the documented YAML keys and fields as the stable public map format.
+- Do not rename or remove existing fields in generated configs.
+
 ## Build Behavior
 
 - `pinbook build` reads `index.yaml`.
+- If a pin includes `coords`, Pinbook uses them directly and skips geocoding.
 - If a pin has `address` but no `coords`, Pinbook geocodes the address during
   build.
 - Geocoding uses Google Maps and stores resolved coordinates in the local cache.
+- If a pin includes both `address` and `coords`, `coords` win.
 - `photo` may be a full `http://` or `https://` image URL.
+
+## Compatibility Target
+
+- Pinbook targets manual KML import into Google My Maps.
+- Import details such as folders, icon rendering, photos, and rich descriptions
+  depend on Google My Maps behavior.
 
 ## Config Shape
 
