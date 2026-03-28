@@ -1,0 +1,31 @@
+pins:
+  - id: shinsaibashi
+    title: Shinsaibashi
+    address: Shinsaibashi-suji Shopping Street, Chuo Ward, Osaka
+    layer: osaka
+    color: blue-500
+    icon: places-shopping
+    photo: https://images.unsplash.com/photo-1646536590123-d6720c3c5af8
+    description: >
+      Osaka's main shopping artery, a covered arcade about 600 meters long, so
+      you can walk it in any weather. It runs through central Shinsaibashi and
+      flows naturally toward Dotonbori and Namba. The mix is broad: luxury
+      boutiques, the Daimaru department store, Uniqlo, drugstores, secondhand
+      fashion, and plenty in between. Nearby Amerikamura adds a more youthful
+      streetwear edge. It is always busy and still very much used by locals.
+
+  - id: amerikamura
+    title: Amerikamura
+    address: Amerikamura, Chuo Ward, Osaka
+    layer: osaka
+    color: blue-500
+    icon: places-shopping
+    photo: https://images.unsplash.com/photo-1770611447657-ed50ead904ea
+    description: >
+      Osaka's center for youth culture, streetwear, and vintage shopping, often
+      described as the local answer to Harajuku but rougher around the edges and
+      less polished. People come here for sneakers, vintage stores, vinyl,
+      graffiti, third-wave coffee, and general street atmosphere. Triangle Park
+      is the neighborhood's social core. During the day it works as a shopping
+      area, while in the evening it shifts toward live music, clubs, and small
+      bars.

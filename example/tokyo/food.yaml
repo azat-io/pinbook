@@ -1,0 +1,33 @@
+pins:
+  - id: tsukiji-outer-market
+    title: Tsukiji Outer Market
+    address: Tsukiji Outer Market, Tsukiji, Chuo City, Tokyo
+    layer: tokyo
+    color: pink-700
+    icon: places-seafood
+    photo: https://images.unsplash.com/photo-1729126042712-679e6c1b0808
+    description: >
+      The famous outer market next to the former Tsukiji fish market is one of
+      the best places in Tokyo for an early breakfast and a food-focused walk.
+      The wholesale market moved to Toyosu in 2018, but the outer market is
+      still fully alive, with sushi breakfasts, sashimi, oysters, tamagoyaki on
+      a stick, tea, knives, and kitchen souvenirs. It is large, with roughly 460
+      stalls and small restaurants. Go in the morning or before noon, since many
+      places start closing after lunch. Easy to combine with Ginza or Hamarikyu
+      Gardens.
+
+  - id: ameyoko
+    title: Ameyoko
+    address: Ameyoko Shopping Street, Ueno, Taito City, Tokyo
+    layer: tokyo
+    color: pink-700
+    icon: places-groceries
+    photo: https://images.unsplash.com/photo-1707739371498-bd8a386d7774
+    description: >
+      A loud market street between Ueno and Okachimachi stations, perfect for a
+      cheap bite and a walk through a lively, less polished side of Tokyo. Over
+      roughly 500 meters you get about 500 stalls and shops selling seafood,
+      sweets, snacks, street food, Asian groceries, cosmetics, and cheap small
+      goods. It is crowded and energetic, and shows a more everyday urban pace
+      than Ginza or Shibuya. Easy to combine with Ueno Park, the museums, or a
+      stop in Akihabara.

@@ -1,29 +1,29 @@
 map:
-  title: Japan Trip
+  title: Japan
   description: >
-    Canonical multi-file example split by city, with Tokyo further split by
-    category.
+    A map of interesting places for a trip across Japan.
 
 layers:
-  - id: food
-    title: Food
-    description: Restaurants, cafes, and snack stops.
+  - id: tokyo
+    title: Tokyo
 
-  - id: sights
-    title: Sights
-    description: Major landmarks, temples, and viewpoints.
+  - id: osaka
+    title: Osaka
 
-  - id: stay
-    title: Stay
-    description: Hotel and logistics-related pins.
+  - id: kyoto
+    title: Kyoto
 
-  - id: entertainment
-    title: Entertainment
-    description: Evening plans and activity-focused stops.
+  - id: nara
+    title: Nara
+
+  - id: hiroshima
+    title: Hiroshima
 
 imports:
-  - ./cities/tokyo/*.yaml
-  - ./cities/kyoto.yaml
-  - ./cities/osaka.yaml
+  - ./tokyo/*.yaml
+  - ./osaka/*.yaml
+  - ./kyoto/*.yaml
+  - ./nara/*.yaml
+  - ./hiroshima/*.yaml
 
 pins: []

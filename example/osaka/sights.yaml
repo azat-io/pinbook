@@ -1,0 +1,145 @@
+pins:
+  - id: osaka-castle
+    title: Osaka Castle
+    address: Osaka Castle, 1-1 Osakajo, Chuo Ward, Osaka
+    layer: osaka
+    color: blue-400
+    icon: places-historic-building
+    photo: https://images.unsplash.com/photo-1680061337399-a175cebe51b1
+    description: >
+      Osaka's main symbol, originally built in 1583 by Toyotomi Hideyoshi, the
+      warlord who helped unify Japan. The current tower is a 1931 concrete
+      reconstruction with a museum inside covering the history of the castle and
+      the samurai wars. The top floor has a city-view observation deck. Around
+      it lies a large park that becomes one of Osaka's best hanami spots in
+      spring.
+
+  - id: dotonbori
+    title: Dotonbori District
+    address: Dotonbori, Chuo Ward, Osaka
+    layer: osaka
+    color: blue-400
+    icon: places-downtown
+    photo: https://images.unsplash.com/photo-1542210940661-5f91cb7afe02
+    description: >
+      Osaka's most famous entertainment strip along the canal, filled with neon
+      signs, giant crab claws, and the running Glico man. It is the center of
+      casual street food: takoyaki, okonomiyaki, gyoza, and kushikatsu. The
+      district is at its best in the evening when everything lights up. Loud,
+      crowded, and impossible to skip.
+
+  - id: namba
+    title: Namba District
+    address: Namba, Chuo Ward, Osaka
+    layer: osaka
+    color: blue-400
+    icon: places-city
+    photo: https://images.unsplash.com/photo-1716184048454-8ea628c8afe0
+    description: >
+      One of Osaka's two major centers, alongside Umeda in the north. It is a
+      major transport hub for trains to Kansai Airport, Kyoto, and Nara, and it
+      blends directly into Dotonbori and Shinsaibashi. Namba Parks and the
+      underground Namba Walk add more shopping and dining. It is also a
+      practical place to stay, with many hotels and easy access to the city's
+      main attractions.
+
+  - id: tsutenkaku
+    title: Tsutenkaku Tower
+    address: Tsutenkaku, 1-18-6 Ebisuhigashi, Naniwa Ward, Osaka
+    layer: osaka
+    color: blue-400
+    icon: places-tower
+    photo: https://images.unsplash.com/photo-1699154016198-dd89c2da4ffd
+    description: >
+      A 108-meter steel tower in Shinsekai and one of the symbols of "everyday"
+      Osaka. The current version dates from 1956, while the original 1912 tower
+      was dismantled during the war. At the top you get an observation deck and
+      the good-luck Billiken statue. The tower itself is modest, but the real
+      appeal is the retro neighborhood around it.
+
+  - id: shinsekai
+    title: Shinsekai
+    address: Shinsekai, Naniwa Ward, Osaka
+    layer: osaka
+    color: blue-400
+    icon: places-neighborhood
+    photo: https://plus.unsplash.com/premium_photo-1733281203595-84dc320cde30
+    description: >
+      A colorful retro district at the foot of Tsutenkaku, built in 1912 as a
+      "city of the future" inspired by Paris and Coney Island. Today it is the
+      opposite of polished, but full of character. Kushikatsu is the signature
+      food here, and the golden rule is simple: do not double-dip in the shared
+      sauce. At night the district becomes even better, with neon lights and a
+      tipsy local crowd.
+
+  - id: umeda-sky-building
+    title: Umeda Sky Building
+    address: Umeda Sky Building, 1-1-88 Oyodonaka, Kita Ward, Osaka
+    layer: osaka
+    color: blue-400
+    icon: places-viewpoint
+    photo: https://images.unsplash.com/photo-1712542864632-2e8a275efdae
+    description: >
+      A futuristic skyscraper made of two towers joined by the Floating Garden
+      observation deck at 173 meters. The escalator ride suspended between the
+      towers is almost as memorable as the view itself. The open-air deck gives
+      a full 360-degree panorama and is especially good at sunset. In the
+      basement, Takimi-koji recreates the look of a 1950s restaurant street.
+
+  - id: tennoji
+    title: Tennoji District
+    address: Tennoji, Tennoji Ward, Osaka
+    layer: osaka
+    color: blue-400
+    icon: places-city
+    photo: https://images.unsplash.com/photo-1700583283059-1f5ecf4d4ea1
+    description: >
+      A district in southern Osaka where old and new sit close together. Abeno
+      Harukas is Japan's tallest skyscraper at 300 meters, with the Harukas 300
+      observation deck and the Kintetsu department store. Nearby you also get
+      Tennoji Park, the quiet Keitakuen Garden, and Shitenno-ji, one of Japan's
+      earliest Buddhist temples. Less tourist-heavy than Namba, but worth a
+      stop.
+
+  - id: sumiyoshi-taisha
+    title: Sumiyoshi Taisha
+    address: Sumiyoshi Taisha, 2-9-89 Sumiyoshi, Sumiyoshi Ward, Osaka
+    layer: osaka
+    color: blue-400
+    icon: places-shinto
+    photo: https://images.unsplash.com/photo-1573576232755-34229fbaf768
+    description: >
+      One of Japan's oldest Shinto shrines, founded in 211. The Sumiyoshi-zukuri
+      style is a very pure form of shrine architecture without Chinese
+      influence. Its most recognizable feature is the steep red Taikobashi
+      bridge over the pond. The shrine is associated with sailors and travelers,
+      and the grounds are spacious, quiet, and far less crowded than Osaka's
+      more central sights.
+
+  - id: hozenji-yokocho
+    title: Hozenji Yokocho
+    address: Hozenji Yokocho, 1-2 Nanba, Chuo Ward, Osaka
+    layer: osaka
+    color: blue-400
+    icon: places-temple
+    photo: https://images.unsplash.com/photo-1542210993429-4f006c6ad7d9
+    description: >
+      A tiny stone lane only 80 meters long, hidden a couple of minutes from
+      Dotonbori's neon chaos. At its center is Hozenji Temple with a Fudo Myoo
+      statue covered in moss from centuries of visitors pouring water on it
+      while making wishes. Small bars and izakayas line both sides of the alley.
+      In the evening, once the lanterns come on, it feels like an old Osaka
+      scene dropped into the middle of the modern city.
+
+  - id: janjan-yokocho
+    title: Janjan Yokocho
+    address: Janjan Yokocho, Ebisuhigashi, Naniwa Ward, Osaka
+    layer: osaka
+    color: blue-400
+    icon: places-neighborhood
+    description: >
+      A narrow covered lane on the southern edge of Shinsekai, even rougher and
+      more local in feel. The name is onomatopoeia from the sound of shamisen
+      music once heard here. Small eateries serve kushikatsu, gyoza, udon, and
+      doteyaki, and there are old shogi and go halls where elderly Osaka locals
+      still spend entire days. This is Osaka without a filter.

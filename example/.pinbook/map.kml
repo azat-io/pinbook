@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
-    <name>Japan Trip</name>
-    <description>Canonical multi-file example split by city, with Tokyo further split by category.</description>
-    <Style id="icon-1636-303F9F-normal">
+    <name>Japan</name>
+    <description>A map of interesting places for a trip across Japan.</description>
+    <Style id="icon-1534-AD1457-normal">
       <IconStyle>
-        <color>ff9f3f30</color>
+        <color>ff5714ad</color>
         <scale>1</scale>
         <Icon>
           <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
@@ -15,9 +15,9 @@
         <scale>0</scale>
       </LabelStyle>
     </Style>
-    <Style id="icon-1636-303F9F-highlight">
+    <Style id="icon-1534-AD1457-highlight">
       <IconStyle>
-        <color>ff9f3f30</color>
+        <color>ff5714ad</color>
         <scale>1</scale>
         <Icon>
           <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
@@ -27,19 +27,19 @@
         <scale>1</scale>
       </LabelStyle>
     </Style>
-    <StyleMap id="icon-1636-303F9F">
+    <StyleMap id="icon-1534-AD1457">
       <Pair>
         <key>normal</key>
-        <styleUrl>#icon-1636-303F9F-normal</styleUrl>
+        <styleUrl>#icon-1534-AD1457-normal</styleUrl>
       </Pair>
       <Pair>
         <key>highlight</key>
-        <styleUrl>#icon-1636-303F9F-highlight</styleUrl>
+        <styleUrl>#icon-1534-AD1457-highlight</styleUrl>
       </Pair>
     </StyleMap>
-    <Style id="icon-1534-00897B-normal">
+    <Style id="icon-1573-C2185B-normal">
       <IconStyle>
-        <color>ff7b8900</color>
+        <color>ff5b18c2</color>
         <scale>1</scale>
         <Icon>
           <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
@@ -49,9 +49,9 @@
         <scale>0</scale>
       </LabelStyle>
     </Style>
-    <Style id="icon-1534-00897B-highlight">
+    <Style id="icon-1573-C2185B-highlight">
       <IconStyle>
-        <color>ff7b8900</color>
+        <color>ff5b18c2</color>
         <scale>1</scale>
         <Icon>
           <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
@@ -61,19 +61,19 @@
         <scale>1</scale>
       </LabelStyle>
     </Style>
-    <StyleMap id="icon-1534-00897B">
+    <StyleMap id="icon-1573-C2185B">
       <Pair>
         <key>normal</key>
-        <styleUrl>#icon-1534-00897B-normal</styleUrl>
+        <styleUrl>#icon-1573-C2185B-normal</styleUrl>
       </Pair>
       <Pair>
         <key>highlight</key>
-        <styleUrl>#icon-1534-00897B-highlight</styleUrl>
+        <styleUrl>#icon-1573-C2185B-highlight</styleUrl>
       </Pair>
     </StyleMap>
-    <Style id="icon-1577-E64A19-normal">
+    <Style id="icon-1578-C2185B-normal">
       <IconStyle>
-        <color>ff194ae6</color>
+        <color>ff5b18c2</color>
         <scale>1</scale>
         <Icon>
           <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
@@ -83,9 +83,9 @@
         <scale>0</scale>
       </LabelStyle>
     </Style>
-    <Style id="icon-1577-E64A19-highlight">
+    <Style id="icon-1578-C2185B-highlight">
       <IconStyle>
-        <color>ff194ae6</color>
+        <color>ff5b18c2</color>
         <scale>1</scale>
         <Icon>
           <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
@@ -95,19 +95,19 @@
         <scale>1</scale>
       </LabelStyle>
     </Style>
-    <StyleMap id="icon-1577-E64A19">
+    <StyleMap id="icon-1578-C2185B">
       <Pair>
         <key>normal</key>
-        <styleUrl>#icon-1577-E64A19-normal</styleUrl>
+        <styleUrl>#icon-1578-C2185B-normal</styleUrl>
       </Pair>
       <Pair>
         <key>highlight</key>
-        <styleUrl>#icon-1577-E64A19-highlight</styleUrl>
+        <styleUrl>#icon-1578-C2185B-highlight</styleUrl>
       </Pair>
     </StyleMap>
-    <Style id="icon-1523-F44336-normal">
+    <Style id="icon-1517-D81B60-normal">
       <IconStyle>
-        <color>ff3643f4</color>
+        <color>ff601bd8</color>
         <scale>1</scale>
         <Icon>
           <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
@@ -117,9 +117,9 @@
         <scale>0</scale>
       </LabelStyle>
     </Style>
-    <Style id="icon-1523-F44336-highlight">
+    <Style id="icon-1517-D81B60-highlight">
       <IconStyle>
-        <color>ff3643f4</color>
+        <color>ff601bd8</color>
         <scale>1</scale>
         <Icon>
           <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
@@ -129,19 +129,19 @@
         <scale>1</scale>
       </LabelStyle>
     </Style>
-    <StyleMap id="icon-1523-F44336">
+    <StyleMap id="icon-1517-D81B60">
       <Pair>
         <key>normal</key>
-        <styleUrl>#icon-1523-F44336-normal</styleUrl>
+        <styleUrl>#icon-1517-D81B60-normal</styleUrl>
       </Pair>
       <Pair>
         <key>highlight</key>
-        <styleUrl>#icon-1523-F44336-highlight</styleUrl>
+        <styleUrl>#icon-1517-D81B60-highlight</styleUrl>
       </Pair>
     </StyleMap>
-    <Style id="icon-1523-4527A0-normal">
+    <Style id="icon-1549-E91E63-normal">
       <IconStyle>
-        <color>ffa02745</color>
+        <color>ff631ee9</color>
         <scale>1</scale>
         <Icon>
           <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
@@ -151,9 +151,9 @@
         <scale>0</scale>
       </LabelStyle>
     </Style>
-    <Style id="icon-1523-4527A0-highlight">
+    <Style id="icon-1549-E91E63-highlight">
       <IconStyle>
-        <color>ffa02745</color>
+        <color>ff631ee9</color>
         <scale>1</scale>
         <Icon>
           <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
@@ -163,19 +163,19 @@
         <scale>1</scale>
       </LabelStyle>
     </Style>
-    <StyleMap id="icon-1523-4527A0">
+    <StyleMap id="icon-1549-E91E63">
       <Pair>
         <key>normal</key>
-        <styleUrl>#icon-1523-4527A0-normal</styleUrl>
+        <styleUrl>#icon-1549-E91E63-normal</styleUrl>
       </Pair>
       <Pair>
         <key>highlight</key>
-        <styleUrl>#icon-1523-4527A0-highlight</styleUrl>
+        <styleUrl>#icon-1549-E91E63-highlight</styleUrl>
       </Pair>
     </StyleMap>
-    <Style id="icon-1602-FFA000-normal">
+    <Style id="icon-1706-EC407A-normal">
       <IconStyle>
-        <color>ff00a0ff</color>
+        <color>ff7a40ec</color>
         <scale>1</scale>
         <Icon>
           <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
@@ -185,9 +185,9 @@
         <scale>0</scale>
       </LabelStyle>
     </Style>
-    <Style id="icon-1602-FFA000-highlight">
+    <Style id="icon-1706-EC407A-highlight">
       <IconStyle>
-        <color>ff00a0ff</color>
+        <color>ff7a40ec</color>
         <scale>1</scale>
         <Icon>
           <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
@@ -197,19 +197,19 @@
         <scale>1</scale>
       </LabelStyle>
     </Style>
-    <StyleMap id="icon-1602-FFA000">
+    <StyleMap id="icon-1706-EC407A">
       <Pair>
         <key>normal</key>
-        <styleUrl>#icon-1602-FFA000-normal</styleUrl>
+        <styleUrl>#icon-1706-EC407A-normal</styleUrl>
       </Pair>
       <Pair>
         <key>highlight</key>
-        <styleUrl>#icon-1602-FFA000-highlight</styleUrl>
+        <styleUrl>#icon-1706-EC407A-highlight</styleUrl>
       </Pair>
     </StyleMap>
-    <Style id="icon-1523-FB8C00-normal">
+    <Style id="icon-1598-EC407A-normal">
       <IconStyle>
-        <color>ff008cfb</color>
+        <color>ff7a40ec</color>
         <scale>1</scale>
         <Icon>
           <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
@@ -219,9 +219,9 @@
         <scale>0</scale>
       </LabelStyle>
     </Style>
-    <Style id="icon-1523-FB8C00-highlight">
+    <Style id="icon-1598-EC407A-highlight">
       <IconStyle>
-        <color>ff008cfb</color>
+        <color>ff7a40ec</color>
         <scale>1</scale>
         <Icon>
           <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
@@ -231,19 +231,19 @@
         <scale>1</scale>
       </LabelStyle>
     </Style>
-    <StyleMap id="icon-1523-FB8C00">
+    <StyleMap id="icon-1598-EC407A">
       <Pair>
         <key>normal</key>
-        <styleUrl>#icon-1523-FB8C00-normal</styleUrl>
+        <styleUrl>#icon-1598-EC407A-normal</styleUrl>
       </Pair>
       <Pair>
         <key>highlight</key>
-        <styleUrl>#icon-1523-FB8C00-highlight</styleUrl>
+        <styleUrl>#icon-1598-EC407A-highlight</styleUrl>
       </Pair>
     </StyleMap>
-    <Style id="icon-1577-5E35B1-normal">
+    <Style id="icon-1854-EC407A-normal">
       <IconStyle>
-        <color>ffb1355e</color>
+        <color>ff7a40ec</color>
         <scale>1</scale>
         <Icon>
           <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
@@ -253,9 +253,9 @@
         <scale>0</scale>
       </LabelStyle>
     </Style>
-    <Style id="icon-1577-5E35B1-highlight">
+    <Style id="icon-1854-EC407A-highlight">
       <IconStyle>
-        <color>ffb1355e</color>
+        <color>ff7a40ec</color>
         <scale>1</scale>
         <Icon>
           <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
@@ -265,121 +265,2091 @@
         <scale>1</scale>
       </LabelStyle>
     </Style>
-    <StyleMap id="icon-1577-5E35B1">
+    <StyleMap id="icon-1854-EC407A">
       <Pair>
         <key>normal</key>
-        <styleUrl>#icon-1577-5E35B1-normal</styleUrl>
+        <styleUrl>#icon-1854-EC407A-normal</styleUrl>
       </Pair>
       <Pair>
         <key>highlight</key>
-        <styleUrl>#icon-1577-5E35B1-highlight</styleUrl>
+        <styleUrl>#icon-1854-EC407A-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1523-EC407A-normal">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1523-EC407A-highlight">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1523-EC407A">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1523-EC407A-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1523-EC407A-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1568-EC407A-normal">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1568-EC407A-highlight">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1568-EC407A">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1568-EC407A-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1568-EC407A-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1715-EC407A-normal">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1715-EC407A-highlight">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1715-EC407A">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1715-EC407A-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1715-EC407A-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1720-EC407A-normal">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1720-EC407A-highlight">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1720-EC407A">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1720-EC407A-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1720-EC407A-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1547-EC407A-normal">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1547-EC407A-highlight">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1547-EC407A">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1547-EC407A-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1547-EC407A-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1677-EC407A-normal">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1677-EC407A-highlight">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1677-EC407A">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1677-EC407A-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1677-EC407A-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1582-EC407A-normal">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1582-EC407A-highlight">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1582-EC407A">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1582-EC407A-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1582-EC407A-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1548-EC407A-normal">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1548-EC407A-highlight">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1548-EC407A">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1548-EC407A-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1548-EC407A-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1743-EC407A-normal">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1743-EC407A-highlight">
+      <IconStyle>
+        <color>ff7a40ec</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1743-EC407A">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1743-EC407A-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1743-EC407A-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1573-1976D2-normal">
+      <IconStyle>
+        <color>ffd27619</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1573-1976D2-highlight">
+      <IconStyle>
+        <color>ffd27619</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1573-1976D2">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1573-1976D2-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1573-1976D2-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1517-1E88E5-normal">
+      <IconStyle>
+        <color>ffe5881e</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1517-1E88E5-highlight">
+      <IconStyle>
+        <color>ffe5881e</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1517-1E88E5">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1517-1E88E5-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1517-1E88E5-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1684-2196F3-normal">
+      <IconStyle>
+        <color>fff39621</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1684-2196F3-highlight">
+      <IconStyle>
+        <color>fff39621</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1684-2196F3">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1684-2196F3-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1684-2196F3-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1598-42A5F5-normal">
+      <IconStyle>
+        <color>fff5a542</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1598-42A5F5-highlight">
+      <IconStyle>
+        <color>fff5a542</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1598-42A5F5">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1598-42A5F5-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1598-42A5F5-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1547-42A5F5-normal">
+      <IconStyle>
+        <color>fff5a542</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1547-42A5F5-highlight">
+      <IconStyle>
+        <color>fff5a542</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1547-42A5F5">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1547-42A5F5-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1547-42A5F5-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1546-42A5F5-normal">
+      <IconStyle>
+        <color>fff5a542</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1546-42A5F5-highlight">
+      <IconStyle>
+        <color>fff5a542</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1546-42A5F5">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1546-42A5F5-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1546-42A5F5-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1715-42A5F5-normal">
+      <IconStyle>
+        <color>fff5a542</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1715-42A5F5-highlight">
+      <IconStyle>
+        <color>fff5a542</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1715-42A5F5">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1715-42A5F5-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1715-42A5F5-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1604-42A5F5-normal">
+      <IconStyle>
+        <color>fff5a542</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1604-42A5F5-highlight">
+      <IconStyle>
+        <color>fff5a542</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1604-42A5F5">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1604-42A5F5-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1604-42A5F5-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1523-42A5F5-normal">
+      <IconStyle>
+        <color>fff5a542</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1523-42A5F5-highlight">
+      <IconStyle>
+        <color>fff5a542</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1523-42A5F5">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1523-42A5F5-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1523-42A5F5-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1677-42A5F5-normal">
+      <IconStyle>
+        <color>fff5a542</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1677-42A5F5-highlight">
+      <IconStyle>
+        <color>fff5a542</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1677-42A5F5">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1677-42A5F5-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1677-42A5F5-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1706-42A5F5-normal">
+      <IconStyle>
+        <color>fff5a542</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1706-42A5F5-highlight">
+      <IconStyle>
+        <color>fff5a542</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1706-42A5F5">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1706-42A5F5-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1706-42A5F5-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1578-00796B-normal">
+      <IconStyle>
+        <color>ff6b7900</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1578-00796B-highlight">
+      <IconStyle>
+        <color>ff6b7900</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1578-00796B">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1578-00796B-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1578-00796B-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1577-00796B-normal">
+      <IconStyle>
+        <color>ff6b7900</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1577-00796B-highlight">
+      <IconStyle>
+        <color>ff6b7900</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1577-00796B">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1577-00796B-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1577-00796B-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1598-26A69A-normal">
+      <IconStyle>
+        <color>ff9aa626</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1598-26A69A-highlight">
+      <IconStyle>
+        <color>ff9aa626</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1598-26A69A">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1598-26A69A-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1598-26A69A-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1706-26A69A-normal">
+      <IconStyle>
+        <color>ff9aa626</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1706-26A69A-highlight">
+      <IconStyle>
+        <color>ff9aa626</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1706-26A69A">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1706-26A69A-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1706-26A69A-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1604-26A69A-normal">
+      <IconStyle>
+        <color>ff9aa626</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1604-26A69A-highlight">
+      <IconStyle>
+        <color>ff9aa626</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1604-26A69A">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1604-26A69A-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1604-26A69A-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1677-26A69A-normal">
+      <IconStyle>
+        <color>ff9aa626</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1677-26A69A-highlight">
+      <IconStyle>
+        <color>ff9aa626</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1677-26A69A">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1677-26A69A-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1677-26A69A-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1720-66BB6A-normal">
+      <IconStyle>
+        <color>ff6abb66</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1720-66BB6A-highlight">
+      <IconStyle>
+        <color>ff6abb66</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1720-66BB6A">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1720-66BB6A-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1720-66BB6A-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1706-66BB6A-normal">
+      <IconStyle>
+        <color>ff6abb66</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1706-66BB6A-highlight">
+      <IconStyle>
+        <color>ff6abb66</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1706-66BB6A">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1706-66BB6A-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1706-66BB6A-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1677-66BB6A-normal">
+      <IconStyle>
+        <color>ff6abb66</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1677-66BB6A-highlight">
+      <IconStyle>
+        <color>ff6abb66</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1677-66BB6A">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1677-66BB6A-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1677-66BB6A-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1577-FBC02D-normal">
+      <IconStyle>
+        <color>ff2dc0fb</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1577-FBC02D-highlight">
+      <IconStyle>
+        <color>ff2dc0fb</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1577-FBC02D">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1577-FBC02D-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1577-FBC02D-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1599-FFEE58-normal">
+      <IconStyle>
+        <color>ff58eeff</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1599-FFEE58-highlight">
+      <IconStyle>
+        <color>ff58eeff</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1599-FFEE58">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1599-FFEE58-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1599-FFEE58-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1636-FFEE58-normal">
+      <IconStyle>
+        <color>ff58eeff</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1636-FFEE58-highlight">
+      <IconStyle>
+        <color>ff58eeff</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1636-FFEE58">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1636-FFEE58-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1636-FFEE58-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1598-FFEE58-normal">
+      <IconStyle>
+        <color>ff58eeff</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1598-FFEE58-highlight">
+      <IconStyle>
+        <color>ff58eeff</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1598-FFEE58">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1598-FFEE58-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1598-FFEE58-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1720-FFEE58-normal">
+      <IconStyle>
+        <color>ff58eeff</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1720-FFEE58-highlight">
+      <IconStyle>
+        <color>ff58eeff</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1720-FFEE58">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1720-FFEE58-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1720-FFEE58-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1517-FDD835-normal">
+      <IconStyle>
+        <color>ff35d8fd</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1517-FDD835-highlight">
+      <IconStyle>
+        <color>ff35d8fd</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1517-FDD835">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1517-FDD835-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1517-FDD835-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1677-FFEE58-normal">
+      <IconStyle>
+        <color>ff58eeff</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1677-FFEE58-highlight">
+      <IconStyle>
+        <color>ff58eeff</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1677-FFEE58">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1677-FFEE58-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1677-FFEE58-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1706-FFEE58-normal">
+      <IconStyle>
+        <color>ff58eeff</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1706-FFEE58-highlight">
+      <IconStyle>
+        <color>ff58eeff</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1706-FFEE58">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1706-FFEE58-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1706-FFEE58-highlight</styleUrl>
       </Pair>
     </StyleMap>
     <Folder>
-      <name>Entertainment</name>
-      <description>Evening plans and activity-focused stops.</description>
+      <name>Tokyo</name>
       <Placemark>
-        <name>TeamLab Planets</name>
-        <description><![CDATA[<img src="https://images.unsplash.com/photo-1556173251-cab2c1e8abe2" height="200" width="auto" /><br><br>Indoor slot for a rainy day. Reserve in advance to avoid sold-out times.]]></description>
+        <name>Mipig Cafe Harajuku</name>
+        <description>A mini pig cafe where you can sit among tiny piglets, pet them, and feed them. Sessions run for 30-60 minutes, and online booking is recommended because the place is popular. It is in Harajuku, easy to combine with a walk along Takeshita Street and a visit to Meiji Jingu. Unusual and surprisingly calming.</description>
+        <styleUrl>#icon-1534-AD1457</styleUrl>
+        <Point>
+          <coordinates>139.7042806,35.6709916,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>KimiKano</name>
+        <description>A concept cafe in Akihabara built around the &quot;I want to be your girlfriend&quot; fantasy. The waitresses role-play as if they are in love with you, with drinks, cheki photos, and in-character conversation at the table. Nothing physical - it is all about atmosphere and performance. Around 3000 JPY for the first set. Open 5:00 PM-1:00 AM, 18+. Thirty seconds from Akihabara Station. Part of the KimiKano group with several cafes across Tokyo. Website: https://kimikano.tokyo/</description>
+        <styleUrl>#icon-1534-AD1457</styleUrl>
+        <Point>
+          <coordinates>139.7746214,35.6977236,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Tsukiji Outer Market</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1729126042712-679e6c1b0808" height="200" width="auto" /><br>The famous outer market next to the former Tsukiji fish market is one of the best places in Tokyo for an early breakfast and a food-focused walk. The wholesale market moved to Toyosu in 2018, but the outer market is still fully alive, with sushi breakfasts, sashimi, oysters, tamagoyaki on a stick, tea, knives, and kitchen souvenirs. It is large, with roughly 460 stalls and small restaurants. Go in the morning or before noon, since many places start closing after lunch. Easy to combine with Ginza or Hamarikyu Gardens.]]></description>
         <ExtendedData>
           <Data name="gx_media_links">
-            <value><![CDATA[https://images.unsplash.com/photo-1556173251-cab2c1e8abe2]]></value>
+            <value><![CDATA[https://images.unsplash.com/photo-1729126042712-679e6c1b0808]]></value>
           </Data>
         </ExtendedData>
-        <styleUrl>#icon-1636-303F9F</styleUrl>
+        <styleUrl>#icon-1573-C2185B</styleUrl>
         <Point>
-          <coordinates>139.7897739,35.6491207,0</coordinates>
+          <coordinates>139.7702515,35.6647703,0</coordinates>
         </Point>
       </Placemark>
       <Placemark>
-        <name>Dotonbori</name>
-        <description><![CDATA[<img src="https://images.unsplash.com/photo-1542210940661-5f91cb7afe02" height="200" width="auto" /><br><br>Dense evening area with food, crowds, and bright signage.]]></description>
+        <name>Ameyoko</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1707739371498-bd8a386d7774" height="200" width="auto" /><br>A loud market street between Ueno and Okachimachi stations, perfect for a cheap bite and a walk through a lively, less polished side of Tokyo. Over roughly 500 meters you get about 500 stalls and shops selling seafood, sweets, snacks, street food, Asian groceries, cosmetics, and cheap small goods. It is crowded and energetic, and shows a more everyday urban pace than Ginza or Shibuya. Easy to combine with Ueno Park, the museums, or a stop in Akihabara.]]></description>
         <ExtendedData>
           <Data name="gx_media_links">
-            <value><![CDATA[https://images.unsplash.com/photo-1542210940661-5f91cb7afe02]]></value>
+            <value><![CDATA[https://images.unsplash.com/photo-1707739371498-bd8a386d7774]]></value>
           </Data>
         </ExtendedData>
-        <styleUrl>#icon-1577-5E35B1</styleUrl>
+        <styleUrl>#icon-1578-C2185B</styleUrl>
         <Point>
-          <coordinates>135.5019145,34.6687142,0</coordinates>
-        </Point>
-      </Placemark>
-    </Folder>
-    <Folder>
-      <name>Food</name>
-      <description>Restaurants, cafes, and snack stops.</description>
-      <Placemark>
-        <name>Onibus Coffee Nakameguro</name>
-        <description>Good morning coffee stop before exploring Nakameguro and Daikanyama.</description>
-        <styleUrl>#icon-1534-00897B</styleUrl>
-        <Point>
-          <coordinates>139.6980318,35.6431767,0</coordinates>
+          <coordinates>139.7746259,35.7090028,0</coordinates>
         </Point>
       </Placemark>
       <Placemark>
-        <name>Gyukatsu Motomura Shibuya</name>
-        <description>Popular beef cutlet spot near Shibuya. Queue risk is high at peak lunch hours.</description>
-        <styleUrl>#icon-1577-E64A19</styleUrl>
+        <name>Omoide Yokocho</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1617870314635-fc819547ec11" height="200" width="auto" /><br>A tiny alley near Shinjuku Station packed with microscopic yakitori bars and cheap beer, and one of the most atmospheric places in Tokyo for a simple, noisy, very Japanese evening. The passage is narrow, the grills smoke, the red lanterns glow, and many places seat only five or six people, so it still feels like old postwar Tokyo. You do not come here for refined cuisine, but for the mood: sit shoulder to shoulder, order a few skewers, and drink. Great with an evening in Shinjuku, Golden Gai, or Kabukicho.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1617870314635-fc819547ec11]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1517-D81B60</styleUrl>
         <Point>
-          <coordinates>139.703795,35.6619707,0</coordinates>
+          <coordinates>139.6994991,35.6931005,0</coordinates>
         </Point>
       </Placemark>
-    </Folder>
-    <Folder>
-      <name>Sights</name>
-      <description>Major landmarks, temples, and viewpoints.</description>
       <Placemark>
-        <name>Senso-ji</name>
-        <description><![CDATA[<img src="https://images.unsplash.com/photo-1706813253696-10ee6332edd3" height="200" width="auto" /><br><br><img src="https://images.unsplash.com/photo-1702777326906-9c480b4b316c" height="200" width="auto" /><br><br>Good early-morning stop before the street gets crowded. Combine with a short walk around Asakusa.]]></description>
+        <name>Golden Gai</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1654350424788-08d651dbe094" height="200" width="auto" /><br>A maze of six narrow alleys filled with tiny bars that seat five to ten people, preserving an old Tokyo atmosphere in the middle of Shinjuku&apos;s skyscrapers. There are around 200 bars, each with its own theme and crowd, from jazz and cinema to punk rock and anime. Some are closed to tourists, usually marked with a sign, but many welcome visitors. Go after 8:00 PM because the area is quiet by day, and be ready for a cover charge of around 500-1000 JPY.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1654350424788-08d651dbe094]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1517-D81B60</styleUrl>
+        <Point>
+          <coordinates>139.7047611,35.6941118,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Ni-chome</name>
+        <description>The largest LGBT district in Asia, made up of a few compact streets in eastern Shinjuku with more than 300 tiny bars. The usual format is to sit at the counter and chat with the owner and the other guests. Many bars are aimed at specific audiences, usually written on the door, but the area overall is friendly to everyone. Good starting points include AiiRO Cafe for a daytime terrace, Arty Farty for dancing and a foreigner-friendly crowd, and Dragon Men, which is popular with visitors. Expect an entry charge of around 1000-2000 JPY including a drink. Friday and Saturday after 10:00 PM are the best times to go.</description>
+        <styleUrl>#icon-1517-D81B60</styleUrl>
+        <Point>
+          <coordinates>139.7083697,35.6897887,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Uniqlo Ginza</name>
+        <description>The biggest Uniqlo flagship store in Tokyo, with 12 floors of clothing and collaborations. It carries exclusive lines you will not find abroad and offers in-store customization such as embroidery. The UT T-shirts with anime, Japanese design, and limited editions are especially good souvenirs. Right on Ginza&apos;s main street.</description>
+        <styleUrl>#icon-1549-E91E63</styleUrl>
+        <Point>
+          <coordinates>139.7634686,35.6702448,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Harajuku District</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1664806462678-5df01513f7b9" height="200" width="auto" /><br>The epicenter of Japanese street fashion and youth culture, between Yoyogi Park and Omotesando. Its main artery is Takeshita Street, a narrow 400-meter lane packed with crepe shops, outrageous fashion stores, cosplay goods, and themed cafes. On weekends it is shoulder-to-shoulder crowded. You can still spot everything from Lolita fashion to decor-punk, even if the district is more mainstream than in its peak subculture era. Easy to combine with Yoyogi Park and Meiji Jingu.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1664806462678-5df01513f7b9]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1549-E91E63</styleUrl>
+        <Point>
+          <coordinates>139.709008,35.6699682,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Senso-ji Temple</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1706813253696-10ee6332edd3" height="200" width="auto" /><br>The oldest Buddhist temple in Tokyo, founded in the 7th century. It is known for its five-story pagoda, carefully kept grounds, and the impressive Kaminarimon gate with its giant red lantern. The approach runs through Nakamise, a shopping street with classic snacks and souvenirs. Go early in the morning before the crowds build up. The surrounding Asakusa area captures the contrast between old and modern Japan especially well.]]></description>
         <ExtendedData>
           <Data name="gx_media_links">
             <value><![CDATA[https://images.unsplash.com/photo-1706813253696-10ee6332edd3]]></value>
           </Data>
-          <Data name="gx_media_links">
-            <value><![CDATA[https://images.unsplash.com/photo-1702777326906-9c480b4b316c]]></value>
-          </Data>
         </ExtendedData>
-        <styleUrl>#icon-1523-F44336</styleUrl>
+        <styleUrl>#icon-1706-EC407A</styleUrl>
         <Point>
           <coordinates>139.7966553,35.7147651,0</coordinates>
         </Point>
       </Placemark>
       <Placemark>
-        <name>Shibuya Sky</name>
-        <description><![CDATA[<img src="https://images.unsplash.com/photo-1697441222725-d9d2e403475c" height="200" width="auto" /><br><br>Best booked around sunset. Strong first-night option if the weather is clear.]]></description>
+        <name>Tokyo Imperial Palace</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1715917173024-6f7ccb09b367" height="200" width="auto" /><br>The working residence of Japan&apos;s emperors, rebuilt after World War II on the site of medieval Edo Castle. The inner grounds open only twice a year, on January 2 and on the emperor&apos;s birthday, but the East Gardens and the surrounding area are free to visit. Moats, stone walls, old bridges, and pine-lined paths make it one of the calmest walks in central Tokyo.]]></description>
         <ExtendedData>
           <Data name="gx_media_links">
-            <value><![CDATA[https://images.unsplash.com/photo-1697441222725-d9d2e403475c]]></value>
+            <value><![CDATA[https://images.unsplash.com/photo-1715917173024-6f7ccb09b367]]></value>
           </Data>
         </ExtendedData>
-        <styleUrl>#icon-1523-4527A0</styleUrl>
+        <styleUrl>#icon-1598-EC407A</styleUrl>
         <Point>
-          <coordinates>139.7019848,35.6586719,0</coordinates>
+          <coordinates>139.7527995,35.685175,0</coordinates>
         </Point>
       </Placemark>
       <Placemark>
-        <name>Kiyomizu-dera</name>
-        <description><![CDATA[<img src="https://images.unsplash.com/photo-1593297305192-ed4e59dd5777" height="200" width="auto" /><br><br>Best paired with an early walk through Higashiyama before the streets fill up.]]></description>
+        <name>Akihabara</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1561172317-5427a31ef91e" height="200" width="auto" /><br>Tokyo&apos;s iconic geek district, filled with multi-story stores selling anime figures, manga, retro consoles, and collector editions. It is also home to maid cafes, arcades, and electronics shops. Even if you are not into anime, the area is worth seeing as a distinct cultural phenomenon. It is best in the late afternoon and evening once the neon signs switch on.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1561172317-5427a31ef91e]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1854-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.7713703,35.6996473,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Shibuya Crossing</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1573456373835-579c408de263" height="200" width="auto" /><br>The most famous pedestrian crossing in the world, where up to 3,000 people can move through the intersection at once when the light changes. Nearby stands the Hachiko statue, a classic meeting point. One of the best views is from the Starbucks on the second floor of the Tsutaya building across the street, but go early if you want a window seat. Shibuya itself is also one of Tokyo&apos;s main districts for youth culture, cafes, and nightlife.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1573456373835-579c408de263]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1523-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.7005596,35.659482,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Odaiba</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1677640686995-08260ab6d435" height="200" width="auto" /><br>An artificial island in Tokyo Bay that grew from a former military site into a major entertainment district. You get malls, a life-size Gundam, and even a small Statue of Liberty replica. People used to come here for teamLab Borderless before it moved to Azabudai Hills in 2024. In the evening the waterfront views of Rainbow Bridge and the city lights are the main draw. Riding the Yurikamome line over the bay is part of the fun.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1677640686995-08260ab6d435]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1568-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.7805445,35.62058340000001,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Tokyo Tower</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1706378762524-16dc55a0370d" height="200" width="auto" /><br>The red-and-white broadcasting tower from 1958 is one of Tokyo&apos;s classic symbols. At 333 meters it is taller than the Eiffel Tower that inspired it. There are two observation decks, at 150 meters and 250 meters, with city views that can reach Mount Fuji on a clear day. The tower is also worth seeing from outside after dark, when it is lit dramatically.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1706378762524-16dc55a0370d]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1715-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.7454329,35.6585805,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Zojo-ji Temple</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1604168933114-7d053da21fa3" height="200" width="auto" /><br>A 16th-century Buddhist temple at the foot of Tokyo Tower and one of the best photo spots in the city, with traditional architecture framed by the modern tower behind it. Its most important structure is the Sangedatsumon gate, which survived fires and bombings for more than 400 years. The grounds also hold the mausoleum of six Tokugawa shoguns. Easy to combine with Tokyo Tower since they are only a few minutes apart on foot.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1604168933114-7d053da21fa3]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1706-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.7482928,35.657479,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Tokyo Skytree</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1583915376118-7bfcda48e26c" height="200" width="auto" /><br>The tallest broadcasting tower in the world at 634 meters, a number chosen to echo &quot;Musashi,&quot; the old name of the historical province. There are two observation decks at 350 and 450 meters with huge views over Tokyo and, on clear days, out to Mount Fuji. It is the modern counterpart to Tokyo Tower, and both are worth seeing. At the base sits the Solamachi shopping complex with stores and restaurants.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1583915376118-7bfcda48e26c]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1715-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.8107004,35.7100627,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Ueno Park</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1647785991550-a60ed49badf5" height="200" width="auto" /><br>One of Tokyo&apos;s oldest parks and one of the city&apos;s best places for hanami in late March and early April. The grounds include several major museums, the zoo, lotus ponds, and older temple sites. Near the entrance stands a statue of Saigo Takamori, the legendary &quot;last samurai.&quot; It is easy to spend a full day here between nature and culture.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1647785991550-a60ed49badf5]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1720-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.7734312,35.7147557,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Ginza District</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1622767803667-ac7623421256" height="200" width="auto" /><br>Tokyo&apos;s most luxurious shopping district, lined with flagship boutiques, department stores, and galleries. Its main cultural landmark is the Kabukiza Theatre, where you can see traditional kabuki with music, dance, and elaborate costumes. On weekends the central street becomes a pedestrian zone. The architecture mixes classic department stores with contemporary buildings by star architects.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1622767803667-ac7623421256]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1547-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.7664859,35.6712228,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Meiji Jingu Shrine</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1706866600189-4e7128dbf871" height="200" width="auto" /><br>A Shinto shrine from 1920 dedicated to Emperor Meiji and his consort, surrounded by a huge forest of 100,000 trees brought from across Japan. It feels like a quiet oasis in the middle of Tokyo, only steps from busy Shibuya. The entrance through the giant wooden torii is one of the strongest arrival moments in the city. Nearby Yoyogi Park often fills with street musicians and cosplayers on weekends.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1706866600189-4e7128dbf871]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1677-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.6993259,35.6763976,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Shinjuku Gyoen National Garden</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1615173207099-b8d49dc1090d" height="200" width="auto" /><br>Once an imperial garden and now open to everyone, with a small paid entry. It is one of Tokyo&apos;s best hanami spots thanks to more than 1,500 cherry trees across 75 varieties, which stretch the bloom over several weeks. The park combines Japanese, English landscape, and French formal design in one place. Alcohol is banned inside, which makes it calmer than many other parks during cherry blossom season.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1615173207099-b8d49dc1090d]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1582-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.7100517,35.68517629999999,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Rikugien Garden</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1769219696464-78baf530b7ea" height="200" width="auto" /><br>A classic Japanese garden from the late 17th century, preserved in near original form. Its landscape was designed around 88 scenes from classical Japanese poetry. It is a quiet, contemplative place away from the busiest tourist routes, with a pond, hills, winding paths, and a teahouse where you can drink matcha overlooking the water. Especially beautiful in autumn and during the weeping cherry blossom season in spring.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1769219696464-78baf530b7ea]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1582-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.7457335,35.7331005,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Tokyo Metropolitan Government Building</name>
+        <description><![CDATA[<img src="https://plus.unsplash.com/premium_photo-1749758347452-5836e99518d5" height="200" width="auto" /><br>A complex of three buildings designed by Kenzo Tange, with a main tower that looks almost like a Gothic cathedral and is sometimes called &quot;Japan&apos;s Notre-Dame.&quot; For visitors the main attraction is the pair of free observation decks on the 45th floor at 202 meters. They are a great alternative to the paid decks at Tokyo Tower or Skytree, especially at night. The south and north decks keep different hours.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://plus.unsplash.com/premium_photo-1749758347452-5836e99518d5]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1548-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.6941687,35.6945487,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Hamarikyu Gardens</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1593296984896-f5c6d6966363" height="200" width="auto" /><br>A traditional Japanese garden on Tokyo Bay, surrounded by the skyscrapers of Shiodome, with a memorable contrast between old landscape design and glass towers. A teahouse sits on a seawater pond where you can drink matcha while looking over the water. A nice extra is arriving by water bus from Asakusa along the Sumida River.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1593296984896-f5c6d6966363]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1582-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.7634091,35.6596559,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Tokyo Station</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1682757535247-fcded85ffda8" height="200" width="auto" /><br>A handsome early 20th-century brick station building that stands out against the surrounding Marunouchi skyscrapers. It is Japan&apos;s biggest transport hub, with around 800,000 passengers and 4,000 trains each day. Shinkansen trains to Osaka, Kyoto, Hiroshima, and many other cities leave from here. Inside you will also find Tokyo Ramen Street plus plenty of shops and restaurants. Worth seeing for the architecture alone.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1682757535247-fcded85ffda8]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1598-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.7667352,35.6826509,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Yoyogi Park</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1644942256270-91a6afaf15fd" height="200" width="auto" /><br>A large green park next to Meiji Jingu and one of Tokyo&apos;s favorite public hangout spots. On weekends you can often find street musicians, dancers, and cosplayers, making it a free show as much as a park. It is great for a picnic, a run, or a break under the trees. Harajuku and Omotesando are nearby, so it fits naturally into the same route.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1644942256270-91a6afaf15fd]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1720-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.6949656,35.6700649,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Koishikawa Korakuen Garden</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1719320981672-4e89d0aa7c2c" height="200" width="auto" /><br>One of Tokyo&apos;s oldest gardens, dating from the 17th century, and notable for blending Japanese and Chinese landscape ideas. The scenery recreates famous places in miniature, from Mount Fuji to Kyoto temples and China&apos;s West Lake. It is a peaceful place for a slow walk, especially in autumn when the maples turn red. Being next to Tokyo Dome makes it easy to pair with something else nearby.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1719320981672-4e89d0aa7c2c]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1582-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.7492718,35.7056913,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Ueno Zoo</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1729200695327-06cd7943d201" height="200" width="auto" /><br>Japan&apos;s oldest zoo, founded in 1882, inside Ueno Park. It houses more than 3,000 animals, with the giant pandas as the clear stars. Entry is inexpensive, so it fits well with the museums and a park walk. A good option if you are traveling with children or want a softer break between temples and skyscrapers.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1729200695327-06cd7943d201]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1743-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.772882,35.7160153,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Gotoku-ji Temple</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1617538037505-fa5ed8bf266a" height="200" width="auto" /><br>A Buddhist temple famous as the &quot;beckoning cat temple.&quot; According to the legend, the first maneki-neko originated here. The grounds are filled with thousands of cat figurines left by visitors in thanks for answered wishes. It is photogenic, unusual, and well away from the main tourist circuit, making it a good stop if you want to see a less obvious side of Tokyo.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1617538037505-fa5ed8bf266a]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1706-EC407A</styleUrl>
+        <Point>
+          <coordinates>139.647481,35.6488124,0</coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+    <Folder>
+      <name>Osaka</name>
+      <Placemark>
+        <name>Kuromon Ichiba Market</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1573674451487-3c66c2aad5ba" height="200" width="auto" /><br>A covered food market about 600 meters long, often called &quot;Osaka&apos;s kitchen.&quot; It has been operating since 1822 and today is aimed mostly at visitors. The main draw is seafood: fresh oysters, grilled scallops, tuna sashimi, crab legs, sea urchin, and more, often eaten right at the stall. You also get luxury fruit, wagyu skewers, tamagoyaki, and mochi. Prices run a little high because of tourism, but the quality is strong. Morning is best, before the freshest items disappear and many stalls start closing after 3:00-4:00 PM.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1573674451487-3c66c2aad5ba]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1573-1976D2</styleUrl>
+        <Point>
+          <coordinates>135.5065637,34.6652408,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Tenma</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1731155301624-c38d7aa42186" height="200" width="auto" /><br>One of the best parts of Osaka for a simple, deeply local evening of bar hopping. Around Tenma Station and in the surrounding backstreets you will find hundreds of tiny izakayas, yakitori bars, standing bars, and cheap neighborhood spots with very little tourist polish. The strength of the area is the mix of quality, price, and atmosphere. It is easy to spend a few hours moving from place to place and trying small dishes as you go.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1731155301624-c38d7aa42186]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1517-1E88E5</styleUrl>
+        <Point>
+          <coordinates>135.5193039,34.6936088,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Ura-Namba District</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1732055404189-f87efa555d9b" height="200" width="auto" /><br>The &quot;backstreets&quot; of Namba, east of Nankai Station. It is one of Osaka&apos;s trendier food and drink districts, but still without the full tourist flood. Expect izakayas, yakitori, natural wine, craft beer, and tiny chef-led places with eight to fifteen seats, often without English menus. The district wakes up at night and is quiet by day. The best strategy is hashigo: keep moving from bar to bar, ordering just a couple of plates and one drink at each stop.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1732055404189-f87efa555d9b]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1517-1E88E5</styleUrl>
+        <Point>
+          <coordinates>135.5039463,34.6652575,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Doyamacho District</name>
+        <description>Osaka&apos;s main LGBT district, similar in spirit to Tokyo&apos;s Ni-chome but smaller and more relaxed. It sits only a few minutes from Umeda Station and packs narrow streets with bars, clubs, izakayas, karaoke, and saunas. The scene is centered on gay nightlife, but there are mixed venues too. Many places are tiny counter bars with the classic bottle-keep system. Friday and Saturday nights after 9:00 PM are when the area really comes alive.</description>
+        <styleUrl>#icon-1517-1E88E5</styleUrl>
+        <Point>
+          <coordinates>135.5033929,34.7035258,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Shinsaibashi</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1646536590123-d6720c3c5af8" height="200" width="auto" /><br>Osaka&apos;s main shopping artery, a covered arcade about 600 meters long, so you can walk it in any weather. It runs through central Shinsaibashi and flows naturally toward Dotonbori and Namba. The mix is broad: luxury boutiques, the Daimaru department store, Uniqlo, drugstores, secondhand fashion, and plenty in between. Nearby Amerikamura adds a more youthful streetwear edge. It is always busy and still very much used by locals.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1646536590123-d6720c3c5af8]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1684-2196F3</styleUrl>
+        <Point>
+          <coordinates>135.5013862,34.6708677,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Amerikamura</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1770611447657-ed50ead904ea" height="200" width="auto" /><br>Osaka&apos;s center for youth culture, streetwear, and vintage shopping, often described as the local answer to Harajuku but rougher around the edges and less polished. People come here for sneakers, vintage stores, vinyl, graffiti, third-wave coffee, and general street atmosphere. Triangle Park is the neighborhood&apos;s social core. During the day it works as a shopping area, while in the evening it shifts toward live music, clubs, and small bars.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1770611447657-ed50ead904ea]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1684-2196F3</styleUrl>
+        <Point>
+          <coordinates>135.4988498,34.6719318,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Osaka Castle</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1680061337399-a175cebe51b1" height="200" width="auto" /><br>Osaka&apos;s main symbol, originally built in 1583 by Toyotomi Hideyoshi, the warlord who helped unify Japan. The current tower is a 1931 concrete reconstruction with a museum inside covering the history of the castle and the samurai wars. The top floor has a city-view observation deck. Around it lies a large park that becomes one of Osaka&apos;s best hanami spots in spring.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1680061337399-a175cebe51b1]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1598-42A5F5</styleUrl>
+        <Point>
+          <coordinates>135.5258546,34.6872571,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Dotonbori District</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1542210940661-5f91cb7afe02" height="200" width="auto" /><br>Osaka&apos;s most famous entertainment strip along the canal, filled with neon signs, giant crab claws, and the running Glico man. It is the center of casual street food: takoyaki, okonomiyaki, gyoza, and kushikatsu. The district is at its best in the evening when everything lights up. Loud, crowded, and impossible to skip.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1542210940661-5f91cb7afe02]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1547-42A5F5</styleUrl>
+        <Point>
+          <coordinates>135.5030983,34.6686471,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Namba District</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1716184048454-8ea628c8afe0" height="200" width="auto" /><br>One of Osaka&apos;s two major centers, alongside Umeda in the north. It is a major transport hub for trains to Kansai Airport, Kyoto, and Nara, and it blends directly into Dotonbori and Shinsaibashi. Namba Parks and the underground Namba Walk add more shopping and dining. It is also a practical place to stay, with many hotels and easy access to the city&apos;s main attractions.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1716184048454-8ea628c8afe0]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1546-42A5F5</styleUrl>
+        <Point>
+          <coordinates>135.5010362,34.6657531,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Tsutenkaku Tower</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1699154016198-dd89c2da4ffd" height="200" width="auto" /><br>A 108-meter steel tower in Shinsekai and one of the symbols of &quot;everyday&quot; Osaka. The current version dates from 1956, while the original 1912 tower was dismantled during the war. At the top you get an observation deck and the good-luck Billiken statue. The tower itself is modest, but the real appeal is the retro neighborhood around it.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1699154016198-dd89c2da4ffd]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1715-42A5F5</styleUrl>
+        <Point>
+          <coordinates>135.5063058,34.6524992,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Shinsekai</name>
+        <description><![CDATA[<img src="https://plus.unsplash.com/premium_photo-1733281203595-84dc320cde30" height="200" width="auto" /><br>A colorful retro district at the foot of Tsutenkaku, built in 1912 as a &quot;city of the future&quot; inspired by Paris and Coney Island. Today it is the opposite of polished, but full of character. Kushikatsu is the signature food here, and the golden rule is simple: do not double-dip in the shared sauce. At night the district becomes even better, with neon lights and a tipsy local crowd.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://plus.unsplash.com/premium_photo-1733281203595-84dc320cde30]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1604-42A5F5</styleUrl>
+        <Point>
+          <coordinates>135.5059562,34.6516013,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Umeda Sky Building</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1712542864632-2e8a275efdae" height="200" width="auto" /><br>A futuristic skyscraper made of two towers joined by the Floating Garden observation deck at 173 meters. The escalator ride suspended between the towers is almost as memorable as the view itself. The open-air deck gives a full 360-degree panorama and is especially good at sunset. In the basement, Takimi-koji recreates the look of a 1950s restaurant street.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1712542864632-2e8a275efdae]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1523-42A5F5</styleUrl>
+        <Point>
+          <coordinates>135.4896527,34.7052872,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Tennoji District</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1700583283059-1f5ecf4d4ea1" height="200" width="auto" /><br>A district in southern Osaka where old and new sit close together. Abeno Harukas is Japan&apos;s tallest skyscraper at 300 meters, with the Harukas 300 observation deck and the Kintetsu department store. Nearby you also get Tennoji Park, the quiet Keitakuen Garden, and Shitenno-ji, one of Japan&apos;s earliest Buddhist temples. Less tourist-heavy than Namba, but worth a stop.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1700583283059-1f5ecf4d4ea1]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1546-42A5F5</styleUrl>
+        <Point>
+          <coordinates>135.5188245,34.6634059,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Sumiyoshi Taisha</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1573576232755-34229fbaf768" height="200" width="auto" /><br>One of Japan&apos;s oldest Shinto shrines, founded in 211. The Sumiyoshi-zukuri style is a very pure form of shrine architecture without Chinese influence. Its most recognizable feature is the steep red Taikobashi bridge over the pond. The shrine is associated with sailors and travelers, and the grounds are spacious, quiet, and far less crowded than Osaka&apos;s more central sights.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1573576232755-34229fbaf768]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1677-42A5F5</styleUrl>
+        <Point>
+          <coordinates>135.4937612,34.6123945,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Hozenji Yokocho</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1542210993429-4f006c6ad7d9" height="200" width="auto" /><br>A tiny stone lane only 80 meters long, hidden a couple of minutes from Dotonbori&apos;s neon chaos. At its center is Hozenji Temple with a Fudo Myoo statue covered in moss from centuries of visitors pouring water on it while making wishes. Small bars and izakayas line both sides of the alley. In the evening, once the lanterns come on, it feels like an old Osaka scene dropped into the middle of the modern city.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1542210993429-4f006c6ad7d9]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1706-42A5F5</styleUrl>
+        <Point>
+          <coordinates>135.5024676,34.6679398,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Janjan Yokocho</name>
+        <description>A narrow covered lane on the southern edge of Shinsekai, even rougher and more local in feel. The name is onomatopoeia from the sound of shamisen music once heard here. Small eateries serve kushikatsu, gyoza, udon, and doteyaki, and there are old shogi and go halls where elderly Osaka locals still spend entire days. This is Osaka without a filter.</description>
+        <styleUrl>#icon-1604-42A5F5</styleUrl>
+        <Point>
+          <coordinates>135.5059526,34.6492448,0</coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+    <Folder>
+      <name>Kyoto</name>
+      <Placemark>
+        <name>Nishiki Market</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1669711670368-12c900d67eb0" height="200" width="auto" /><br>A 400-meter covered market arcade in central Kyoto, often called &quot;Kyoto&apos;s kitchen.&quot; Around 130 stalls are packed with local specialties such as tsukemono pickles, yuba, tofu, mochi, matcha sweets, seafood skewers, and oysters. Some vendors post &quot;no eating while walking&quot; signs, so it is best to eat right by the stall. Quality is good, though prices can be a little elevated. Most shops open around 9:00 AM and many close early.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1669711670368-12c900d67eb0]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1578-00796B</styleUrl>
+        <Point>
+          <coordinates>135.764723,35.0050258,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Pontocho</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1652276317492-4350c854ae46" height="200" width="auto" /><br>A narrow atmospheric alley between the Kamo River and Kiyamachi Street, and one of Kyoto&apos;s best areas for dinner. It is packed with izakayas, yakitori, small bars, and more expensive kaiseki restaurants, many hidden inside old wooden buildings. In summer, riverside yuka terraces appear above the water. It is quiet during the day, but really comes into its own after sunset.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1652276317492-4350c854ae46]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1577-00796B</styleUrl>
+        <Point>
+          <coordinates>135.7712162,35.0064277,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Gion District</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1597730763269-c49ab9f9db0f" height="200" width="auto" /><br>Kyoto&apos;s most famous geisha district, full of wooden teahouses, paper lanterns, and stone-paved lanes. Hanamikoji Street looks like a period film set. In the early evening you may catch real maiko and geiko on their way to appointments, though photographing them up close is considered rude. The district is also home to Minamiza, the oldest kabuki theater in Japan.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1597730763269-c49ab9f9db0f]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1598-26A69A</styleUrl>
+        <Point>
+          <coordinates>135.777245,35.0037816,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Kiyomizu-dera Temple</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1593297305192-ed4e59dd5777" height="200" width="auto" /><br>One of Japan&apos;s most famous Buddhist temples, founded in 778. Its huge wooden terrace projects 13 meters over the hillside on pillars built without a single nail. The views are excellent, especially in spring and autumn. Below the main hall, the Otowa waterfall is divided into three streams said to represent health, study, and love. Go early or late in the day to avoid the heaviest crowds.]]></description>
         <ExtendedData>
           <Data name="gx_media_links">
             <value><![CDATA[https://images.unsplash.com/photo-1593297305192-ed4e59dd5777]]></value>
           </Data>
         </ExtendedData>
-        <styleUrl>#icon-1523-FB8C00</styleUrl>
+        <styleUrl>#icon-1706-26A69A</styleUrl>
         <Point>
-          <coordinates>135.7850463,34.9948561,0</coordinates>
+          <coordinates>135.784661,34.9946662,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Nijo Castle</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1700424779513-cd55ec444d71" height="200" width="auto" /><br>The Tokugawa shoguns&apos; Kyoto residence, built in 1603 and famous as the place where the last shogun announced the return of power to the emperor in 1867. The Ninomaru Palace is decorated with painted screens and the famous nightingale floors, which chirp underfoot as a security measure. The surrounding garden is also worth time. Plan around one to one and a half hours here.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1700424779513-cd55ec444d71]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1598-26A69A</styleUrl>
+        <Point>
+          <coordinates>135.7484258,35.0140379,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Kinkaku-ji Golden Pavilion</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1573973726148-f16566ecd09a" height="200" width="auto" /><br>A 14th-century Buddhist temple whose upper two floors are covered in gold leaf, creating one of Japan&apos;s most recognizable reflections across the pond. It began as the villa of shogun Ashikaga Yoshimitsu. The present structure is a 1955 reconstruction after a famous arson attack. You cannot enter the building, but the walk around the water is the point.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1573973726148-f16566ecd09a]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1706-26A69A</styleUrl>
+        <Point>
+          <coordinates>135.7314978,35.0402459,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Arashiyama</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1539790453790-495d341d9b82" height="200" width="auto" /><br>A scenic district on Kyoto&apos;s western edge, known for the bamboo grove, Togetsukyo Bridge, Tenryu-ji, and riverside walks. It is especially beautiful in autumn with the maple leaves and in spring with cherry blossom, but it stays popular all year. Go early in the morning if you want the bamboo grove before the crowds. The area easily fills half a day or more.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1539790453790-495d341d9b82]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1604-26A69A</styleUrl>
+        <Point>
+          <coordinates>135.666773,35.009449,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Fushimi Inari Taisha</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1651740334936-99a146e667f4" height="200" width="auto" /><br>Japan&apos;s most visited shrine, famous for the thousands of vermilion torii gates that form tunnels up the mountain for roughly four kilometers. A full climb to the summit takes two to three hours, but many people turn around at Yotsutsuji, where there is a fine view over Kyoto. Entry is free and the shrine is open 24/7. Early morning or sunset is best if you want atmosphere and fewer people.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1651740334936-99a146e667f4]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1677-26A69A</styleUrl>
+        <Point>
+          <coordinates>135.7791876,34.9676945,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Sanjusangendo Temple</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1557101818-8b6e3555ad3e" height="200" width="auto" /><br>Japan&apos;s longest wooden temple hall, about 120 meters long, housing 1,001 gilded statues of Kannon. The repetition of the figures is hypnotic, and each face is slightly different. At the center stands the main Kannon, carved by the 13th-century master Tankei. Photography is forbidden, which makes it one of the rare Kyoto sights where people simply stand and look.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1557101818-8b6e3555ad3e]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1706-26A69A</styleUrl>
+        <Point>
+          <coordinates>135.7717126,34.9878845,0</coordinates>
         </Point>
       </Placemark>
     </Folder>
     <Folder>
-      <name>Stay</name>
-      <description>Hotel and logistics-related pins.</description>
+      <name>Nara</name>
       <Placemark>
-        <name>Hotel Groove Shinjuku</name>
-        <description>Central base for evening plans in Shinjuku. Useful anchor point for daily route planning.</description>
-        <styleUrl>#icon-1602-FFA000</styleUrl>
+        <name>Nara Park</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1726737699208-bee1475d3a3f" height="200" width="auto" /><br>A huge park in the city center where about 1,200 sacred deer roam freely. They bow for shika senbei crackers, but they can also get pushy, so keep food and paper out of sight. The two major highlights inside the park are Todai-ji with its giant bronze Buddha and Kasuga Taisha with its lantern- lined forest approach. Half a day is usually enough, and mornings are the best time to arrive.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1726737699208-bee1475d3a3f]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1720-66BB6A</styleUrl>
         <Point>
-          <coordinates>139.7004066,35.6958759,0</coordinates>
+          <coordinates>135.843012,34.685047,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Todai-ji Temple</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1526399075794-809548f63736" height="200" width="auto" /><br>An 8th-century Buddhist temple and Nara&apos;s biggest landmark. Inside stands Daibutsu, a 15-meter bronze Buddha weighing about 500 tons and ranking among the largest in the world. The Daibutsuden hall is itself one of the largest wooden buildings on the planet, even in its reduced 18th-century form. The scale is overwhelming in the best way.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1526399075794-809548f63736]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1706-66BB6A</styleUrl>
+        <Point>
+          <coordinates>135.8398158,34.6889851,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Kasuga Taisha</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1720573167093-9a24a38c7194" height="200" width="auto" /><br>A Shinto shrine founded in 768 and one of the great sacred sites of old Nara. Thousands of stone lanterns line the forest path and bronze lanterns hang inside the shrine itself. Twice a year, in February and August, all of them are lit during the Mantoro festival. Even on a normal day, the walk through the woods with deer and giant cedar trees is one of the most atmospheric experiences in Japan.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1720573167093-9a24a38c7194]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1677-66BB6A</styleUrl>
+        <Point>
+          <coordinates>135.8484719,34.6815454,0</coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+    <Folder>
+      <name>Hiroshima</name>
+      <Placemark>
+        <name>Okonomimura</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1773506615253-d2d9f666f9ab" height="200" width="auto" /><br>The legendary &quot;okonomiyaki village&quot; in central Hiroshima is one of the easiest and most reliable ways to try Hiroshima-style okonomiyaki without searching all over the city. More than 20 small counters are stacked across several floors in one building, each with griddles right in front of the seats. Sit down, watch the cooking, and eat from the spatula like a local. It is loud, lively, and one of Hiroshima&apos;s defining food experiences.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1773506615253-d2d9f666f9ab]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1577-FBC02D</styleUrl>
+        <Point>
+          <coordinates>132.4619014,34.3914342,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Atomic Bomb Dome</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1637501944190-9fe4515aa8e8" height="200" width="auto" /><br>The ruins of the former Industrial Promotion Hall, the only building left standing near the hypocenter of the atomic blast on August 6, 1945. The bomb exploded almost directly above it, so the shock wave came from above and the walls remained standing while everyone inside died instantly. The shell was preserved and reinforced rather than rebuilt. It has been a UNESCO World Heritage Site since 1996 and remains one of the most piercingly powerful places in modern Japan.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1637501944190-9fe4515aa8e8]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1599-FFEE58</styleUrl>
+        <Point>
+          <coordinates>132.453592,34.395483,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Hiroshima Peace Memorial Museum</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1556444209-e9e65c58be53" height="200" width="auto" /><br>The city&apos;s main museum about the atomic bombing, just a short walk from the Dome. Designed by Kenzo Tange in 1955, it is an icon of postwar architecture as well as one of the heaviest museum experiences you can have in Japan. The east wing covers the historical and political context, while the west wing focuses on personal belongings, watches stopped at 8:15, and the stories of hibakusha. Go at opening time if possible to avoid the longer queues later in the day.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1556444209-e9e65c58be53]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1636-FFEE58</styleUrl>
+        <Point>
+          <coordinates>132.4531578,34.3915027,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Hiroshima Castle</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1580137524725-2975600b0a0a" height="200" width="auto" /><br>Originally built in 1589 and destroyed by the atomic bomb, with the current concrete keep dating from 1958. Inside is a museum on samurai culture and Hiroshima&apos;s history before the bombing, which helps place the city in a much longer story than just 1945. From the top floor you get a view over the city and the surrounding hills. The moats and some original stone walls survived the blast.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1580137524725-2975600b0a0a]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1598-FFEE58</styleUrl>
+        <Point>
+          <coordinates>132.4591055,34.4027456,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Hiroshima Peace Memorial Park</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1650219813736-d823a037af22" height="200" width="auto" /><br>A 12-hectare park built on the site of the destroyed district, laid out by Kenzo Tange. The cenotaph holds more than 330,000 names and is aligned so that the Atomic Bomb Dome appears through the arch. Other key points include the Children&apos;s Peace Monument to Sadako Sasaki, the eternal Flame of Peace, and the Peace Bell. The park is free, open around the clock, and deserves several hours when paired with the museum.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1650219813736-d823a037af22]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1720-FFEE58</styleUrl>
+        <Point>
+          <coordinates>132.4522012,34.3926867,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Nagarekawa District</name>
+        <description>Hiroshima&apos;s main nightlife district, a maze of narrow streets near the Hondori arcade. It is sometimes compared to Dotonbori, but with far fewer tourists and a more local feel. You will find izakayas, bars, clubs, karaoke, and a small but friendly LGBT scene. The district wakes up after sunset and runs late into the night.</description>
+        <styleUrl>#icon-1517-FDD835</styleUrl>
+        <Point>
+          <coordinates>132.4635576,34.3898502,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Itsukushima Shrine</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1693246049389-9fecc67938c1" height="200" width="auto" /><br>The famous shrine on Miyajima Island, built on stilts above the water so that at high tide it seems to float. Founded in 593, it is one of Japan&apos;s iconic sacred sites and a UNESCO World Heritage Site. The giant vermilion torii stands about 200 meters offshore. At high tide it reflects in the water, while at low tide you can walk right up to its base. Both versions are worth seeing.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1693246049389-9fecc67938c1]]></value>
+          </Data>
+        </ExtendedData>
+        <styleUrl>#icon-1677-FFEE58</styleUrl>
+        <Point>
+          <coordinates>132.3198285,34.29598960000001,0</coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Daisho-in Temple</name>
+        <description>The oldest Buddhist temple on Miyajima, founded in 806 at the foot of Mount Misen. Many visitors never make it here from Itsukushima Shrine, but they should. The approach climbs past hundreds of Jizo statues in knitted hats and spinning prayer wheels. Higher up you get a cave linked to the 88 temples of the Shikoku pilgrimage and a range of Buddhist images in a much quieter atmosphere than the shrine below.</description>
+        <styleUrl>#icon-1706-FFEE58</styleUrl>
+        <Point>
+          <coordinates>132.3184934,34.29204620000001,0</coordinates>
         </Point>
       </Placemark>
     </Folder>

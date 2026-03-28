@@ -1,0 +1,16 @@
+pins:
+  - id: okonomimura
+    title: Okonomimura
+    address: Okonomimura, 5-13 Shintenchi, Naka Ward, Hiroshima
+    layer: hiroshima
+    color: yellow-700
+    icon: places-restaurant
+    photo: https://images.unsplash.com/photo-1773506615253-d2d9f666f9ab
+    description: >
+      The legendary "okonomiyaki village" in central Hiroshima is one of the
+      easiest and most reliable ways to try Hiroshima-style okonomiyaki without
+      searching all over the city. More than 20 small counters are stacked
+      across several floors in one building, each with griddles right in front
+      of the seats. Sit down, watch the cooking, and eat from the spatula like a
+      local. It is loud, lively, and one of Hiroshima's defining food
+      experiences.

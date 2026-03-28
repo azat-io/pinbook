@@ -1,0 +1,104 @@
+pins:
+  - id: gion
+    title: Gion District
+    address: Gion, Higashiyama Ward, Kyoto
+    layer: kyoto
+    color: teal-400
+    icon: places-historic-building
+    photo: https://images.unsplash.com/photo-1597730763269-c49ab9f9db0f
+    description: >
+      Kyoto's most famous geisha district, full of wooden teahouses, paper
+      lanterns, and stone-paved lanes. Hanamikoji Street looks like a period
+      film set. In the early evening you may catch real maiko and geiko on their
+      way to appointments, though photographing them up close is considered
+      rude. The district is also home to Minamiza, the oldest kabuki theater in
+      Japan.
+
+  - id: kiyomizu-dera
+    title: Kiyomizu-dera Temple
+    address: Kiyomizu-dera, 1-294 Kiyomizu, Higashiyama Ward, Kyoto
+    layer: kyoto
+    color: teal-400
+    icon: places-temple
+    photo: https://images.unsplash.com/photo-1593297305192-ed4e59dd5777
+    description: >
+      One of Japan's most famous Buddhist temples, founded in 778. Its huge
+      wooden terrace projects 13 meters over the hillside on pillars built
+      without a single nail. The views are excellent, especially in spring and
+      autumn. Below the main hall, the Otowa waterfall is divided into three
+      streams said to represent health, study, and love. Go early or late in the
+      day to avoid the heaviest crowds.
+
+  - id: nijo-castle
+    title: Nijo Castle
+    address: Nijo Castle, 541 Nijojocho, Nakagyo Ward, Kyoto
+    layer: kyoto
+    color: teal-400
+    icon: places-historic-building
+    photo: https://images.unsplash.com/photo-1700424779513-cd55ec444d71
+    description: >
+      The Tokugawa shoguns' Kyoto residence, built in 1603 and famous as the
+      place where the last shogun announced the return of power to the emperor
+      in 1867. The Ninomaru Palace is decorated with painted screens and the
+      famous nightingale floors, which chirp underfoot as a security measure.
+      The surrounding garden is also worth time. Plan around one to one and a
+      half hours here.
+
+  - id: kinkaku-ji
+    title: Kinkaku-ji Golden Pavilion
+    address: Kinkaku-ji, 1 Kinkakujicho, Kita Ward, Kyoto
+    layer: kyoto
+    color: teal-400
+    icon: places-temple
+    photo: https://images.unsplash.com/photo-1573973726148-f16566ecd09a
+    description: >
+      A 14th-century Buddhist temple whose upper two floors are covered in gold
+      leaf, creating one of Japan's most recognizable reflections across the
+      pond. It began as the villa of shogun Ashikaga Yoshimitsu. The present
+      structure is a 1955 reconstruction after a famous arson attack. You cannot
+      enter the building, but the walk around the water is the point.
+
+  - id: arashiyama
+    title: Arashiyama
+    address: Arashiyama, Kyoto
+    layer: kyoto
+    color: teal-400
+    icon: places-neighborhood
+    photo: https://images.unsplash.com/photo-1539790453790-495d341d9b82
+    description: >
+      A scenic district on Kyoto's western edge, known for the bamboo grove,
+      Togetsukyo Bridge, Tenryu-ji, and riverside walks. It is especially
+      beautiful in autumn with the maple leaves and in spring with cherry
+      blossom, but it stays popular all year. Go early in the morning if you
+      want the bamboo grove before the crowds. The area easily fills half a day
+      or more.
+
+  - id: fushimi-inari
+    title: Fushimi Inari Taisha
+    address:
+      Fushimi Inari Taisha, 68 Fukakusa Yabunouchicho, Fushimi Ward, Kyoto
+    layer: kyoto
+    color: teal-400
+    icon: places-shinto
+    photo: https://images.unsplash.com/photo-1651740334936-99a146e667f4
+    description: >
+      Japan's most visited shrine, famous for the thousands of vermilion torii
+      gates that form tunnels up the mountain for roughly four kilometers. A
+      full climb to the summit takes two to three hours, but many people turn
+      around at Yotsutsuji, where there is a fine view over Kyoto. Entry is free
+      and the shrine is open 24/7. Early morning or sunset is best if you want
+      atmosphere and fewer people.
+
+  - id: sanjusangendo
+    title: Sanjusangendo Temple
+    address: Sanjusangendo, 657 Sanjusangendomawaricho, Higashiyama Ward, Kyoto
+    layer: kyoto
+    color: teal-400
+    icon: places-temple
+    photo: https://images.unsplash.com/photo-1557101818-8b6e3555ad3e
+    description: >
+      Japan's longest wooden temple hall, about 120 meters long, housing 1,001
+      gilded statues of Kannon. The repetition of the figures is hypnotic, and
+      each face is slightly different. At the center stands the main Kannon,
+      carved by the 13th-century master Tankei. Photography is forbidden, which
+      makes it one of the rare Kyoto sights where people simply stand and look.

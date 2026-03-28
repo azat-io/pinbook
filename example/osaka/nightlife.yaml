@@ -1,0 +1,46 @@
+pins:
+  - id: tenma
+    title: Tenma
+    address: Tenma, Kita Ward, Osaka
+    layer: osaka
+    color: blue-600
+    icon: places-cocktails
+    photo: https://images.unsplash.com/photo-1731155301624-c38d7aa42186
+    description: >
+      One of the best parts of Osaka for a simple, deeply local evening of bar
+      hopping. Around Tenma Station and in the surrounding backstreets you will
+      find hundreds of tiny izakayas, yakitori bars, standing bars, and cheap
+      neighborhood spots with very little tourist polish. The strength of the
+      area is the mix of quality, price, and atmosphere. It is easy to spend a
+      few hours moving from place to place and trying small dishes as you go.
+
+  - id: ura-namba
+    title: Ura-Namba District
+    address: Ura-Namba, Nanbanaka, Naniwa Ward, Osaka
+    layer: osaka
+    color: blue-600
+    icon: places-cocktails
+    photo: https://images.unsplash.com/photo-1732055404189-f87efa555d9b
+    description: >
+      The "backstreets" of Namba, east of Nankai Station. It is one of Osaka's
+      trendier food and drink districts, but still without the full tourist
+      flood. Expect izakayas, yakitori, natural wine, craft beer, and tiny
+      chef-led places with eight to fifteen seats, often without English menus.
+      The district wakes up at night and is quiet by day. The best strategy is
+      hashigo: keep moving from bar to bar, ordering just a couple of plates and
+      one drink at each stop.
+
+  - id: doyamacho
+    title: Doyamacho District
+    address: Doyamacho, Kita Ward, Osaka
+    layer: osaka
+    color: blue-600
+    icon: places-cocktails
+    description: >
+      Osaka's main LGBT district, similar in spirit to Tokyo's Ni-chome but
+      smaller and more relaxed. It sits only a few minutes from Umeda Station
+      and packs narrow streets with bars, clubs, izakayas, karaoke, and saunas.
+      The scene is centered on gay nightlife, but there are mixed venues too.
+      Many places are tiny counter bars with the classic bottle-keep system.
+      Friday and Saturday nights after 9:00 PM are when the area really comes
+      alive.

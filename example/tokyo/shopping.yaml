@@ -1,0 +1,29 @@
+pins:
+  - id: uniqlo-ginza
+    title: Uniqlo Ginza
+    address: Uniqlo Ginza, 6-9-5 Ginza, Chuo City, Tokyo
+    layer: tokyo
+    color: pink-500
+    icon: places-clothing
+    description: >
+      The biggest Uniqlo flagship store in Tokyo, with 12 floors of clothing and
+      collaborations. It carries exclusive lines you will not find abroad and
+      offers in-store customization such as embroidery. The UT T-shirts with
+      anime, Japanese design, and limited editions are especially good
+      souvenirs. Right on Ginza's main street.
+
+  - id: harajuku
+    title: Harajuku District
+    address: Harajuku, Shibuya City, Tokyo
+    layer: tokyo
+    color: pink-500
+    icon: places-clothing
+    photo: https://images.unsplash.com/photo-1664806462678-5df01513f7b9
+    description: >
+      The epicenter of Japanese street fashion and youth culture, between Yoyogi
+      Park and Omotesando. Its main artery is Takeshita Street, a narrow
+      400-meter lane packed with crepe shops, outrageous fashion stores, cosplay
+      goods, and themed cafes. On weekends it is shoulder-to-shoulder crowded.
+      You can still spot everything from Lolita fashion to decor-punk, even if
+      the district is more mainstream than in its peak subculture era. Easy to
+      combine with Yoyogi Park and Meiji Jingu.

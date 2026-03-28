@@ -1,0 +1,50 @@
+pins:
+  - id: omoide-yokocho
+    title: Omoide Yokocho
+    address: Omoide Yokocho, Nishishinjuku, Shinjuku City, Tokyo
+    layer: tokyo
+    color: pink-600
+    icon: places-cocktails
+    photo: https://images.unsplash.com/photo-1617870314635-fc819547ec11
+    description: >
+      A tiny alley near Shinjuku Station packed with microscopic yakitori bars
+      and cheap beer, and one of the most atmospheric places in Tokyo for a
+      simple, noisy, very Japanese evening. The passage is narrow, the grills
+      smoke, the red lanterns glow, and many places seat only five or six
+      people, so it still feels like old postwar Tokyo. You do not come here for
+      refined cuisine, but for the mood: sit shoulder to shoulder, order a few
+      skewers, and drink. Great with an evening in Shinjuku, Golden Gai, or
+      Kabukicho.
+
+  - id: golden-gai
+    title: Golden Gai
+    address: Golden Gai, Kabukicho, Shinjuku City, Tokyo
+    layer: tokyo
+    color: pink-600
+    icon: places-cocktails
+    photo: https://images.unsplash.com/photo-1654350424788-08d651dbe094
+    description: >
+      A maze of six narrow alleys filled with tiny bars that seat five to ten
+      people, preserving an old Tokyo atmosphere in the middle of Shinjuku's
+      skyscrapers. There are around 200 bars, each with its own theme and crowd,
+      from jazz and cinema to punk rock and anime. Some are closed to tourists,
+      usually marked with a sign, but many welcome visitors. Go after 8:00 PM
+      because the area is quiet by day, and be ready for a cover charge of
+      around 500-1000 JPY.
+
+  - id: ni-chome
+    title: Ni-chome
+    address: Shinjuku Ni-chome, Shinjuku City, Tokyo
+    layer: tokyo
+    color: pink-600
+    icon: places-cocktails
+    description: >
+      The largest LGBT district in Asia, made up of a few compact streets in
+      eastern Shinjuku with more than 300 tiny bars. The usual format is to sit
+      at the counter and chat with the owner and the other guests. Many bars are
+      aimed at specific audiences, usually written on the door, but the area
+      overall is friendly to everyone. Good starting points include AiiRO Cafe
+      for a daytime terrace, Arty Farty for dancing and a foreigner-friendly
+      crowd, and Dragon Men, which is popular with visitors. Expect an entry
+      charge of around 1000-2000 JPY including a drink. Friday and Saturday
+      after 10:00 PM are the best times to go.

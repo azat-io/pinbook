@@ -1,0 +1,28 @@
+pins:
+  - id: mipig-cafe-harajuku
+    title: Mipig Cafe Harajuku
+    address: Mipig Cafe Harajuku, 1-15-4 Jingumae, Shibuya City, Tokyo
+    layer: tokyo
+    color: pink-800
+    icon: places-cafe
+    description: >
+      A mini pig cafe where you can sit among tiny piglets, pet them, and feed
+      them. Sessions run for 30-60 minutes, and online booking is recommended
+      because the place is popular. It is in Harajuku, easy to combine with a
+      walk along Takeshita Street and a visit to Meiji Jingu. Unusual and
+      surprisingly calming.
+
+  - id: kimikano
+    title: KimiKano
+    address: 1-16-1 Kanda Sakumacho, Ohashi Building 4F, Chiyoda City, Tokyo
+    layer: tokyo
+    color: pink-800
+    icon: places-cafe
+    description: >
+      A concept cafe in Akihabara built around the "I want to be your
+      girlfriend" fantasy. The waitresses role-play as if they are in love with
+      you, with drinks, cheki photos, and in-character conversation at the
+      table. Nothing physical - it is all about atmosphere and performance.
+      Around 3000 JPY for the first set. Open 5:00 PM-1:00 AM, 18+. Thirty
+      seconds from Akihabara Station. Part of the KimiKano group with several
+      cafes across Tokyo. Website: https://kimikano.tokyo/

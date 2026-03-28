@@ -1,0 +1,106 @@
+pins:
+  - id: atomic-bomb-dome
+    title: Atomic Bomb Dome
+    address: Atomic Bomb Dome, 1-10 Otemachi, Naka Ward, Hiroshima
+    layer: hiroshima
+    color: yellow-400
+    icon: places-monument
+    photo: https://images.unsplash.com/photo-1637501944190-9fe4515aa8e8
+    description: >
+      The ruins of the former Industrial Promotion Hall, the only building left
+      standing near the hypocenter of the atomic blast on August 6, 1945. The
+      bomb exploded almost directly above it, so the shock wave came from above
+      and the walls remained standing while everyone inside died instantly. The
+      shell was preserved and reinforced rather than rebuilt. It has been a
+      UNESCO World Heritage Site since 1996 and remains one of the most
+      piercingly powerful places in modern Japan.
+
+  - id: peace-memorial-museum
+    title: Hiroshima Peace Memorial Museum
+    address:
+      Hiroshima Peace Memorial Museum, 1-2 Nakajimamachi, Naka Ward, Hiroshima
+    layer: hiroshima
+    color: yellow-400
+    icon: places-museum
+    photo: https://images.unsplash.com/photo-1556444209-e9e65c58be53
+    description: >
+      The city's main museum about the atomic bombing, just a short walk from
+      the Dome. Designed by Kenzo Tange in 1955, it is an icon of postwar
+      architecture as well as one of the heaviest museum experiences you can
+      have in Japan. The east wing covers the historical and political context,
+      while the west wing focuses on personal belongings, watches stopped at
+      8:15, and the stories of hibakusha. Go at opening time if possible to
+      avoid the longer queues later in the day.
+
+  - id: hiroshima-castle
+    title: Hiroshima Castle
+    address: Hiroshima Castle, 21-1 Motomachi, Naka Ward, Hiroshima
+    layer: hiroshima
+    color: yellow-400
+    icon: places-historic-building
+    photo: https://images.unsplash.com/photo-1580137524725-2975600b0a0a
+    description: >
+      Originally built in 1589 and destroyed by the atomic bomb, with the
+      current concrete keep dating from 1958. Inside is a museum on samurai
+      culture and Hiroshima's history before the bombing, which helps place the
+      city in a much longer story than just 1945. From the top floor you get a
+      view over the city and the surrounding hills. The moats and some original
+      stone walls survived the blast.
+
+  - id: peace-memorial-park
+    title: Hiroshima Peace Memorial Park
+    address:
+      Hiroshima Peace Memorial Park, 1 Nakajimamachi, Naka Ward, Hiroshima
+    layer: hiroshima
+    color: yellow-400
+    icon: places-park
+    photo: https://images.unsplash.com/photo-1650219813736-d823a037af22
+    description: >
+      A 12-hectare park built on the site of the destroyed district, laid out by
+      Kenzo Tange. The cenotaph holds more than 330,000 names and is aligned so
+      that the Atomic Bomb Dome appears through the arch. Other key points
+      include the Children's Peace Monument to Sadako Sasaki, the eternal Flame
+      of Peace, and the Peace Bell. The park is free, open around the clock, and
+      deserves several hours when paired with the museum.
+
+  - id: nagarekawa
+    title: Nagarekawa District
+    address: Nagarekawa, Naka Ward, Hiroshima
+    layer: hiroshima
+    color: yellow-600
+    icon: places-cocktails
+    description: >
+      Hiroshima's main nightlife district, a maze of narrow streets near the
+      Hondori arcade. It is sometimes compared to Dotonbori, but with far fewer
+      tourists and a more local feel. You will find izakayas, bars, clubs,
+      karaoke, and a small but friendly LGBT scene. The district wakes up after
+      sunset and runs late into the night.
+
+  - id: itsukushima-shrine
+    title: Itsukushima Shrine
+    address: Itsukushima Shrine, 1-1 Miyajimacho, Hatsukaichi, Hiroshima
+    layer: hiroshima
+    color: yellow-400
+    icon: places-shinto
+    photo: https://images.unsplash.com/photo-1693246049389-9fecc67938c1
+    description: >
+      The famous shrine on Miyajima Island, built on stilts above the water so
+      that at high tide it seems to float. Founded in 593, it is one of Japan's
+      iconic sacred sites and a UNESCO World Heritage Site. The giant vermilion
+      torii stands about 200 meters offshore. At high tide it reflects in the
+      water, while at low tide you can walk right up to its base. Both versions
+      are worth seeing.
+
+  - id: daisho-in
+    title: Daisho-in Temple
+    address: Daisho-in Temple, 210 Miyajimacho, Hatsukaichi, Hiroshima
+    layer: hiroshima
+    color: yellow-400
+    icon: places-temple
+    description: >
+      The oldest Buddhist temple on Miyajima, founded in 806 at the foot of
+      Mount Misen. Many visitors never make it here from Itsukushima Shrine, but
+      they should. The approach climbs past hundreds of Jizo statues in knitted
+      hats and spinning prayer wheels. Higher up you get a cave linked to the 88
+      temples of the Shikoku pilgrimage and a range of Buddhist images in a much
+      quieter atmosphere than the shrine below.

@@ -1,0 +1,44 @@
+pins:
+  - id: nara-park
+    title: Nara Park
+    address: Nara Park, Nara
+    layer: nara
+    color: green-400
+    icon: places-park
+    photo: https://images.unsplash.com/photo-1726737699208-bee1475d3a3f
+    description: >
+      A huge park in the city center where about 1,200 sacred deer roam freely.
+      They bow for shika senbei crackers, but they can also get pushy, so keep
+      food and paper out of sight. The two major highlights inside the park are
+      Todai-ji with its giant bronze Buddha and Kasuga Taisha with its lantern-
+      lined forest approach. Half a day is usually enough, and mornings are the
+      best time to arrive.
+
+  - id: todai-ji
+    title: Todai-ji Temple
+    address: Todai-ji, 406-1 Zoshicho, Nara
+    layer: nara
+    color: green-400
+    icon: places-temple
+    photo: https://images.unsplash.com/photo-1526399075794-809548f63736
+    description: >
+      An 8th-century Buddhist temple and Nara's biggest landmark. Inside stands
+      Daibutsu, a 15-meter bronze Buddha weighing about 500 tons and ranking
+      among the largest in the world. The Daibutsuden hall is itself one of the
+      largest wooden buildings on the planet, even in its reduced 18th-century
+      form. The scale is overwhelming in the best way.
+
+  - id: kasuga-taisha
+    title: Kasuga Taisha
+    address: Kasuga Taisha, 160 Kasuganocho, Nara
+    layer: nara
+    color: green-400
+    icon: places-shinto
+    photo: https://images.unsplash.com/photo-1720573167093-9a24a38c7194
+    description: >
+      A Shinto shrine founded in 768 and one of the great sacred sites of old
+      Nara. Thousands of stone lanterns line the forest path and bronze lanterns
+      hang inside the shrine itself. Twice a year, in February and August, all
+      of them are lit during the Mantoro festival. Even on a normal day, the
+      walk through the woods with deer and giant cedar trees is one of the most
+      atmospheric experiences in Japan.

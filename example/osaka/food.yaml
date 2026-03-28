@@ -1,0 +1,17 @@
+pins:
+  - id: kuromon-ichiba
+    title: Kuromon Ichiba Market
+    address: Kuromon Market, 2-4-1 Nipponbashi, Chuo Ward, Osaka
+    layer: osaka
+    color: blue-700
+    icon: places-seafood
+    photo: https://images.unsplash.com/photo-1573674451487-3c66c2aad5ba
+    description: >
+      A covered food market about 600 meters long, often called "Osaka's
+      kitchen." It has been operating since 1822 and today is aimed mostly at
+      visitors. The main draw is seafood: fresh oysters, grilled scallops, tuna
+      sashimi, crab legs, sea urchin, and more, often eaten right at the stall.
+      You also get luxury fruit, wagyu skewers, tamagoyaki, and mochi. Prices
+      run a little high because of tourism, but the quality is strong. Morning
+      is best, before the freshest items disappear and many stalls start closing
+      after 3:00-4:00 PM.

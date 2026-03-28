@@ -19,6 +19,17 @@ readable by humans, easy to generate with AI, and safe to keep in git.
 
 Plan the trip in plain YAML first, then turn it into a visual map.
 
+## Example
+
+Pinbook can describe a real multi-city trip, not just a tiny demo config.
+
+The canonical example in this repository covers Tokyo, Kyoto, Osaka, Nara, and
+Hiroshima as a multi-file travel map:
+
+- Source config: [example/index.yaml](./example/index.yaml)
+- Live Google My Maps example:
+  [Japan Example Map](https://www.google.com/maps/d/viewer?mid=1am89OiTz6iQ7sreXEYzyjCbvvY6DR9I)
+
 ## What It Does
 
 - Scaffolds a new map project with `pinbook create`
@@ -128,8 +139,6 @@ pins:
       Good early-morning stop before the street gets crowded.
     photo: https://example.com/photos/senso-ji.jpg
 ```
-
-For a canonical example, see [example/index.yaml](./example/index.yaml).
 
 ## Config Shape
 

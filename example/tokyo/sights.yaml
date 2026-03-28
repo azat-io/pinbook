@@ -1,0 +1,294 @@
+pins:
+  - id: senso-ji
+    title: Senso-ji Temple
+    address: Senso-ji, 2-3-1 Asakusa, Taito City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-temple
+    photo: https://images.unsplash.com/photo-1706813253696-10ee6332edd3
+    description: >
+      The oldest Buddhist temple in Tokyo, founded in the 7th century. It is
+      known for its five-story pagoda, carefully kept grounds, and the
+      impressive Kaminarimon gate with its giant red lantern. The approach runs
+      through Nakamise, a shopping street with classic snacks and souvenirs. Go
+      early in the morning before the crowds build up. The surrounding Asakusa
+      area captures the contrast between old and modern Japan especially well.
+
+  - id: imperial-palace
+    title: Tokyo Imperial Palace
+    address: Imperial Palace, 1-1 Chiyoda, Chiyoda City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-historic-building
+    photo: https://images.unsplash.com/photo-1715917173024-6f7ccb09b367
+    description: >
+      The working residence of Japan's emperors, rebuilt after World War II on
+      the site of medieval Edo Castle. The inner grounds open only twice a year,
+      on January 2 and on the emperor's birthday, but the East Gardens and the
+      surrounding area are free to visit. Moats, stone walls, old bridges, and
+      pine-lined paths make it one of the calmest walks in central Tokyo.
+
+  - id: akihabara
+    title: Akihabara
+    address: Akihabara, Taito City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-robot
+    photo: https://images.unsplash.com/photo-1561172317-5427a31ef91e
+    description: >
+      Tokyo's iconic geek district, filled with multi-story stores selling anime
+      figures, manga, retro consoles, and collector editions. It is also home to
+      maid cafes, arcades, and electronics shops. Even if you are not into
+      anime, the area is worth seeing as a distinct cultural phenomenon. It is
+      best in the late afternoon and evening once the neon signs switch on.
+
+  - id: shibuya-crossing
+    title: Shibuya Crossing
+    address: Shibuya Scramble Crossing, Shibuya, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-viewpoint
+    photo: https://images.unsplash.com/photo-1573456373835-579c408de263
+    description: >
+      The most famous pedestrian crossing in the world, where up to 3,000 people
+      can move through the intersection at once when the light changes. Nearby
+      stands the Hachiko statue, a classic meeting point. One of the best views
+      is from the Starbucks on the second floor of the Tsutaya building across
+      the street, but go early if you want a window seat. Shibuya itself is also
+      one of Tokyo's main districts for youth culture, cafes, and nightlife.
+
+  - id: odaiba
+    title: Odaiba
+    address: Odaiba, Minato City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-amusement-park
+    photo: https://images.unsplash.com/photo-1677640686995-08260ab6d435
+    description: >
+      An artificial island in Tokyo Bay that grew from a former military site
+      into a major entertainment district. You get malls, a life-size Gundam,
+      and even a small Statue of Liberty replica. People used to come here for
+      teamLab Borderless before it moved to Azabudai Hills in 2024. In the
+      evening the waterfront views of Rainbow Bridge and the city lights are the
+      main draw. Riding the Yurikamome line over the bay is part of the fun.
+
+  - id: tokyo-tower
+    title: Tokyo Tower
+    address: Tokyo Tower, 4-2-8 Shibakoen, Minato City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-tower
+    photo: https://images.unsplash.com/photo-1706378762524-16dc55a0370d
+    description: >
+      The red-and-white broadcasting tower from 1958 is one of Tokyo's classic
+      symbols. At 333 meters it is taller than the Eiffel Tower that inspired
+      it. There are two observation decks, at 150 meters and 250 meters, with
+      city views that can reach Mount Fuji on a clear day. The tower is also
+      worth seeing from outside after dark, when it is lit dramatically.
+
+  - id: zojo-ji
+    title: Zojo-ji Temple
+    address: Zojo-ji Temple, 4-7-35 Shibakoen, Minato City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-temple
+    photo: https://images.unsplash.com/photo-1604168933114-7d053da21fa3
+    description: >
+      A 16th-century Buddhist temple at the foot of Tokyo Tower and one of the
+      best photo spots in the city, with traditional architecture framed by the
+      modern tower behind it. Its most important structure is the Sangedatsumon
+      gate, which survived fires and bombings for more than 400 years. The
+      grounds also hold the mausoleum of six Tokugawa shoguns. Easy to combine
+      with Tokyo Tower since they are only a few minutes apart on foot.
+
+  - id: tokyo-skytree
+    title: Tokyo Skytree
+    address: Tokyo Skytree, 1-1-2 Oshiage, Sumida City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-tower
+    photo: https://images.unsplash.com/photo-1583915376118-7bfcda48e26c
+    description: >
+      The tallest broadcasting tower in the world at 634 meters, a number chosen
+      to echo "Musashi," the old name of the historical province. There are two
+      observation decks at 350 and 450 meters with huge views over Tokyo and, on
+      clear days, out to Mount Fuji. It is the modern counterpart to Tokyo
+      Tower, and both are worth seeing. At the base sits the Solamachi shopping
+      complex with stores and restaurants.
+
+  - id: ueno-park
+    title: Ueno Park
+    address: Ueno Park, Taito City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-park
+    photo: https://images.unsplash.com/photo-1647785991550-a60ed49badf5
+    description: >
+      One of Tokyo's oldest parks and one of the city's best places for hanami
+      in late March and early April. The grounds include several major museums,
+      the zoo, lotus ponds, and older temple sites. Near the entrance stands a
+      statue of Saigo Takamori, the legendary "last samurai." It is easy to
+      spend a full day here between nature and culture.
+
+  - id: ginza
+    title: Ginza District
+    address: Ginza, Chuo City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-downtown
+    photo: https://images.unsplash.com/photo-1622767803667-ac7623421256
+    description: >
+      Tokyo's most luxurious shopping district, lined with flagship boutiques,
+      department stores, and galleries. Its main cultural landmark is the
+      Kabukiza Theatre, where you can see traditional kabuki with music, dance,
+      and elaborate costumes. On weekends the central street becomes a
+      pedestrian zone. The architecture mixes classic department stores with
+      contemporary buildings by star architects.
+
+  - id: meiji-jingu
+    title: Meiji Jingu Shrine
+    address: Meiji Jingu, 1-1 Yoyogikamizonocho, Shibuya City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-shinto
+    photo: https://images.unsplash.com/photo-1706866600189-4e7128dbf871
+    description: >
+      A Shinto shrine from 1920 dedicated to Emperor Meiji and his consort,
+      surrounded by a huge forest of 100,000 trees brought from across Japan. It
+      feels like a quiet oasis in the middle of Tokyo, only steps from busy
+      Shibuya. The entrance through the giant wooden torii is one of the
+      strongest arrival moments in the city. Nearby Yoyogi Park often fills with
+      street musicians and cosplayers on weekends.
+
+  - id: shinjuku-gyoen
+    title: Shinjuku Gyoen National Garden
+    address: Shinjuku Gyoen National Garden, 11 Naitomachi, Shinjuku City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-garden
+    photo: https://images.unsplash.com/photo-1615173207099-b8d49dc1090d
+    description: >
+      Once an imperial garden and now open to everyone, with a small paid entry.
+      It is one of Tokyo's best hanami spots thanks to more than 1,500 cherry
+      trees across 75 varieties, which stretch the bloom over several weeks. The
+      park combines Japanese, English landscape, and French formal design in one
+      place. Alcohol is banned inside, which makes it calmer than many other
+      parks during cherry blossom season.
+
+  - id: rikugien
+    title: Rikugien Garden
+    address: Rikugien Garden, 6-16-3 Honkomagome, Bunkyo City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-garden
+    photo: https://images.unsplash.com/photo-1769219696464-78baf530b7ea
+    description: >
+      A classic Japanese garden from the late 17th century, preserved in near
+      original form. Its landscape was designed around 88 scenes from classical
+      Japanese poetry. It is a quiet, contemplative place away from the busiest
+      tourist routes, with a pond, hills, winding paths, and a teahouse where
+      you can drink matcha overlooking the water. Especially beautiful in autumn
+      and during the weeping cherry blossom season in spring.
+
+  - id: tokyo-metropolitan-government
+    title: Tokyo Metropolitan Government Building
+    address:
+      Tokyo Metropolitan Government Building, 2-8-1 Nishishinjuku, Shinjuku
+      City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-civic-building
+    photo: https://plus.unsplash.com/premium_photo-1749758347452-5836e99518d5
+    description: >
+      A complex of three buildings designed by Kenzo Tange, with a main tower
+      that looks almost like a Gothic cathedral and is sometimes called "Japan's
+      Notre-Dame." For visitors the main attraction is the pair of free
+      observation decks on the 45th floor at 202 meters. They are a great
+      alternative to the paid decks at Tokyo Tower or Skytree, especially at
+      night. The south and north decks keep different hours.
+
+  - id: hamarikyu-gardens
+    title: Hamarikyu Gardens
+    address: Hamarikyu Gardens, 1-1 Hamarikyuteien, Chuo City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-garden
+    photo: https://images.unsplash.com/photo-1593296984896-f5c6d6966363
+    description: >
+      A traditional Japanese garden on Tokyo Bay, surrounded by the skyscrapers
+      of Shiodome, with a memorable contrast between old landscape design and
+      glass towers. A teahouse sits on a seawater pond where you can drink
+      matcha while looking over the water. A nice extra is arriving by water bus
+      from Asakusa along the Sumida River.
+
+  - id: tokyo-station
+    title: Tokyo Station
+    address: Tokyo Station, 1-9-1 Marunouchi, Chiyoda City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-historic-building
+    photo: https://images.unsplash.com/photo-1682757535247-fcded85ffda8
+    description: >
+      A handsome early 20th-century brick station building that stands out
+      against the surrounding Marunouchi skyscrapers. It is Japan's biggest
+      transport hub, with around 800,000 passengers and 4,000 trains each day.
+      Shinkansen trains to Osaka, Kyoto, Hiroshima, and many other cities leave
+      from here. Inside you will also find Tokyo Ramen Street plus plenty of
+      shops and restaurants. Worth seeing for the architecture alone.
+
+  - id: yoyogi-park
+    title: Yoyogi Park
+    address: Yoyogi Park, 2-1 Yoyogikamizonocho, Shibuya City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-park
+    photo: https://images.unsplash.com/photo-1644942256270-91a6afaf15fd
+    description: >
+      A large green park next to Meiji Jingu and one of Tokyo's favorite public
+      hangout spots. On weekends you can often find street musicians, dancers,
+      and cosplayers, making it a free show as much as a park. It is great for a
+      picnic, a run, or a break under the trees. Harajuku and Omotesando are
+      nearby, so it fits naturally into the same route.
+
+  - id: koishikawa-korakuen
+    title: Koishikawa Korakuen Garden
+    address: Koishikawa Korakuen Garden, 1-6-6 Koraku, Bunkyo City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-garden
+    photo: https://images.unsplash.com/photo-1719320981672-4e89d0aa7c2c
+    description: >
+      One of Tokyo's oldest gardens, dating from the 17th century, and notable
+      for blending Japanese and Chinese landscape ideas. The scenery recreates
+      famous places in miniature, from Mount Fuji to Kyoto temples and China's
+      West Lake. It is a peaceful place for a slow walk, especially in autumn
+      when the maples turn red. Being next to Tokyo Dome makes it easy to pair
+      with something else nearby.
+
+  - id: ueno-zoo
+    title: Ueno Zoo
+    address: Ueno Zoo, 9-83 Uenokoen, Taito City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-zoo
+    photo: https://images.unsplash.com/photo-1729200695327-06cd7943d201
+    description: >
+      Japan's oldest zoo, founded in 1882, inside Ueno Park. It houses more than
+      3,000 animals, with the giant pandas as the clear stars. Entry is
+      inexpensive, so it fits well with the museums and a park walk. A good
+      option if you are traveling with children or want a softer break between
+      temples and skyscrapers.
+
+  - id: gotoku-ji
+    title: Gotoku-ji Temple
+    address: Gotoku-ji Temple, 2-24-7 Gotokuji, Setagaya City, Tokyo
+    layer: tokyo
+    color: pink-400
+    icon: places-temple
+    photo: https://images.unsplash.com/photo-1617538037505-fa5ed8bf266a
+    description: >
+      A Buddhist temple famous as the "beckoning cat temple." According to the
+      legend, the first maneki-neko originated here. The grounds are filled with
+      thousands of cat figurines left by visitors in thanks for answered wishes.
+      It is photogenic, unusual, and well away from the main tourist circuit,
+      making it a good stop if you want to see a less obvious side of Tokyo.

@@ -1,0 +1,30 @@
+pins:
+  - id: nishiki-market
+    title: Nishiki Market
+    address: Nishiki Market, Nakagyo Ward, Kyoto
+    layer: kyoto
+    color: teal-700
+    icon: places-groceries
+    photo: https://images.unsplash.com/photo-1669711670368-12c900d67eb0
+    description: >
+      A 400-meter covered market arcade in central Kyoto, often called "Kyoto's
+      kitchen." Around 130 stalls are packed with local specialties such as
+      tsukemono pickles, yuba, tofu, mochi, matcha sweets, seafood skewers, and
+      oysters. Some vendors post "no eating while walking" signs, so it is best
+      to eat right by the stall. Quality is good, though prices can be a little
+      elevated. Most shops open around 9:00 AM and many close early.
+
+  - id: pontocho
+    title: Pontocho
+    address: Pontocho, Nakagyo Ward, Kyoto
+    layer: kyoto
+    color: teal-700
+    icon: places-restaurant
+    photo: https://images.unsplash.com/photo-1652276317492-4350c854ae46
+    description: >
+      A narrow atmospheric alley between the Kamo River and Kiyamachi Street,
+      and one of Kyoto's best areas for dinner. It is packed with izakayas,
+      yakitori, small bars, and more expensive kaiseki restaurants, many hidden
+      inside old wooden buildings. In summer, riverside yuka terraces appear
+      above the water. It is quiet during the day, but really comes into its own
+      after sunset.
