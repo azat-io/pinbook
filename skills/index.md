@@ -46,7 +46,8 @@ Prefer configs that are:
   build.
 - Geocoding uses Google Maps and stores resolved coordinates in the local cache.
 - If a pin includes both `address` and `coords`, `coords` win.
-- `photo` may be a full `http://` or `https://` image URL.
+- `photo` may be a full `http://` or `https://` image URL or a list of image
+  URLs.
 
 ## Compatibility Target
 
@@ -112,7 +113,7 @@ Each pin supports:
 - `color`: optional string, defaults to `red-500`
 - `icon`: optional string, defaults to `shapes-pin`
 - `description`: optional string
-- `photo`: optional full `http://` or `https://` image URL
+- `photo`: optional full `http://` or `https://` image URL or list of URLs
 
 Pin validation rule:
 

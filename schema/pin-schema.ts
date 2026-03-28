@@ -5,6 +5,12 @@ import { pinColorSchema } from './pin-color-schema'
 import { pinIconSchema } from './pin-icon-schema'
 
 let httpUrlPattern = /^https?:\/\//u
+let photoUrlSchema = z
+  .string()
+  .min(1)
+  .refine(value => httpUrlPattern.test(value), {
+    message: 'Photo must be a full http:// or https:// URL',
+  })
 
 /**
  * A single point of interest shown on the map.
@@ -12,13 +18,11 @@ let httpUrlPattern = /^https?:\/\//u
 export let pinSchema = z
   .object({
     photo: z
-      .string()
-      .min(1)
-      .refine(value => httpUrlPattern.test(value), {
-        message: 'Photo must be a full http:// or https:// URL',
-      })
+      .union([photoUrlSchema, z.array(photoUrlSchema).min(1)])
       .optional()
-      .describe('Optional public photo URL associated with the pin'),
+      .describe(
+        'Optional public photo URL or list of URLs associated with the pin',
+      ),
     address: z
       .string()
       .min(1)

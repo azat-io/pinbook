@@ -61,6 +61,30 @@ describe('pinSchema', () => {
     })
   })
 
+  it('parses a pin with multiple photos', () => {
+    expect(
+      pinSchema.parse({
+        photo: [
+          'https://example.com/photos/fushimi-front.jpg',
+          'https://example.com/photos/fushimi-gate.jpg',
+        ],
+        coords: [34.9671, 135.7727],
+        title: 'Fushimi Inari',
+        id: 'fushimi-inari',
+      }),
+    ).toEqual({
+      photo: [
+        'https://example.com/photos/fushimi-front.jpg',
+        'https://example.com/photos/fushimi-gate.jpg',
+      ],
+      coords: [34.9671, 135.7727],
+      title: 'Fushimi Inari',
+      id: 'fushimi-inari',
+      icon: 'shapes-pin',
+      color: 'red-500',
+    })
+  })
+
   it('rejects unknown properties', () => {
     expect(
       pinSchema.safeParse({
@@ -116,6 +140,30 @@ describe('pinSchema', () => {
           expect.objectContaining({
             message: 'Photo must be a full http:// or https:// URL',
             path: ['photo'],
+          }),
+        ],
+      },
+      success: false,
+    })
+  })
+
+  it('rejects local photo paths inside a photo list', () => {
+    expect(
+      pinSchema.safeParse({
+        photo: [
+          'https://example.com/photos/kyoto-station.jpg',
+          './photos/kyoto-station.jpg',
+        ],
+        coords: [35.0116, 135.7681],
+        title: 'Kyoto Station',
+        id: 'kyoto-station',
+      }),
+    ).toMatchObject({
+      error: {
+        issues: [
+          expect.objectContaining({
+            message: 'Photo must be a full http:// or https:// URL',
+            path: ['photo', 1],
           }),
         ],
       },

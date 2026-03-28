@@ -111,10 +111,11 @@ For the future `1.x` line:
 
 ## Photos
 
-`photo` is supported as a full public `http://` or `https://` image URL.
+`photo` is supported as either a single full public `http://` or `https://`
+image URL or a list of image URLs.
 
-During build, Pinbook includes that image in the generated placemark description
-so it can appear in Google My Maps after import.
+During build, Pinbook includes those images in the generated placemark
+description so they can appear in Google My Maps after import.
 
 Local image paths such as `./photos/senso-ji.jpg` are not supported.
 

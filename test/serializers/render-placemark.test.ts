@@ -50,6 +50,26 @@ describe('renderPlacemark', () => {
     )
   })
 
+  it('renders multiple photo urls inside the description and gx_media_links', () => {
+    let placemark = renderPlacemark({
+      ...sightsPin,
+      photo: [
+        'https://example.com/photos/fushimi-front.jpg',
+        'https://example.com/photos/fushimi-gate.jpg?view=detail&lang=en',
+      ],
+    })
+
+    expect(placemark).toContain(
+      '<description><![CDATA[<img src="https://example.com/photos/fushimi-front.jpg" height="200" width="auto" /><br><br><img src="https://example.com/photos/fushimi-gate.jpg?view=detail&amp;lang=en" height="200" width="auto" /><br><br>Torii &lt;gates&gt; &amp; crowds]]></description>',
+    )
+    expect(placemark).toContain(
+      '<value><![CDATA[https://example.com/photos/fushimi-front.jpg]]></value>',
+    )
+    expect(placemark).toContain(
+      '<value><![CDATA[https://example.com/photos/fushimi-gate.jpg?view=detail&lang=en]]></value>',
+    )
+  })
+
   it('renders a photo without appending an empty text block when description is missing', () => {
     let placemark = renderPlacemark({
       ...pinWithoutLayer,

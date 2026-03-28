@@ -13,9 +13,16 @@ export function renderPlacemark(pin: ResolvedPin): string {
   let lines = ['<Placemark>', `  <name>${escapeXml(pin.title)}</name>`]
 
   if (pin.photo) {
-    let descriptionParts = [
-      `<img src="${escapeXml(pin.photo)}" height="200" width="auto" />`,
-    ]
+    let photoUrls = normalizePhotoUrls(pin.photo)
+    let descriptionParts = photoUrls.map(
+      photoUrl =>
+        `<img src="${escapeXml(photoUrl)}" height="200" width="auto" />`,
+    )
+    let extendedDataLines = photoUrls.flatMap(photoUrl => [
+      '    <Data name="gx_media_links">',
+      `      <value>${wrapCdata(photoUrl)}</value>`,
+      '    </Data>',
+    ])
 
     if (pin.description) {
       descriptionParts.push(escapeXml(pin.description.trimEnd()))
@@ -24,9 +31,7 @@ export function renderPlacemark(pin: ResolvedPin): string {
     lines.push(
       `  <description>${wrapCdata(descriptionParts.join('<br><br>'))}</description>`,
       '  <ExtendedData>',
-      '    <Data name="gx_media_links">',
-      `      <value>${wrapCdata(pin.photo)}</value>`,
-      '    </Data>',
+      ...extendedDataLines,
       '  </ExtendedData>',
     )
   } else if (pin.description) {
@@ -44,6 +49,16 @@ export function renderPlacemark(pin: ResolvedPin): string {
   )
 
   return lines.join('\n')
+}
+
+/**
+ * Normalizes the supported `photo` field into a list of public image URLs.
+ *
+ * @param photo - Single photo URL or list of URLs.
+ * @returns Normalized list of photo URLs.
+ */
+function normalizePhotoUrls(photo: string[] | string): string[] {
+  return Array.isArray(photo) ? photo : [photo]
 }
 
 /**
