@@ -29,7 +29,7 @@ export function renderPlacemark(pin: ResolvedPin): string {
     }
 
     lines.push(
-      `  <description>${wrapCdata(descriptionParts.join('<br><br>'))}</description>`,
+      `  <description>${wrapCdata(descriptionParts.join('<br>'))}</description>`,
       '  <ExtendedData>',
       ...extendedDataLines,
       '  </ExtendedData>',

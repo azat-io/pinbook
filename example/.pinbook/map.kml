@@ -279,8 +279,13 @@
       <name>Entertainment</name>
       <description>Evening plans and activity-focused stops.</description>
       <Placemark>
-        <name>teamLab Planets</name>
-        <description>Indoor slot for a rainy day. Reserve in advance to avoid sold-out times.</description>
+        <name>TeamLab Planets</name>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1556173251-cab2c1e8abe2" height="200" width="auto" /><br><br>Indoor slot for a rainy day. Reserve in advance to avoid sold-out times.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1556173251-cab2c1e8abe2]]></value>
+          </Data>
+        </ExtendedData>
         <styleUrl>#icon-1636-303F9F</styleUrl>
         <Point>
           <coordinates>139.7897739,35.6491207,0</coordinates>
@@ -288,7 +293,12 @@
       </Placemark>
       <Placemark>
         <name>Dotonbori</name>
-        <description>Dense evening area with food, crowds, and bright signage.</description>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1542210940661-5f91cb7afe02" height="200" width="auto" /><br><br>Dense evening area with food, crowds, and bright signage.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1542210940661-5f91cb7afe02]]></value>
+          </Data>
+        </ExtendedData>
         <styleUrl>#icon-1577-5E35B1</styleUrl>
         <Point>
           <coordinates>135.5019145,34.6687142,0</coordinates>
@@ -320,13 +330,13 @@
       <description>Major landmarks, temples, and viewpoints.</description>
       <Placemark>
         <name>Senso-ji</name>
-        <description><![CDATA[<img src="https://example.com/photos/senso-ji-front.jpg" height="200" width="auto" /><br><br><img src="https://example.com/photos/senso-ji-gate.jpg" height="200" width="auto" /><br><br>Good early-morning stop before the street gets crowded. Combine with a short walk around Asakusa.]]></description>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1706813253696-10ee6332edd3" height="200" width="auto" /><br><br><img src="https://images.unsplash.com/photo-1702777326906-9c480b4b316c" height="200" width="auto" /><br><br>Good early-morning stop before the street gets crowded. Combine with a short walk around Asakusa.]]></description>
         <ExtendedData>
           <Data name="gx_media_links">
-            <value><![CDATA[https://example.com/photos/senso-ji-front.jpg]]></value>
+            <value><![CDATA[https://images.unsplash.com/photo-1706813253696-10ee6332edd3]]></value>
           </Data>
           <Data name="gx_media_links">
-            <value><![CDATA[https://example.com/photos/senso-ji-gate.jpg]]></value>
+            <value><![CDATA[https://images.unsplash.com/photo-1702777326906-9c480b4b316c]]></value>
           </Data>
         </ExtendedData>
         <styleUrl>#icon-1523-F44336</styleUrl>
@@ -336,7 +346,12 @@
       </Placemark>
       <Placemark>
         <name>Shibuya Sky</name>
-        <description>Best booked around sunset. Strong first-night option if the weather is clear.</description>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1697441222725-d9d2e403475c" height="200" width="auto" /><br><br>Best booked around sunset. Strong first-night option if the weather is clear.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1697441222725-d9d2e403475c]]></value>
+          </Data>
+        </ExtendedData>
         <styleUrl>#icon-1523-4527A0</styleUrl>
         <Point>
           <coordinates>139.7019848,35.6586719,0</coordinates>
@@ -344,7 +359,12 @@
       </Placemark>
       <Placemark>
         <name>Kiyomizu-dera</name>
-        <description>Best paired with an early walk through Higashiyama before the streets fill up.</description>
+        <description><![CDATA[<img src="https://images.unsplash.com/photo-1593297305192-ed4e59dd5777" height="200" width="auto" /><br><br>Best paired with an early walk through Higashiyama before the streets fill up.]]></description>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value><![CDATA[https://images.unsplash.com/photo-1593297305192-ed4e59dd5777]]></value>
+          </Data>
+        </ExtendedData>
         <styleUrl>#icon-1523-FB8C00</styleUrl>
         <Point>
           <coordinates>135.7850463,34.9948561,0</coordinates>
