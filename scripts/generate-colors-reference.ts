@@ -8,6 +8,7 @@ import { colors } from '../data/colors'
 let outputFilePath = path.join(
   process.cwd(),
   'skills',
+  'pinbook',
   'references',
   'colors.md',
 )

@@ -8,6 +8,7 @@ import { icons } from '../data/icons'
 let outputDirectoryPath = path.join(
   process.cwd(),
   'skills',
+  'pinbook',
   'references',
   'icons',
 )

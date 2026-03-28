@@ -4,7 +4,6 @@ import { cancel, log } from '@clack/prompts'
 
 import { ensureGitIgnoreEntries } from '../config/ensure-gitignore-entries'
 import { requestProjectDirectory } from '../cli/request-project-directory'
-import { setupSkills } from '../skills/setup-skills'
 import { version } from '../package.json'
 
 /**
@@ -50,13 +49,10 @@ export async function create(targetPath?: string): Promise<void> {
     'utf8',
   )
   await ensureGitIgnoreEntries(targetDirectoryPath, ['.pinbook/', '.env'])
-  await setupSkills(targetDirectoryPath)
 
   log.success(`Created Pinbook map project at ${targetDirectoryPath}.`)
   log.info(`Edit ${configFilePath} and add at least one pin in YAML.`)
-  log.info(
-    `AI skill: ${join(targetDirectoryPath, 'skills', 'pinbook', 'SKILL.md')}`,
-  )
+  log.info('Optional AI skill: npx skills add azat-io/pinbook')
   log.info('Run: pnpm install')
   log.info('Run: pnpm build')
   log.info('Import: .pinbook/map.kml into Google My Maps')

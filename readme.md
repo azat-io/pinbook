@@ -25,7 +25,7 @@ Plan the trip in plain YAML first, then turn it into a visual map.
 - Reads an `index.yaml` map config
 - Geocodes addresses during build when coordinates are missing
 - Writes a `.pinbook/map.kml` file you can import into Google My Maps
-- Sets up a local AI skill so agents can help edit the map config
+- Offers an optional Pinbook skill install for AI agents
 
 ## Quick Start
 
@@ -37,6 +37,12 @@ pnpm build
 ```
 
 Then import `.pinbook/map.kml` into Google My Maps.
+
+Optional AI skill:
+
+```bash
+npx skills add azat-io/pinbook
+```
 
 ## Workflow
 
@@ -150,10 +156,14 @@ icon, layer, and photo conventions.
 
 ## AI-Assisted Workflow
 
-`pinbook create` also adds a local Pinbook skill under `skills/pinbook/` and
-updates `AGENTS.md`.
+Pinbook publishes a repo-level skill that can be installed into coding agents
+with:
 
-That gives AI agents a project-local reference for:
+```bash
+npx skills add azat-io/pinbook
+```
+
+That gives AI agents a reusable Pinbook reference for:
 
 - the expected YAML shape
 - supported fields

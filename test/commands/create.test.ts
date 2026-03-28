@@ -70,9 +70,6 @@ describe('create', () => {
       code: 'ENOENT',
     })
     await expect(
-      access(join(projectDirectoryPath, 'skills', 'pinbook', 'references')),
-    ).resolves.toBeUndefined()
-    await expect(
       readFile(join(projectDirectoryPath, '.gitignore'), 'utf8'),
     ).resolves.toBe(['.pinbook/', '.env', ''].join('\n'))
     await expect(
@@ -104,8 +101,15 @@ describe('create', () => {
       )}\n`,
     )
     await expect(
-      readFile(join(projectDirectoryPath, 'AGENTS.md'), 'utf8'),
-    ).resolves.toContain('./skills/pinbook/SKILL.md')
+      access(join(projectDirectoryPath, 'AGENTS.md')),
+    ).rejects.toMatchObject({
+      code: 'ENOENT',
+    })
+    await expect(
+      access(join(projectDirectoryPath, 'skills', 'pinbook', 'SKILL.md')),
+    ).rejects.toMatchObject({
+      code: 'ENOENT',
+    })
     expect(requestProjectDirectory).not.toHaveBeenCalled()
     expect(log.success).toHaveBeenCalledWith(
       `Created Pinbook map project at ${projectDirectoryPath}.`,
@@ -114,7 +118,7 @@ describe('create', () => {
       `Edit ${join(projectDirectoryPath, 'index.yaml')} and add at least one pin in YAML.`,
     )
     expect(log.info).toHaveBeenCalledWith(
-      `AI skill: ${join(projectDirectoryPath, 'skills', 'pinbook', 'SKILL.md')}`,
+      'Optional AI skill: npx skills add azat-io/pinbook',
     )
     expect(log.info).toHaveBeenCalledWith('Run: pnpm install')
     expect(log.info).toHaveBeenCalledWith('Run: pnpm build')
@@ -222,9 +226,6 @@ describe('create', () => {
     vi.doMock('../../config/ensure-gitignore-entries', () => ({
       ensureGitIgnoreEntries: mockedEnsureGitIgnoreEntries,
     }))
-    vi.doMock('../../skills/setup-skills', () => ({
-      setupSkills: vi.fn().mockResolvedValue(undefined),
-    }))
 
     let { create: isolatedCreate } = await import('../../commands/create')
 
@@ -261,9 +262,6 @@ describe('create', () => {
     }))
     vi.doMock('../../config/ensure-gitignore-entries', () => ({
       ensureGitIgnoreEntries: vi.fn().mockResolvedValue(undefined),
-    }))
-    vi.doMock('../../skills/setup-skills', () => ({
-      setupSkills: vi.fn().mockResolvedValue(undefined),
     }))
 
     let { create: isolatedCreate } = await import('../../commands/create')

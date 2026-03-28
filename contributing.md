@@ -148,16 +148,18 @@ pnpm test:spelling
 pnpm test:usage
 pnpm test:packages
 
-# Docs generation
-pnpm docs
-pnpm docs:colors
-pnpm docs:icons
+# Skills generation
+pnpm skills
+pnpm skills:colors
+pnpm skills:icons
 ```
 
 ## Project-Specific Guidelines
 
-- Keep `readme.md`, `skills/index.md`, and `example/` aligned with actual
+- Keep `readme.md`, `skills/pinbook/`, and `example/` aligned with actual
   product behavior.
+- Use [skills/GENERATION.md](./skills/GENERATION.md) when updating the Pinbook
+  skill or regenerating AI-facing reference docs.
 - If you change color or icon reference data, regenerate the reference docs.
 - Do not commit real API keys or secrets. Use placeholders such as the one in
   `example/.env.example`.

@@ -1,3 +1,8 @@
+---
+name: pinbook
+description: Help agents create and edit Pinbook YAML maps for Google My Maps
+---
+
 # Pinbook Skill
 
 Use this guide when creating, editing, or reviewing a Pinbook YAML map config.
@@ -133,7 +138,7 @@ Pin validation rule:
 
 - Colors: [references/colors.md](./references/colors.md)
 - Icons index: [references/icons/index.md](./references/icons/index.md)
-- Example project: [../example/index.yaml](../example/index.yaml)
+- Example project: [../../example/index.yaml](../../example/index.yaml)
 
 Before choosing an icon:
 
@@ -258,20 +263,3 @@ pins:
 - Using icon display names such as `Museum` instead of ids such as
   `places-museum`
 - Using a local path such as `./photos/image.jpg` instead of a full image URL
-- Adding a `layer` value that does not exist in `layers`
-- Omitting both `address` and `coords`
-- Inventing unsupported fields such as `notes`, `tags`, `category`, or `image`
-- Using long paragraphs where a short routing note would be clearer
-
-## Final Checklist
-
-Before finalizing a map config:
-
-- Root keys are exactly `map`, `layers`, `pins`
-- At least one pin exists
-- Every pin has `id` and `title`
-- Every pin has `address` or `coords`
-- Every `layer` reference matches an existing layer id
-- Every `color` uses the `color-tone` format
-- Every `icon` is a canonical icon id
-- YAML is readable and consistently formatted
