@@ -8,7 +8,7 @@ import { escapeXml } from './escape-xml'
 /**
  * Options that control how the KML document is generated.
  */
-interface KmlExportOptions {
+export interface KmlExportOptions {
   /**
    * Whether to include the map description in the KML document description.
    */
