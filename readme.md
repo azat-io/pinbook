@@ -43,6 +43,9 @@ Hiroshima as a multi-file travel map:
 ```bash
 npx pinbook create my-map
 cd my-map
+
+# Edit index.yaml and add at least one pin
+
 pnpm install
 pnpm build
 ```
@@ -80,12 +83,16 @@ cities/
   osaka.yaml
 ```
 
-Recommended convention:
+Two common conventions:
 
-- use the file structure for geography such as `tokyo`, `kyoto`, and `osaka`
-- use `layers` for categories such as `food`, `sights`, and `entertainment`
+- **layers for categories** — group by `food`, `sights`, `entertainment` (shown
+  below)
+- **layers for geography** — group by city such as `tokyo`, `kyoto`, `osaka`
+  (used in the [canonical example](./example/index.yaml))
 
-Example root config:
+Both work well. Pick whichever makes the map easier to read at a glance.
+
+Example root config with category-based layers:
 
 ```yaml
 map:
