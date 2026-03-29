@@ -231,6 +231,35 @@ describe('loadConfig', () => {
     })
   })
 
+  it('trims surrounding whitespace from import paths', async () => {
+    let filePath = await createTemporaryProject({
+      'cities/tokyo.yaml': createYaml([
+        'pins:',
+        '  - address: Tokyo Station, Tokyo',
+        '    id: tokyo-station',
+        '    title: Tokyo Station',
+      ]),
+      'index.yaml': createYaml([
+        'map:',
+        '  title: Japan Trip',
+        'imports:',
+        '  - " ./cities/tokyo.yaml "',
+      ]),
+    })
+
+    let loadConfig = await importLoadConfig()
+
+    await expect(loadConfig(filePath)).resolves.toMatchObject({
+      pins: [
+        expect.objectContaining({
+          address: 'Tokyo Station, Tokyo',
+          title: 'Tokyo Station',
+          id: 'tokyo-station',
+        }),
+      ],
+    })
+  })
+
   it('keeps root pins before imported pins', async () => {
     let filePath = await createTemporaryProject({
       'index.yaml': createYaml([

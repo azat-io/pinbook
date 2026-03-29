@@ -29,6 +29,20 @@ describe('layerSchema', () => {
     })
   })
 
+  it('trims surrounding whitespace from string fields', () => {
+    expect(
+      layerSchema.parse({
+        description: ' Places to visit ',
+        title: ' Sights ',
+        id: ' sights ',
+      }),
+    ).toEqual({
+      description: 'Places to visit',
+      title: 'Sights',
+      id: 'sights',
+    })
+  })
+
   it('rejects unknown properties', () => {
     expect(
       layerSchema.safeParse({

@@ -5,8 +5,10 @@ import { pinColorSchema } from './pin-color-schema'
 import { pinIconSchema } from './pin-icon-schema'
 
 let httpUrlPattern = /^https?:\/\//u
+let nonEmptyTrimmedStringSchema = z.string().trim().min(1)
 let photoUrlSchema = z
   .string()
+  .trim()
   .min(1)
   .refine(value => httpUrlPattern.test(value), {
     message: 'Photo must be a full http:// or https:// URL',
@@ -25,6 +27,7 @@ export let pinSchema = z
       ),
     address: z
       .string()
+      .trim()
       .min(1)
       .optional()
       .describe(
@@ -32,18 +35,19 @@ export let pinSchema = z
       ),
     description: z
       .string()
+      .trim()
       .min(1)
       .optional()
       .describe('Optional human-readable description of the pin'),
     layer: z
       .string()
+      .trim()
       .min(1)
       .optional()
       .describe('Optional layer identifier this pin belongs to'),
-    id: z
-      .string()
-      .min(1)
-      .describe('Stable unique identifier of the pin used in references'),
+    id: nonEmptyTrimmedStringSchema.describe(
+      'Stable unique identifier of the pin used in references',
+    ),
     coords: coordinatesSchema
       .optional()
       .describe('Optional geographic coordinates of the pin'),
@@ -53,7 +57,9 @@ export let pinSchema = z
     color: pinColorSchema
       .default('red-500')
       .describe('Visual color used for the pin'),
-    title: z.string().min(1).describe('Human-readable title of the pin'),
+    title: nonEmptyTrimmedStringSchema.describe(
+      'Human-readable title of the pin',
+    ),
   })
   .strict()
   .superRefine((pin, context) => {

@@ -16,7 +16,7 @@ import { parseYaml } from './parse-yaml'
 let sourceMapConfigSchema = z
   .object({
     imports: z
-      .array(z.string().min(1))
+      .array(z.string().trim().min(1))
       .default([])
       .describe('Optional list of relative YAML paths or glob patterns'),
     layers: z

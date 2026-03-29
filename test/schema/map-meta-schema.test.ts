@@ -15,8 +15,20 @@ describe('mapMetaSchema', () => {
     })
   })
 
-  it('rejects an empty title', () => {
-    expect(mapMetaSchema.safeParse({ title: '' })).toMatchObject({
+  it('trims surrounding whitespace from string fields', () => {
+    expect(
+      mapMetaSchema.parse({
+        description: ' Spring itinerary ',
+        title: ' Kyoto 2026 ',
+      }),
+    ).toEqual({
+      description: 'Spring itinerary',
+      title: 'Kyoto 2026',
+    })
+  })
+
+  it('rejects a blank title', () => {
+    expect(mapMetaSchema.safeParse({ title: '   ' })).toMatchObject({
       error: {
         issues: [
           expect.objectContaining({

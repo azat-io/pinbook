@@ -85,6 +85,30 @@ describe('pinSchema', () => {
     })
   })
 
+  it('trims surrounding whitespace from string fields', () => {
+    expect(
+      pinSchema.parse({
+        description: ' Best visited early in the morning ',
+        photo: ' https://example.com/photos/fushimi.jpg ',
+        address: ' Fushimi Inari, Kyoto ',
+        coords: [34.9671, 135.7727],
+        title: ' Fushimi Inari ',
+        id: ' fushimi-inari ',
+        layer: ' sights ',
+      }),
+    ).toEqual({
+      description: 'Best visited early in the morning',
+      photo: 'https://example.com/photos/fushimi.jpg',
+      address: 'Fushimi Inari, Kyoto',
+      coords: [34.9671, 135.7727],
+      title: 'Fushimi Inari',
+      id: 'fushimi-inari',
+      icon: 'shapes-pin',
+      color: 'red-500',
+      layer: 'sights',
+    })
+  })
+
   it('rejects unknown properties', () => {
     expect(
       pinSchema.safeParse({
@@ -99,6 +123,26 @@ describe('pinSchema', () => {
           expect.objectContaining({
             code: 'unrecognized_keys',
             keys: ['slug'],
+          }),
+        ],
+      },
+      success: false,
+    })
+  })
+
+  it('rejects whitespace-only required strings', () => {
+    expect(
+      pinSchema.safeParse({
+        coords: [35.0116, 135.7681],
+        id: 'kyoto-station',
+        title: '   ',
+      }),
+    ).toMatchObject({
+      error: {
+        issues: [
+          expect.objectContaining({
+            code: 'too_small',
+            path: ['title'],
           }),
         ],
       },
