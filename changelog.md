@@ -1,5 +1,23 @@
 # Changelog
 
+## v1.0.0
+
+[compare changes](https://github.com/azat-io/pinbook/compare/v0.2.0...v1.0.0)
+
+### 🚀 Features
+
+- Expand public api for programmatic use
+  ([61fb93c](https://github.com/azat-io/pinbook/commit/61fb93c))
+
+### 🐞 Bug Fixes
+
+- Trim and reject blank schema strings
+  ([21b8416](https://github.com/azat-io/pinbook/commit/21b8416))
+
+### ❤️ Contributors
+
+- Azat S. ([@azat-io](https://github.com/azat-io))
+
 ## v0.2.0
 
 [compare changes](https://github.com/azat-io/pinbook/compare/v0.1.0...v0.2.0)
