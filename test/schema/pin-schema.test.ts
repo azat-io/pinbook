@@ -170,30 +170,27 @@ describe('pinSchema', () => {
     })
   })
 
-  it('rejects local photo paths', () => {
+  it('parses local photo paths', () => {
     expect(
-      pinSchema.safeParse({
+      pinSchema.parse({
         photo: './photos/kyoto-station.jpg',
         coords: [35.0116, 135.7681],
         title: 'Kyoto Station',
         id: 'kyoto-station',
       }),
-    ).toMatchObject({
-      error: {
-        issues: [
-          expect.objectContaining({
-            message: 'Photo must be a full http:// or https:// URL',
-            path: ['photo'],
-          }),
-        ],
-      },
-      success: false,
+    ).toEqual({
+      photo: './photos/kyoto-station.jpg',
+      coords: [35.0116, 135.7681],
+      title: 'Kyoto Station',
+      id: 'kyoto-station',
+      icon: 'shapes-pin',
+      color: 'red-500',
     })
   })
 
-  it('rejects local photo paths inside a photo list', () => {
+  it('parses local photo paths inside a photo list', () => {
     expect(
-      pinSchema.safeParse({
+      pinSchema.parse({
         photo: [
           'https://example.com/photos/kyoto-station.jpg',
           './photos/kyoto-station.jpg',
@@ -202,12 +199,34 @@ describe('pinSchema', () => {
         title: 'Kyoto Station',
         id: 'kyoto-station',
       }),
+    ).toEqual({
+      photo: [
+        'https://example.com/photos/kyoto-station.jpg',
+        './photos/kyoto-station.jpg',
+      ],
+      coords: [35.0116, 135.7681],
+      title: 'Kyoto Station',
+      id: 'kyoto-station',
+      icon: 'shapes-pin',
+      color: 'red-500',
+    })
+  })
+
+  it('rejects unsupported photo URL schemes', () => {
+    expect(
+      pinSchema.safeParse({
+        photo: 'file:///tmp/kyoto-station.jpg',
+        coords: [35.0116, 135.7681],
+        title: 'Kyoto Station',
+        id: 'kyoto-station',
+      }),
     ).toMatchObject({
       error: {
         issues: [
           expect.objectContaining({
-            message: 'Photo must be a full http:// or https:// URL',
-            path: ['photo', 1],
+            message:
+              'Photo must be a full http:// or https:// URL or a local file path',
+            path: ['photo'],
           }),
         ],
       },

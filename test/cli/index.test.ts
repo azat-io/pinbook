@@ -2,6 +2,7 @@ import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 import { log } from '@clack/prompts'
 
 import { getCommandUsage, helpMessage } from '../../cli/help'
+import { driveAuth } from '../../commands/drive-auth'
 import { parseFlags } from '../../cli/parse-flags'
 import { create } from '../../commands/create'
 import { build } from '../../commands/build'
@@ -26,6 +27,10 @@ vi.mock('../../commands/build', () => ({
 
 vi.mock('../../commands/create', () => ({
   create: vi.fn(),
+}))
+
+vi.mock('../../commands/drive-auth', () => ({
+  driveAuth: vi.fn(),
 }))
 
 class ProcessExitError extends Error {
@@ -170,6 +175,33 @@ describe('run', () => {
     await run()
 
     expect(create).toHaveBeenCalledWith('maps/tokyo')
+    expect(log.error).not.toHaveBeenCalledWith('Unknown command')
+  })
+
+  it('prints drive-auth help when the help flag is provided', async () => {
+    vi.mocked(parseFlags).mockReturnValueOnce({
+      command: 'drive-auth',
+      help: true,
+    })
+
+    await run()
+
+    expect(driveAuth).not.toHaveBeenCalled()
+    expect(log.info).toHaveBeenCalledWith(getCommandUsage('drive-auth'))
+    expect(process.exitCode).toBeUndefined()
+  })
+
+  it('runs drive-auth for an explicit path', async () => {
+    vi.mocked(parseFlags).mockReturnValueOnce({
+      targetPath: 'maps/japan',
+      command: 'drive-auth',
+    })
+
+    vi.mocked(driveAuth).mockResolvedValueOnce()
+
+    await run()
+
+    expect(driveAuth).toHaveBeenCalledWith('maps/japan')
     expect(log.error).not.toHaveBeenCalledWith('Unknown command')
   })
 

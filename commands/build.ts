@@ -2,15 +2,27 @@ import { writeFile, mkdir } from 'node:fs/promises'
 import { cancel, log } from '@clack/prompts'
 import { dirname, join } from 'node:path'
 
+import {
+  PhotoUploadCacheValidationError,
+  PhotoUploadCacheSyntaxError,
+} from '../resolvers/load-photo-upload-cache'
+import { GoogleDriveConfigurationError } from '../resolvers/google-drive-configuration-error'
+import { getDefaultPhotoUploadCachePath } from '../paths/get-default-photo-upload-cache-path'
+import { LocalPhotoFileNotFoundError } from '../resolvers/local-photo-file-not-found-error'
+import { GoogleDrivePhotoUploadError } from '../resolvers/google-drive-photo-upload-error'
 import { getDefaultResolutionCachePath } from '../paths/get-default-resolution-cache-path'
 import {
   LocationResolutionError,
   resolveConfig,
 } from '../resolvers/resolve-config'
+import { resolveGoogleDrivePhotos } from '../resolvers/resolve-google-drive-photos'
 import { getBuildOutputDirectory } from '../paths/get-build-output-directory'
 import { requestGoogleMapsApiKey } from '../cli/request-google-maps-api-key'
+import { loadGoogleDriveConfig } from '../config/load-google-drive-config'
+import { resolveConfigFilePath } from '../paths/resolve-config-file-path'
 import { saveGoogleMapsApiKey } from '../config/save-google-maps-api-key'
 import { loadGoogleMapsApiKey } from '../config/load-google-maps-api-key'
+import { isInteractiveTerminal } from '../cli/is-interactive-terminal'
 import { getBuildOutputPath } from '../paths/get-build-output-path'
 import { exportKml } from '../serializers/export-kml'
 import { loadConfig } from '../config/load-config'
@@ -22,13 +34,15 @@ import { loadConfig } from '../config/load-config'
  * @param targetPath - Optional YAML config path or project directory path.
  */
 export async function build(targetPath?: string): Promise<void> {
-  let filePath = resolveBuildConfigPath(targetPath)
+  let filePath = resolveConfigFilePath(targetPath)
   let buildOutputDirectory = getBuildOutputDirectory(filePath)
   let buildOutputPath = getBuildOutputPath(filePath)
+  let photoUploadCachePath = getDefaultPhotoUploadCachePath(filePath)
   let resolutionCachePath = getDefaultResolutionCachePath(filePath)
 
   try {
     let config = await loadConfig(filePath)
+    let googleDriveConfig = await loadGoogleDriveConfig(filePath)
     let googleMapsApiKey = await loadGoogleMapsApiKey(filePath)
     let resolvedConfig
 
@@ -73,6 +87,11 @@ export async function build(targetPath?: string): Promise<void> {
         resolutionCachePath,
       )
     }
+
+    resolvedConfig = await resolveGoogleDrivePhotos(resolvedConfig, {
+      cachePath: photoUploadCachePath,
+      googleDriveConfig,
+    })
 
     let kml = exportKml(resolvedConfig, {
       documentDescription: true,
@@ -123,6 +142,38 @@ export async function build(targetPath?: string): Promise<void> {
       return
     }
 
+    if (error instanceof GoogleDriveConfigurationError) {
+      let driveAuthCommand =
+        targetPath ? `pinbook drive-auth ${targetPath}` : 'pinbook drive-auth'
+
+      log.error('Google Drive config is incomplete.\n')
+
+      for (let variableName of error.missingVariables) {
+        log.error(`- Missing ${variableName}`)
+      }
+
+      log.error(
+        `Run \`${driveAuthCommand}\` or add the missing values to ${join(dirname(filePath), '.env')}.`,
+      )
+      process.exitCode = 1
+
+      return
+    }
+
+    if (error instanceof GoogleDrivePhotoUploadError) {
+      log.error(error.message)
+      process.exitCode = 1
+
+      return
+    }
+
+    if (error instanceof LocalPhotoFileNotFoundError) {
+      log.error(`Local photo file not found: ${error.photoPath}`)
+      process.exitCode = 1
+
+      return
+    }
+
     if (error instanceof Error && error.name === 'ConfigSyntaxError') {
       log.error(`Invalid YAML: ${error.message}`)
       process.exitCode = 1
@@ -151,6 +202,27 @@ export async function build(targetPath?: string): Promise<void> {
       }
 
       log.error(`Fix or delete ${resolutionCachePath} and run build again.`)
+      process.exitCode = 1
+
+      return
+    }
+
+    if (error instanceof PhotoUploadCacheSyntaxError) {
+      log.error(`Photo upload cache is invalid JSON: ${photoUploadCachePath}`)
+      log.error(`Fix or delete ${photoUploadCachePath} and run build again.`)
+      process.exitCode = 1
+
+      return
+    }
+
+    if (error instanceof PhotoUploadCacheValidationError) {
+      log.error('Photo upload cache is invalid.\n')
+
+      for (let issue of error.issues) {
+        log.error(`- ${issue}`)
+      }
+
+      log.error(`Fix or delete ${photoUploadCachePath} and run build again.`)
       process.exitCode = 1
 
       return
@@ -239,30 +311,6 @@ function resolveConfigWithGoogleMapsApiKey(
 }
 
 /**
- * Resolves the config file path used by `build`.
- *
- * When no path is provided, `index.yaml` in the current working directory is
- * used. Paths without a YAML extension are treated as project directories and
- * resolved to `<directory>/index.yaml`.
- *
- * @param targetPath - Optional YAML config path or project directory path.
- * @returns Resolved config file path.
- */
-function resolveBuildConfigPath(targetPath?: string): string {
-  let normalizedTargetPath = targetPath?.trim()
-
-  if (!normalizedTargetPath) {
-    return 'index.yaml'
-  }
-
-  if (isYamlFilePath(normalizedTargetPath)) {
-    return normalizedTargetPath
-  }
-
-  return join(normalizedTargetPath, 'index.yaml')
-}
-
-/**
  * Checks whether the thrown value represents a missing file system entry.
  *
  * @param error - Unknown thrown value.
@@ -272,23 +320,4 @@ function isFileNotFoundError(
   error: unknown,
 ): error is { code: string } & Error {
   return error instanceof Error && 'code' in error && error.code === 'ENOENT'
-}
-
-/**
- * Resolves whether the current process is attached to an interactive terminal.
- *
- * @returns `true` when both stdin and stdout are TTY streams.
- */
-function isInteractiveTerminal(): boolean {
-  return process.stdin.isTTY && process.stdout.isTTY
-}
-
-/**
- * Checks whether the provided path already looks like a YAML config file path.
- *
- * @param filePath - Candidate config file path.
- * @returns `true` when the path ends with `.yaml` or `.yml`.
- */
-function isYamlFilePath(filePath: string): boolean {
-  return /\.ya?ml$/iu.test(filePath)
 }

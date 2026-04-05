@@ -5,6 +5,7 @@ import { z } from 'zod'
 import type { MapConfigSchema } from '../schema/map-config-schema'
 import type { ConfigIssue } from './validate-config'
 
+import { normalizeLocalPhotoPaths } from './normalize-local-photo-paths'
 import { ImportsResolutionError, expandImports } from './expand-imports'
 import { mapMetaSchema } from '../schema/map-meta-schema'
 import { layerSchema } from '../schema/layer-schema'
@@ -119,8 +120,9 @@ export async function loadConfig(filePath: string): Promise<MapConfigSchema> {
     )
   }
 
-  let pins = [...rootResult.data.pins]
-  let pinSources: PinSource[] = rootResult.data.pins.map((_, pinIndex) => ({
+  let rootPins = normalizeLocalPhotoPaths(rootResult.data.pins, filePath)
+  let pins = [...rootPins]
+  let pinSources: PinSource[] = rootPins.map((_, pinIndex) => ({
     filePath,
     pinIndex,
   }))
@@ -222,7 +224,10 @@ async function loadImportedPinsConfig(
     )
   }
 
-  return importedResult.data
+  return {
+    ...importedResult.data,
+    pins: normalizeLocalPhotoPaths(importedResult.data.pins, importedFilePath),
+  }
 }
 
 /**

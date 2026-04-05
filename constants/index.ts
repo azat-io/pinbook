@@ -19,6 +19,7 @@ const RESOLUTION_CACHE_DIRECTORY = join('node_modules', '.cache', 'pinbook')
  * Name of the resolution cache file.
  */
 const RESOLUTION_CACHE_FILE_NAME = 'cache.json'
+const PHOTO_UPLOAD_CACHE_FILE_NAME = 'photo-cache.json'
 
 /**
  * Default hidden resolution cache path relative to the current working
@@ -27,4 +28,13 @@ const RESOLUTION_CACHE_FILE_NAME = 'cache.json'
 export const DEFAULT_RESOLUTION_CACHE_PATH = join(
   RESOLUTION_CACHE_DIRECTORY,
   RESOLUTION_CACHE_FILE_NAME,
+)
+
+/**
+ * Default hidden cache path relative to the current working directory for
+ * Google Drive photo uploads.
+ */
+export const DEFAULT_PHOTO_UPLOAD_CACHE_PATH = join(
+  RESOLUTION_CACHE_DIRECTORY,
+  PHOTO_UPLOAD_CACHE_FILE_NAME,
 )

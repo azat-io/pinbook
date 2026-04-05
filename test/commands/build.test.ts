@@ -7,10 +7,19 @@ import type { ResolvedMapConfig } from '../../types/resolved-map-config'
 import type { MapConfigSchema } from '../../schema/map-config-schema'
 
 import {
+  PhotoUploadCacheValidationError,
+  PhotoUploadCacheSyntaxError,
+} from '../../resolvers/load-photo-upload-cache'
+import { GoogleDriveConfigurationError } from '../../resolvers/google-drive-configuration-error'
+import { LocalPhotoFileNotFoundError } from '../../resolvers/local-photo-file-not-found-error'
+import { GoogleDrivePhotoUploadError } from '../../resolvers/google-drive-photo-upload-error'
+import {
   LocationResolutionError,
   resolveConfig,
 } from '../../resolvers/resolve-config'
+import { resolveGoogleDrivePhotos } from '../../resolvers/resolve-google-drive-photos'
 import { requestGoogleMapsApiKey } from '../../cli/request-google-maps-api-key'
+import { loadGoogleDriveConfig } from '../../config/load-google-drive-config'
 import { saveGoogleMapsApiKey } from '../../config/save-google-maps-api-key'
 import { loadGoogleMapsApiKey } from '../../config/load-google-maps-api-key'
 import { exportKml } from '../../serializers/export-kml'
@@ -45,6 +54,10 @@ vi.mock('../../config/load-google-maps-api-key', () => ({
   loadGoogleMapsApiKey: vi.fn(),
 }))
 
+vi.mock('../../config/load-google-drive-config', () => ({
+  loadGoogleDriveConfig: vi.fn(),
+}))
+
 vi.mock('../../config/save-google-maps-api-key', () => ({
   saveGoogleMapsApiKey: vi.fn(),
 }))
@@ -55,6 +68,45 @@ vi.mock('../../cli/request-google-maps-api-key', () => ({
 
 vi.mock('../../serializers/export-kml', () => ({
   exportKml: vi.fn(),
+}))
+
+vi.mock('../../resolvers/resolve-google-drive-photos', () => ({
+  resolveGoogleDrivePhotos: vi.fn((config: ResolvedMapConfig) =>
+    Promise.resolve(config),
+  ),
+}))
+
+vi.mock('../../resolvers/google-drive-configuration-error', () => ({
+  GoogleDriveConfigurationError: class MockGoogleDriveConfigurationError extends Error {
+    public missingVariables: string[]
+
+    public constructor(missingVariables: string[]) {
+      super('Google Drive configuration is incomplete')
+      this.name = 'GoogleDriveConfigurationError'
+      this.missingVariables = missingVariables
+    }
+  },
+}))
+
+vi.mock('../../resolvers/local-photo-file-not-found-error', () => ({
+  LocalPhotoFileNotFoundError: class MockLocalPhotoFileNotFoundError extends Error {
+    public photoPath: string
+
+    public constructor(photoPath: string) {
+      super(`Local photo file not found: ${photoPath}`)
+      this.name = 'LocalPhotoFileNotFoundError'
+      this.photoPath = photoPath
+    }
+  },
+}))
+
+vi.mock('../../resolvers/google-drive-photo-upload-error', () => ({
+  GoogleDrivePhotoUploadError: class MockGoogleDrivePhotoUploadError extends Error {
+    public constructor(message: string) {
+      super(message)
+      this.name = 'GoogleDrivePhotoUploadError'
+    }
+  },
 }))
 
 vi.mock('../../resolvers/resolve-config', () => {
@@ -93,6 +145,13 @@ let exampleResolutionCachePath = join(
   '.cache',
   'pinbook',
   'cache.json',
+)
+let examplePhotoUploadCachePath = join(
+  exampleDirectoryPath,
+  'node_modules',
+  '.cache',
+  'pinbook',
+  'photo-cache.json',
 )
 
 function restoreInteractiveTerminal(): void {
@@ -182,6 +241,12 @@ function createResolutionCacheSyntaxError(message: string): Error {
   return error
 }
 
+function createPhotoUploadCacheValidationError(
+  issues: string[],
+): PhotoUploadCacheValidationError {
+  return new PhotoUploadCacheValidationError(issues)
+}
+
 function createConfigSyntaxError(message: string): Error {
   let error = new Error(message)
 
@@ -195,6 +260,10 @@ describe('build', () => {
     process.exitCode = undefined
     vi.clearAllMocks()
     setInteractiveTerminal(true)
+    vi.mocked(loadGoogleDriveConfig).mockResolvedValue({})
+    vi.mocked(resolveGoogleDrivePhotos).mockImplementation(
+      (config: ResolvedMapConfig) => Promise.resolve(config),
+    )
   })
 
   afterEach(() => {
@@ -876,6 +945,181 @@ describe('build', () => {
     expect(requestGoogleMapsApiKey).toHaveBeenCalledOnce()
     expect(log.error).toHaveBeenCalledWith(
       `Google geocoding failed: ${invalidApiKeyError.message}`,
+    )
+    expect(process.exitCode).toBe(1)
+  })
+
+  it('logs missing Google Drive config when local photo uploads need it', async () => {
+    vi.mocked(loadConfig).mockResolvedValueOnce({
+      map: {
+        title: 'Kyoto 2026',
+      },
+      layers: [],
+      pins: [],
+    })
+    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
+    vi.mocked(resolveConfig).mockResolvedValueOnce({
+      map: {
+        title: 'Kyoto 2026',
+      },
+      layers: [],
+      pins: [],
+    })
+    vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(
+      new GoogleDriveConfigurationError(['GOOGLE_DRIVE_CLIENT_ID']),
+    )
+
+    await build(exampleConfigFilePath)
+
+    expect(log.error).toHaveBeenCalledWith(
+      'Google Drive config is incomplete.\n',
+    )
+    expect(log.error).toHaveBeenCalledWith('- Missing GOOGLE_DRIVE_CLIENT_ID')
+    expect(log.error).toHaveBeenCalledWith(
+      `Run \`pinbook drive-auth ${exampleConfigFilePath}\` or add the missing values to ${exampleEnvironmentPath}.`,
+    )
+    expect(process.exitCode).toBe(1)
+  })
+
+  it('logs missing Google Drive config without a target path hint when build uses the current directory', async () => {
+    vi.mocked(loadConfig).mockResolvedValueOnce({
+      map: {
+        title: 'Kyoto 2026',
+      },
+      layers: [],
+      pins: [],
+    })
+    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
+    vi.mocked(resolveConfig).mockResolvedValueOnce({
+      map: {
+        title: 'Kyoto 2026',
+      },
+      layers: [],
+      pins: [],
+    })
+    vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(
+      new GoogleDriveConfigurationError(['GOOGLE_DRIVE_CLIENT_ID']),
+    )
+
+    await build()
+
+    expect(log.error).toHaveBeenCalledWith(
+      'Run `pinbook drive-auth` or add the missing values to .env.',
+    )
+    expect(process.exitCode).toBe(1)
+  })
+
+  it('logs local photo file errors', async () => {
+    vi.mocked(loadConfig).mockResolvedValueOnce({
+      map: {
+        title: 'Kyoto 2026',
+      },
+      layers: [],
+      pins: [],
+    })
+    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
+    vi.mocked(resolveConfig).mockResolvedValueOnce({
+      map: {
+        title: 'Kyoto 2026',
+      },
+      layers: [],
+      pins: [],
+    })
+    vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(
+      new LocalPhotoFileNotFoundError('/tmp/kyoto.jpg'),
+    )
+
+    await build(exampleConfigFilePath)
+
+    expect(log.error).toHaveBeenCalledWith(
+      'Local photo file not found: /tmp/kyoto.jpg',
+    )
+    expect(process.exitCode).toBe(1)
+  })
+
+  it('logs Google Drive upload failures', async () => {
+    vi.mocked(loadConfig).mockResolvedValueOnce({
+      map: {
+        title: 'Kyoto 2026',
+      },
+      layers: [],
+      pins: [],
+    })
+    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
+    vi.mocked(resolveConfig).mockResolvedValueOnce({
+      map: {
+        title: 'Kyoto 2026',
+      },
+      layers: [],
+      pins: [],
+    })
+    vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(
+      new GoogleDrivePhotoUploadError('Google Drive upload failed'),
+    )
+
+    await build(exampleConfigFilePath)
+
+    expect(log.error).toHaveBeenCalledWith('Google Drive upload failed')
+    expect(process.exitCode).toBe(1)
+  })
+
+  it('logs photo upload cache syntax errors', async () => {
+    vi.mocked(loadConfig).mockResolvedValueOnce({
+      map: {
+        title: 'Kyoto 2026',
+      },
+      layers: [],
+      pins: [],
+    })
+    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
+    vi.mocked(resolveConfig).mockResolvedValueOnce({
+      map: {
+        title: 'Kyoto 2026',
+      },
+      layers: [],
+      pins: [],
+    })
+    vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(
+      new PhotoUploadCacheSyntaxError('Invalid JSON'),
+    )
+
+    await build(exampleConfigFilePath)
+
+    expect(log.error).toHaveBeenCalledWith(
+      `Photo upload cache is invalid JSON: ${examplePhotoUploadCachePath}`,
+    )
+    expect(log.error).toHaveBeenCalledWith(
+      `Fix or delete ${examplePhotoUploadCachePath} and run build again.`,
+    )
+    expect(process.exitCode).toBe(1)
+  })
+
+  it('logs photo upload cache validation issues', async () => {
+    vi.mocked(loadConfig).mockResolvedValueOnce({
+      map: {
+        title: 'Kyoto 2026',
+      },
+      layers: [],
+      pins: [],
+    })
+    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
+    vi.mocked(resolveConfig).mockResolvedValueOnce({
+      map: {
+        title: 'Kyoto 2026',
+      },
+      layers: [],
+      pins: [],
+    })
+    vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(
+      createPhotoUploadCacheValidationError(['entries.photo: Invalid input']),
+    )
+
+    await build(exampleConfigFilePath)
+
+    expect(log.error).toHaveBeenCalledWith('Photo upload cache is invalid.\n')
+    expect(log.error).toHaveBeenCalledWith('- entries.photo: Invalid input')
+    expect(log.error).toHaveBeenCalledWith(
+      `Fix or delete ${examplePhotoUploadCachePath} and run build again.`,
     )
     expect(process.exitCode).toBe(1)
   })

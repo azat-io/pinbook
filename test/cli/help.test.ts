@@ -12,6 +12,7 @@ describe('help', () => {
       Commands:
         build [path]        Build \`index.yaml\` into \`.pinbook/map.kml\`
         create [directory]  Scaffold a new Pinbook map project
+        drive-auth [path]   Authorize Google Drive uploads
 
       Flags:
         -h, --help
@@ -35,6 +36,16 @@ describe('help', () => {
         'Usage: pinbook create [directory]',
         '',
         'Scaffold a new Pinbook YAML map project.',
+      ].join('\n'),
+    )
+  })
+
+  it('builds drive-auth command usage', () => {
+    expect(getCommandUsage('drive-auth')).toBe(
+      [
+        'Usage: pinbook drive-auth [path]',
+        '',
+        'Authorize Google Drive uploads for local photo paths.',
       ].join('\n'),
     )
   })

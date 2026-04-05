@@ -1,6 +1,11 @@
 import type { Command } from '../types/command'
 
 let commandUsageByName: Record<Command, string> = {
+  'drive-auth': [
+    'Usage: pinbook drive-auth [path]',
+    '',
+    'Authorize Google Drive uploads for local photo paths.',
+  ].join('\n'),
   build: [
     'Usage: pinbook build [path]',
     '',
@@ -21,6 +26,7 @@ export let helpMessage = [
   'Commands:',
   '  build [path]        Build `index.yaml` into `.pinbook/map.kml`',
   '  create [directory]  Scaffold a new Pinbook map project',
+  '  drive-auth [path]   Authorize Google Drive uploads',
   '',
   'Flags:',
   '  -h, --help',

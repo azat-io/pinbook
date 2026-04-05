@@ -1,17 +1,18 @@
 import { z } from 'zod'
 
+import { isSupportedPhotoSource } from '../pins/is-supported-photo-source'
 import { coordinatesSchema } from './coordinates-schema'
 import { pinColorSchema } from './pin-color-schema'
 import { pinIconSchema } from './pin-icon-schema'
 
-let httpUrlPattern = /^https?:\/\//u
 let nonEmptyTrimmedStringSchema = z.string().trim().min(1)
-let photoUrlSchema = z
+let photoSourceSchema = z
   .string()
   .trim()
   .min(1)
-  .refine(value => httpUrlPattern.test(value), {
-    message: 'Photo must be a full http:// or https:// URL',
+  .refine(value => isSupportedPhotoSource(value), {
+    message:
+      'Photo must be a full http:// or https:// URL or a local file path',
   })
 
 /**
@@ -20,10 +21,10 @@ let photoUrlSchema = z
 export let pinSchema = z
   .object({
     photo: z
-      .union([photoUrlSchema, z.array(photoUrlSchema).min(1)])
+      .union([photoSourceSchema, z.array(photoSourceSchema).min(1)])
       .optional()
       .describe(
-        'Optional public photo URL or list of URLs associated with the pin',
+        'Optional public photo URL, local file path, or list of photo sources associated with the pin',
       ),
     address: z
       .string()

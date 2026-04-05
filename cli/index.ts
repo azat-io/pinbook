@@ -2,6 +2,7 @@ import { log } from '@clack/prompts'
 import 'node:worker_threads'
 
 import { getCommandUsage, helpMessage } from './help'
+import { driveAuth } from '../commands/drive-auth'
 import { create } from '../commands/create'
 import { parseFlags } from './parse-flags'
 import { build } from '../commands/build'
@@ -46,6 +47,18 @@ export async function run(): Promise<void> {
     }
 
     await create(flags.targetPath)
+
+    return
+  }
+
+  if (flags.command === 'drive-auth') {
+    if (flags.help) {
+      log.info(getCommandUsage('drive-auth'))
+
+      return
+    }
+
+    await driveAuth(flags.targetPath)
 
     return
   }

@@ -46,6 +46,10 @@ cd my-map
 
 # Edit index.yaml and add at least one pin
 
+# Optional: authorize Google Drive uploads
+# when `photo` points to local files
+# pnpm exec pinbook drive-auth
+
 pnpm install
 pnpm build
 ```
@@ -191,13 +195,49 @@ For the future `1.x` line:
 
 ## Photos
 
-`photo` is supported as either a single full public `http://` or `https://`
-image URL or a list of image URLs.
+`photo` is supported as either:
+
+- a single full public `http://` or `https://` image URL
+- a single local image path such as `./photos/senso-ji.jpg`
+- a list that mixes public URLs and local paths
 
 During build, Pinbook includes those images in the generated placemark
 description so they can appear in Google My Maps after import.
 
-Local image paths such as `./photos/senso-ji.jpg` are not supported.
+When `photo` points to a local file, Pinbook uploads it to Google Drive during
+build and rewrites it to a public URL before generating KML.
+
+By default, Pinbook creates or reuses this folder structure in Google Drive:
+
+```text
+Pinbook/
+  <Map title>/
+```
+
+For example, a map with `map.title: Japan Trip` uploads local photos into:
+
+```text
+Pinbook/Japan Trip
+```
+
+If `GOOGLE_DRIVE_FOLDER_ID` is set, Pinbook uses that folder as the parent and
+creates or reuses:
+
+```text
+<Configured folder>/<Map title>
+```
+
+For imported YAML files, local photo paths are resolved relative to the file
+that declared them.
+
+To authorize local photo uploads:
+
+```bash
+pnpm exec pinbook drive-auth
+```
+
+That flow stores the Google Drive OAuth client ID, client secret, and refresh
+token in the local project `.env` file.
 
 ## Geocoding
 
@@ -211,6 +251,89 @@ for the key and save it for you.
 Resolved addresses are cached locally at
 `node_modules/.cache/pinbook/cache.json` so repeated builds stay fast and
 stable.
+
+## Google Drive Auth
+
+Pinbook uses two separate Google integrations:
+
+- `GOOGLE_MAPS_API_KEY` for address geocoding
+- Google Drive OAuth credentials for uploading local photo files
+
+Google Drive uploads do **not** use a Drive API key.
+
+Run `pinbook drive-auth` to save a refresh token locally, or provide these
+variables in the local `.env` file:
+
+```bash
+GOOGLE_DRIVE_CLIENT_ID=your-google-oauth-client-id
+GOOGLE_DRIVE_CLIENT_SECRET=your-google-oauth-client-secret
+GOOGLE_DRIVE_REFRESH_TOKEN=your-google-drive-refresh-token
+# Optional parent folder. Pinbook will then upload into
+# <that folder>/<Map title> instead of Pinbook/<Map title>.
+GOOGLE_DRIVE_FOLDER_ID=your-google-drive-folder-id
+```
+
+Uploaded photo metadata is cached locally at
+`node_modules/.cache/pinbook/photo-cache.json` so unchanged files are not
+uploaded again on every build.
+
+`pinbook drive-auth` stores these values in the local project `.env` file next
+to your YAML config and ensures that `.env` is ignored by Git.
+
+## Google Drive Setup
+
+Use this once per Pinbook map project when you want to reference local photo
+paths such as `./photos/senso-ji.jpg`.
+
+1. Create or choose a Google Cloud project.
+2. Enable the Google Drive API for that project.
+3. Open `Google Auth Platform`.
+4. Complete the initial app setup in `Branding`. For personal use, a simple app
+   name and support email are enough.
+5. Open `Audience`. If you are using a personal Google account, choose
+   `External`.
+6. Decide whether the app should stay in `Testing` or move to `Production`.
+   `Testing` is fine for quick experiments, but Google limits it to test users
+   and test-user authorizations expire after 7 days. `Production` is better for
+   long-lived personal use.
+7. Open `Clients` and create an OAuth client with application type
+   `Desktop app`.
+8. In your Pinbook project, run:
+
+```bash
+pnpm exec pinbook drive-auth
+```
+
+9. Paste the `Client ID` and `Client Secret`.
+10. Open the Google URL printed by Pinbook and finish the sign-in flow.
+11. Wait for the terminal message:
+
+```text
+Google Drive auth saved to the local .env file.
+```
+
+After that, `pnpm build` can upload local photos automatically.
+
+## Google Drive Notes
+
+- `pinbook drive-auth` must run in a local interactive terminal with access to a
+  browser. Google explicitly documents desktop OAuth as a local flow.
+- Pinbook uses the `https://www.googleapis.com/auth/drive.file` scope. Google
+  classifies it as `Recommended / Non-sensitive`.
+- The OAuth exchange can take a little while after the browser says
+  `Pinbook authorization complete`. The refresh token is not saved until the
+  terminal prints the success message.
+
+## Google Drive Troubleshooting
+
+- `access_denied` after sign-in usually means the app is still in `Testing` and
+  your Google account was not added as a test user in `Audience`.
+- If local photos are uploaded into Drive root, `GOOGLE_DRIVE_FOLDER_ID` is not
+  set and the map title folder has not been created yet. Pinbook now creates
+  `Pinbook/<Map title>` automatically on the next build.
+- If unchanged photos are already in
+  `node_modules/.cache/pinbook/photo-cache.json`, Pinbook reuses their public
+  URLs and skips re-uploading them.
 
 ## Compatibility Target
 
@@ -227,6 +350,8 @@ icon, layer, and photo conventions.
 - Large maps may hit Google My Maps import limits.
 - Address-based builds depend on network access to Google Geocoding unless the
   required coordinates are already present in the local cache.
+- Local photo uploads depend on Google Drive OAuth and public Drive download
+  links.
 - Imported files may contain only `pins`; nested imports are not supported.
 
 ## AI-Assisted Workflow
@@ -253,6 +378,7 @@ That means:
 
 - it exports KML for manual import into Google My Maps
 - it does not sync directly with Google My Maps
+- it can upload local pin photos to Google Drive during build
 - it is optimized for travel-planning style maps with readable YAML configs
 
 ## Contributing

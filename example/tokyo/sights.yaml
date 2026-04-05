@@ -5,7 +5,7 @@ pins:
     layer: tokyo
     color: pink-400
     icon: places-temple
-    photo: https://images.unsplash.com/photo-1706813253696-10ee6332edd3
+    photo: ./assets/senso-ji.jpeg
     description: >
       The oldest Buddhist temple in Tokyo, founded in the 7th century. It is
       known for its five-story pagoda, carefully kept grounds, and the
