@@ -5,7 +5,6 @@ import { GoogleDrivePhotoUploadError } from './google-drive-photo-upload-error'
 import { extractGoogleErrorMessage } from './extract-google-error-message'
 import { readJsonResponse } from './read-json-response'
 import { hasStringField } from './has-string-field'
-import { getMimeType } from './get-mime-type'
 
 /**
  * Pieces required to assemble a multipart upload payload for Google Drive.
@@ -25,11 +24,6 @@ interface MultipartBodyOptions {
    * JSON metadata part sent before the binary file contents.
    */
   metadata: string
-
-  /**
-   * MIME type inferred from the local file name.
-   */
-  mimeType: string
 }
 
 /**
@@ -37,19 +31,19 @@ interface MultipartBodyOptions {
  * returns the resulting public URL metadata.
  *
  * @param options - Upload parameters for the local photo.
- * @returns Uploaded photo metadata with Drive file id and public URL.
+ * @returns Uploaded photo metadata with the public URL.
  */
 export async function uploadPhotoToGoogleDrive(options: {
   targetFolderId: string
+  uploadFileName: string
   accessToken: string
   photoPath: string
   buffer: Buffer
 }): Promise<{
   publicUrl: string
-  fileId: string
 }> {
   let metadata = JSON.stringify({
-    name: basename(options.photoPath),
+    name: basename(options.uploadFileName),
     parents: [options.targetFolderId],
   })
   let boundary = randomBytes(16).toString('hex')
@@ -59,7 +53,6 @@ export async function uploadPhotoToGoogleDrive(options: {
       body: new Blob([
         Uint8Array.from(
           buildMultipartBody({
-            mimeType: getMimeType(options.photoPath),
             fileBuffer: options.buffer,
             boundary,
             metadata,
@@ -95,7 +88,6 @@ export async function uploadPhotoToGoogleDrive(options: {
 
   return {
     publicUrl,
-    fileId,
   }
 }
 
@@ -164,7 +156,7 @@ function buildMultipartBody(options: MultipartBodyOptions): Buffer {
         '',
         options.metadata,
         `--${options.boundary}`,
-        `Content-Type: ${options.mimeType}`,
+        'Content-Type: image/webp',
         '',
         '',
       ].join('\r\n'),

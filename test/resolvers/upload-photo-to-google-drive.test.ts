@@ -41,20 +41,23 @@ describe('uploadPhotoToGoogleDrive', () => {
     await expect(
       uploadPhotoToGoogleDrive({
         buffer: Buffer.from('kyoto-photo'),
+        uploadFileName: 'kyoto.webp',
         targetFolderId: 'folder-id',
         accessToken: 'access-token',
         photoPath: '/tmp/kyoto.jpg',
       }),
     ).resolves.toEqual({
       publicUrl: 'https://drive.example/kyoto.jpg',
-      fileId: 'file-id',
     })
 
     let uploadBody = fetchMock.mock.calls[0]?.[1]?.body
 
     expect(uploadBody).toBeInstanceOf(Blob)
     await expect((uploadBody as Blob).text()).resolves.toContain(
-      '{"name":"kyoto.jpg","parents":["folder-id"]}',
+      '{"name":"kyoto.webp","parents":["folder-id"]}',
+    )
+    await expect((uploadBody as Blob).text()).resolves.toContain(
+      'Content-Type: image/webp',
     )
   })
 
@@ -75,6 +78,7 @@ describe('uploadPhotoToGoogleDrive', () => {
     await expect(
       uploadPhotoToGoogleDrive({
         buffer: Buffer.from('kyoto-photo'),
+        uploadFileName: 'kyoto.webp',
         targetFolderId: 'folder-id',
         accessToken: 'access-token',
         photoPath: '/tmp/kyoto.jpg',
@@ -89,6 +93,7 @@ describe('uploadPhotoToGoogleDrive', () => {
     await expect(
       uploadPhotoToGoogleDrive({
         buffer: Buffer.from('kyoto-photo'),
+        uploadFileName: 'kyoto.webp',
         targetFolderId: 'folder-id',
         accessToken: 'access-token',
         photoPath: '/tmp/kyoto.jpg',
@@ -123,6 +128,7 @@ describe('uploadPhotoToGoogleDrive', () => {
     await expect(
       uploadPhotoToGoogleDrive({
         buffer: Buffer.from('kyoto-photo'),
+        uploadFileName: 'kyoto.webp',
         targetFolderId: 'folder-id',
         accessToken: 'access-token',
         photoPath: '/tmp/kyoto.jpg',
@@ -159,6 +165,7 @@ describe('uploadPhotoToGoogleDrive', () => {
     await expect(
       uploadPhotoToGoogleDrive({
         buffer: Buffer.from('kyoto-photo'),
+        uploadFileName: 'kyoto.webp',
         targetFolderId: 'folder-id',
         accessToken: 'access-token',
         photoPath: '/tmp/kyoto.jpg',
@@ -182,6 +189,7 @@ describe('uploadPhotoToGoogleDrive', () => {
     await expect(
       uploadPhotoToGoogleDrive({
         buffer: Buffer.from('kyoto-photo'),
+        uploadFileName: 'kyoto.webp',
         targetFolderId: 'folder-id',
         accessToken: 'access-token',
         photoPath: '/tmp/kyoto.jpg',

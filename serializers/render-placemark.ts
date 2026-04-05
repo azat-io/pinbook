@@ -1,5 +1,6 @@
 import type { ResolvedPin } from '../types/resolved-pin'
 
+import { PHOTO_RENDER_HEIGHT, PHOTO_RENDER_WIDTH } from '../constants'
 import { getStyleKey } from './get-style-key'
 import { escapeXml } from './escape-xml'
 
@@ -16,7 +17,7 @@ export function renderPlacemark(pin: ResolvedPin): string {
     let photoUrls = normalizePhotoUrls(pin.photo)
     let descriptionParts = photoUrls.map(
       photoUrl =>
-        `<img src="${escapeXml(photoUrl)}" height="200" width="auto" />`,
+        `<img src="${escapeXml(photoUrl)}" width="${PHOTO_RENDER_WIDTH}" height="${PHOTO_RENDER_HEIGHT}" />`,
     )
     let extendedDataLines = photoUrls.flatMap(photoUrl => [
       '    <Data name="gx_media_links">',

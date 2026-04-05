@@ -3,6 +3,7 @@ import type { GoogleDriveConfig } from '../types/google-drive-config'
 
 import { replaceLocalPhotosWithPublicUrls } from './replace-local-photos-with-public-urls'
 import { getGoogleDriveUploadContext } from './get-google-drive-upload-context'
+import { preparePhotoForGoogleDrive } from './prepare-photo-for-google-drive'
 import { uploadPhotoToGoogleDrive } from './upload-photo-to-google-drive'
 import { collectLocalPhotoPaths } from './collect-local-photo-paths'
 import { loadPhotoUploadCache } from './load-photo-upload-cache'
@@ -60,10 +61,14 @@ export async function resolveGoogleDrivePhotos(
 
   let photoResults = await Promise.all(
     localPhotoPaths.map(async photoPath => {
-      let { buffer, hash } = await readLocalPhoto(photoPath)
+      let photoBuffer = await readLocalPhoto(photoPath)
+      let preparedPhoto = await preparePhotoForGoogleDrive({
+        buffer: photoBuffer,
+        photoPath,
+      })
       let cachedEntry = cacheEntries[photoPath]
 
-      if (cachedEntry?.hash === hash) {
+      if (cachedEntry?.hash === preparedPhoto.hash) {
         return {
           publicUrl: cachedEntry.publicUrl,
           photoPath,
@@ -82,15 +87,15 @@ export async function resolveGoogleDrivePhotos(
       let uploadedPhoto = await uploadPhotoToGoogleDrive({
         targetFolderId: googleDriveUploadContext.targetFolderId,
         accessToken: googleDriveUploadContext.accessToken,
+        uploadFileName: preparedPhoto.uploadFileName,
+        buffer: preparedPhoto.buffer,
         photoPath,
-        buffer,
       })
 
       return {
         cacheEntry: {
           publicUrl: uploadedPhoto.publicUrl,
-          fileId: uploadedPhoto.fileId,
-          hash,
+          hash: preparedPhoto.hash,
         },
         publicUrl: uploadedPhoto.publicUrl,
         photoPath,

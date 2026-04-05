@@ -207,6 +207,11 @@ description so they can appear in Google My Maps after import.
 When `photo` points to a local file, Pinbook uploads it to Google Drive during
 build and rewrites it to a public URL before generating KML.
 
+Before upload, Pinbook automatically normalizes local photos by rotating them
+when the image says it should be shown differently, cropping from the center to
+a fixed 3:2 frame, resizing them to a consistent size, and converting them to
+WebP.
+
 By default, Pinbook creates or reuses this folder structure in Google Drive:
 
 ```text
@@ -334,6 +339,8 @@ After that, `pnpm build` can upload local photos automatically.
 - If unchanged photos are already in
   `node_modules/.cache/pinbook/photo-cache.json`, Pinbook reuses their public
   URLs and skips re-uploading them.
+- If Pinbook reports that `photo-cache.json` is invalid after an upgrade, delete
+  it and run build again so the cache can be recreated in the new format.
 
 ## Compatibility Target
 

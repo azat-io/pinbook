@@ -22,6 +22,23 @@ const RESOLUTION_CACHE_FILE_NAME = 'cache.json'
 const PHOTO_UPLOAD_CACHE_FILE_NAME = 'photo-cache.json'
 
 /**
+ * Normalized photo dimensions used for Google Drive uploads.
+ */
+export const PHOTO_UPLOAD_WIDTH = 1200
+export const PHOTO_UPLOAD_HEIGHT = 800
+
+/**
+ * Fixed rendered photo dimensions used in placemark descriptions.
+ */
+export const PHOTO_RENDER_WIDTH = 300
+export const PHOTO_RENDER_HEIGHT = 200
+
+/**
+ * Default quality used when converting uploaded images to WebP.
+ */
+export const PHOTO_UPLOAD_WEBP_QUALITY = 82
+
+/**
  * Default hidden resolution cache path relative to the current working
  * directory.
  */

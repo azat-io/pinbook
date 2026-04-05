@@ -1,6 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import * as fsPromises from 'node:fs/promises'
-import { createHash } from 'node:crypto'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
@@ -29,17 +28,14 @@ describe('readLocalPhoto', () => {
     temporaryDirectories = []
   })
 
-  it('reads a local photo and computes its SHA-256 hash', async () => {
+  it('reads a local photo', async () => {
     let temporaryDirectory = await createTemporaryDirectory()
     let photoPath = join(temporaryDirectory, 'kyoto.jpg')
     let buffer = Buffer.from('kyoto-photo')
 
     await fsPromises.writeFile(photoPath, buffer)
 
-    await expect(readLocalPhoto(photoPath)).resolves.toEqual({
-      hash: createHash('sha256').update(buffer).digest('hex'),
-      buffer,
-    })
+    await expect(readLocalPhoto(photoPath)).resolves.toEqual(buffer)
   })
 
   it('throws a typed error when the local file is missing', async () => {

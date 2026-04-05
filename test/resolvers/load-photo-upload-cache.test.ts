@@ -33,11 +33,40 @@ describe('loadPhotoUploadCache', () => {
       loadPhotoUploadCache(join(temporaryDirectory, 'photo-cache.json')),
     ).resolves.toEqual({
       entries: {},
-      version: 1,
+      version: 2,
     })
   })
 
   it('loads a valid photo upload cache file', async () => {
+    let temporaryDirectory = await createTemporaryDirectory()
+    let filePath = join(temporaryDirectory, 'photo-cache.json')
+
+    await writeFile(
+      filePath,
+      JSON.stringify({
+        entries: {
+          '/tmp/kyoto.jpg': {
+            publicUrl: 'https://example.com/photo.jpg',
+            hash: 'sha256-hash',
+          },
+        },
+        version: 2,
+      }),
+      'utf8',
+    )
+
+    await expect(loadPhotoUploadCache(filePath)).resolves.toEqual({
+      entries: {
+        '/tmp/kyoto.jpg': {
+          publicUrl: 'https://example.com/photo.jpg',
+          hash: 'sha256-hash',
+        },
+      },
+      version: 2,
+    })
+  })
+
+  it('rejects the old photo upload cache format', async () => {
     let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, 'photo-cache.json')
 
@@ -56,15 +85,8 @@ describe('loadPhotoUploadCache', () => {
       'utf8',
     )
 
-    await expect(loadPhotoUploadCache(filePath)).resolves.toEqual({
-      entries: {
-        '/tmp/kyoto.jpg': {
-          publicUrl: 'https://example.com/photo.jpg',
-          fileId: 'drive-file-id',
-          hash: 'sha256-hash',
-        },
-      },
-      version: 1,
+    await expect(loadPhotoUploadCache(filePath)).rejects.toMatchObject({
+      name: 'PhotoUploadCacheValidationError',
     })
   })
 
@@ -92,7 +114,7 @@ describe('loadPhotoUploadCache', () => {
             hash: 'sha256-hash',
           },
         },
-        version: 1,
+        version: 2,
       }),
       'utf8',
     )
@@ -115,7 +137,6 @@ describe('loadPhotoUploadCache', () => {
     expect(validationError.name).toBe('PhotoUploadCacheValidationError')
     expect(validationError.issues).toEqual(
       expect.arrayContaining([
-        'entries./tmp/kyoto.jpg.fileId: Invalid input: expected string, received undefined',
         'entries./tmp/kyoto.jpg.publicUrl: Invalid input: expected string, received undefined',
       ]),
     )

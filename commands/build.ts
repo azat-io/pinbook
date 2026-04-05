@@ -15,6 +15,7 @@ import {
   LocationResolutionError,
   resolveConfig,
 } from '../resolvers/resolve-config'
+import { LocalPhotoProcessingError } from '../resolvers/local-photo-processing-error'
 import { resolveGoogleDrivePhotos } from '../resolvers/resolve-google-drive-photos'
 import { getBuildOutputDirectory } from '../paths/get-build-output-directory'
 import { requestGoogleMapsApiKey } from '../cli/request-google-maps-api-key'
@@ -169,6 +170,13 @@ export async function build(targetPath?: string): Promise<void> {
 
     if (error instanceof LocalPhotoFileNotFoundError) {
       log.error(`Local photo file not found: ${error.photoPath}`)
+      process.exitCode = 1
+
+      return
+    }
+
+    if (error instanceof LocalPhotoProcessingError) {
+      log.error(error.message)
       process.exitCode = 1
 
       return

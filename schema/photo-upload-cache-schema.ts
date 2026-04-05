@@ -12,7 +12,6 @@ export let photoUploadCacheSchema = z
         z
           .object({
             publicUrl: z.string().trim().min(1),
-            fileId: z.string().trim().min(1),
             hash: z.string().trim().min(1),
           })
           .strict(),
@@ -21,7 +20,7 @@ export let photoUploadCacheSchema = z
       .describe(
         'Mapping of absolute local photo paths to their last uploaded Drive file metadata',
       ),
-    version: z.literal(1).describe('Version of the photo upload cache format'),
+    version: z.literal(2).describe('Version of the photo upload cache format'),
   })
   .strict()
   .describe(

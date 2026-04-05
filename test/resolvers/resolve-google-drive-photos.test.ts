@@ -1,9 +1,10 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 import { writeFile, readFile, mkdtemp, rm } from 'node:fs/promises'
-import { createHash } from 'node:crypto'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import sharp from 'sharp'
 
+import { preparePhotoForGoogleDrive } from '../../resolvers/prepare-photo-for-google-drive'
 import { resolveGoogleDrivePhotos } from '../../resolvers/resolve-google-drive-photos'
 
 let temporaryDirectories: string[] = []
@@ -32,6 +33,27 @@ function getFetchCallUrl(callIndex: number): URL {
   }
 
   throw new TypeError(`Expected fetch call ${callIndex} to contain a URL.`)
+}
+
+async function createLocalPhoto(photoPath: string): Promise<Buffer> {
+  let photoBuffer = await sharp({
+    create: {
+      background: {
+        g: 120,
+        b: 220,
+        r: 20,
+      },
+      height: 1000,
+      width: 2000,
+      channels: 3,
+    },
+  })
+    .jpeg()
+    .toBuffer()
+
+  await writeFile(photoPath, photoBuffer)
+
+  return photoBuffer
 }
 
 async function createTemporaryDirectory(): Promise<string> {
@@ -82,27 +104,33 @@ describe('resolveGoogleDrivePhotos', () => {
 
   it('throws when local photo uploads are needed but Drive config is missing', async () => {
     let temporaryDirectory = await createTemporaryDirectory()
+    let cachePath = join(temporaryDirectory, 'photo-cache.json')
     let photoPath = join(temporaryDirectory, 'kyoto.jpg')
 
-    await writeFile(photoPath, 'kyoto-photo', 'utf8')
+    await createLocalPhoto(photoPath)
 
     await expect(
-      resolveGoogleDrivePhotos({
-        pins: [
-          {
-            coords: [35.0116, 135.7681],
-            title: 'Kyoto Station',
-            id: 'kyoto-station',
-            icon: 'shapes-pin',
-            photo: photoPath,
-            color: 'red-500',
+      resolveGoogleDrivePhotos(
+        {
+          pins: [
+            {
+              coords: [35.0116, 135.7681],
+              title: 'Kyoto Station',
+              id: 'kyoto-station',
+              icon: 'shapes-pin',
+              photo: photoPath,
+              color: 'red-500',
+            },
+          ],
+          map: {
+            title: 'Kyoto',
           },
-        ],
-        map: {
-          title: 'Kyoto',
+          layers: [],
         },
-        layers: [],
-      }),
+        {
+          cachePath,
+        },
+      ),
     ).rejects.toMatchObject({
       missingVariables: [
         'GOOGLE_DRIVE_CLIENT_ID',
@@ -114,6 +142,9 @@ describe('resolveGoogleDrivePhotos', () => {
   })
 
   it('throws when a local photo file does not exist', async () => {
+    let temporaryDirectory = await createTemporaryDirectory()
+    let cachePath = join(temporaryDirectory, 'photo-cache.json')
+
     await expect(
       resolveGoogleDrivePhotos(
         {
@@ -138,6 +169,7 @@ describe('resolveGoogleDrivePhotos', () => {
             refreshToken: 'refresh-token',
             clientId: 'client-id',
           },
+          cachePath,
         },
       ),
     ).rejects.toMatchObject({
@@ -152,8 +184,11 @@ describe('resolveGoogleDrivePhotos', () => {
     let temporaryDirectory = await createTemporaryDirectory()
     let cachePath = join(temporaryDirectory, 'photo-cache.json')
     let photoPath = join(temporaryDirectory, 'kyoto.jpg')
-
-    await writeFile(photoPath, 'kyoto-photo', 'utf8')
+    let photoBuffer = await createLocalPhoto(photoPath)
+    let preparedPhoto = await preparePhotoForGoogleDrive({
+      buffer: photoBuffer,
+      photoPath,
+    })
 
     fetchMock.mockResolvedValueOnce(
       new Response(
@@ -350,11 +385,11 @@ describe('resolveGoogleDrivePhotos', () => {
     expect(uploadBody).toBeInstanceOf(Blob)
 
     await expect((uploadBody as Blob).text()).resolves.toContain(
-      '{"name":"kyoto.jpg","parents":["kyoto-folder-id"]}',
+      '{"name":"kyoto.webp","parents":["kyoto-folder-id"]}',
     )
 
     await expect((uploadBody as Blob).text()).resolves.toContain(
-      'Content-Type: image/jpeg\r\n\r\nkyoto-photo\r\n--',
+      'Content-Type: image/webp',
     )
 
     await expect(
@@ -362,20 +397,20 @@ describe('resolveGoogleDrivePhotos', () => {
     ).resolves.toEqual({
       entries: {
         [photoPath]: {
-          hash: createHash('sha256').update('kyoto-photo').digest('hex'),
           publicUrl: 'https://drive.example/kyoto.jpg',
-          fileId: 'drive-file-id',
+          hash: preparedPhoto.hash,
         },
       },
-      version: 1,
+      version: 2,
     })
   })
 
   it('uploads local photos into {configured folder}/{Map title} when GOOGLE_DRIVE_FOLDER_ID is set', async () => {
     let temporaryDirectory = await createTemporaryDirectory()
+    let cachePath = join(temporaryDirectory, 'photo-cache.json')
     let photoPath = join(temporaryDirectory, 'kyoto.jpg')
 
-    await writeFile(photoPath, 'kyoto-photo', 'utf8')
+    await createLocalPhoto(photoPath)
 
     fetchMock.mockResolvedValueOnce(
       new Response(
@@ -455,6 +490,7 @@ describe('resolveGoogleDrivePhotos', () => {
             clientId: 'client-id',
             folderId: 'folder-id',
           },
+          cachePath,
         },
       ),
     ).resolves.toMatchObject({
@@ -486,7 +522,7 @@ describe('resolveGoogleDrivePhotos', () => {
 
     expect(uploadBody).toBeInstanceOf(Blob)
     await expect((uploadBody as Blob).text()).resolves.toContain(
-      '{"name":"kyoto.jpg","parents":["map-folder-id"]}',
+      '{"name":"kyoto.webp","parents":["map-folder-id"]}',
     )
   })
 
@@ -494,21 +530,23 @@ describe('resolveGoogleDrivePhotos', () => {
     let temporaryDirectory = await createTemporaryDirectory()
     let cachePath = join(temporaryDirectory, 'photo-cache.json')
     let photoPath = join(temporaryDirectory, 'kyoto.jpg')
-    let photoBuffer = Buffer.from('kyoto-photo')
+    let photoBuffer = await createLocalPhoto(photoPath)
+    let preparedPhoto = await preparePhotoForGoogleDrive({
+      buffer: photoBuffer,
+      photoPath,
+    })
 
-    await writeFile(photoPath, photoBuffer)
     await writeFile(
       cachePath,
       JSON.stringify(
         {
           entries: {
             [photoPath]: {
-              hash: createHash('sha256').update(photoBuffer).digest('hex'),
               publicUrl: 'https://drive.example/kyoto.jpg',
-              fileId: 'drive-file-id',
+              hash: preparedPhoto.hash,
             },
           },
-          version: 1,
+          version: 2,
         },
         null,
         2,
@@ -564,9 +602,10 @@ describe('resolveGoogleDrivePhotos', () => {
 
   it('surfaces Google authentication failures', async () => {
     let temporaryDirectory = await createTemporaryDirectory()
+    let cachePath = join(temporaryDirectory, 'photo-cache.json')
     let photoPath = join(temporaryDirectory, 'kyoto.jpg')
 
-    await writeFile(photoPath, 'kyoto-photo', 'utf8')
+    await createLocalPhoto(photoPath)
 
     fetchMock.mockResolvedValueOnce(
       new Response(
@@ -604,6 +643,7 @@ describe('resolveGoogleDrivePhotos', () => {
             refreshToken: 'refresh-token',
             clientId: 'client-id',
           },
+          cachePath,
         },
       ),
     ).rejects.toMatchObject({

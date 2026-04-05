@@ -17,6 +17,7 @@ import {
   LocationResolutionError,
   resolveConfig,
 } from '../../resolvers/resolve-config'
+import { LocalPhotoProcessingError } from '../../resolvers/local-photo-processing-error'
 import { resolveGoogleDrivePhotos } from '../../resolvers/resolve-google-drive-photos'
 import { requestGoogleMapsApiKey } from '../../cli/request-google-maps-api-key'
 import { loadGoogleDriveConfig } from '../../config/load-google-drive-config'
@@ -1033,6 +1034,34 @@ describe('build', () => {
 
     expect(log.error).toHaveBeenCalledWith(
       'Local photo file not found: /tmp/kyoto.jpg',
+    )
+    expect(process.exitCode).toBe(1)
+  })
+
+  it('logs local photo processing errors', async () => {
+    vi.mocked(loadConfig).mockResolvedValueOnce({
+      map: {
+        title: 'Kyoto 2026',
+      },
+      layers: [],
+      pins: [],
+    })
+    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
+    vi.mocked(resolveConfig).mockResolvedValueOnce({
+      map: {
+        title: 'Kyoto 2026',
+      },
+      layers: [],
+      pins: [],
+    })
+    vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(
+      new LocalPhotoProcessingError('/tmp/kyoto.jpg', new Error('bad image')),
+    )
+
+    await build(exampleConfigFilePath)
+
+    expect(log.error).toHaveBeenCalledWith(
+      'Local photo processing failed for /tmp/kyoto.jpg: bad image',
     )
     expect(process.exitCode).toBe(1)
   })

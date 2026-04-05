@@ -41,7 +41,7 @@ describe('renderPlacemark', () => {
     })
 
     expect(placemark).toContain(
-      '<description><![CDATA[<img src="https://example.com/photos/fushimi.jpg?tag=a&amp;lang=en" height="200" width="auto" /><br>Torii &lt;gates&gt; &amp; crowds]]></description>',
+      '<description><![CDATA[<img src="https://example.com/photos/fushimi.jpg?tag=a&amp;lang=en" width="300" height="200" /><br>Torii &lt;gates&gt; &amp; crowds]]></description>',
     )
     expect(placemark).toContain('<ExtendedData>')
     expect(placemark).toContain('<Data name="gx_media_links">')
@@ -61,7 +61,7 @@ describe('renderPlacemark', () => {
     })
 
     expect(placemark).toContain(
-      '<description><![CDATA[<img src="https://example.com/photos/fushimi-front.jpg" height="200" width="auto" /><br><img src="https://example.com/photos/fushimi-gate.jpg?view=detail&amp;lang=en" height="200" width="auto" /><br>Torii &lt;gates&gt; &amp; crowds]]></description>',
+      '<description><![CDATA[<img src="https://example.com/photos/fushimi-front.jpg" width="300" height="200" /><br><img src="https://example.com/photos/fushimi-gate.jpg?view=detail&amp;lang=en" width="300" height="200" /><br>Torii &lt;gates&gt; &amp; crowds]]></description>',
     )
     expect(placemark).toContain(
       '<value><![CDATA[https://example.com/photos/fushimi-front.jpg]]></value>',
@@ -78,7 +78,7 @@ describe('renderPlacemark', () => {
     })
 
     expect(placemark).toContain(
-      '<description><![CDATA[<img src="https://example.com/photos/kyoto-station.jpg" height="200" width="auto" />]]></description>',
+      '<description><![CDATA[<img src="https://example.com/photos/kyoto-station.jpg" width="300" height="200" />]]></description>',
     )
     expect(placemark).not.toContain('<br><br>')
   })

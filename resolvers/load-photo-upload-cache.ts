@@ -123,6 +123,6 @@ function isNodeError(error: unknown): error is NodeJS.ErrnoException & Error {
 function createEmptyPhotoUploadCache(): PhotoUploadCacheSchema {
   return {
     entries: {},
-    version: 1,
+    version: 2,
   }
 }
