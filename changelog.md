@@ -1,5 +1,20 @@
 # Changelog
 
+## v1.1.0
+
+[compare changes](https://github.com/azat-io/pinbook/compare/v1.0.0...v1.1.0)
+
+### 🚀 Features
+
+- Support uploading local pin photos to google drive
+  ([f8dd61f](https://github.com/azat-io/pinbook/commit/f8dd61f))
+- Resize and compress pin photos before drive upload
+  ([cdf09dd](https://github.com/azat-io/pinbook/commit/cdf09dd))
+
+### ❤️ Contributors
+
+- Azat S. ([@azat-io](https://github.com/azat-io))
+
 ## v1.0.0
 
 [compare changes](https://github.com/azat-io/pinbook/compare/v0.2.0...v1.0.0)
