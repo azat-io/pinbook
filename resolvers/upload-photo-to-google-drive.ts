@@ -31,7 +31,7 @@ interface MultipartBodyOptions {
  * returns the resulting public URL metadata.
  *
  * @param options - Upload parameters for the local photo.
- * @returns Uploaded photo metadata with the public URL.
+ * @returns Uploaded photo metadata with the Drive file id and public URL.
  */
 export async function uploadPhotoToGoogleDrive(options: {
   targetFolderId: string
@@ -41,6 +41,7 @@ export async function uploadPhotoToGoogleDrive(options: {
   buffer: Buffer
 }): Promise<{
   publicUrl: string
+  fileId: string
 }> {
   let metadata = JSON.stringify({
     name: basename(options.uploadFileName),
@@ -88,6 +89,7 @@ export async function uploadPhotoToGoogleDrive(options: {
 
   return {
     publicUrl,
+    fileId,
   }
 }
 

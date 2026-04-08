@@ -15,7 +15,7 @@ describe('uploadPhotoToGoogleDrive', () => {
     globalThis.fetch = originalFetch
   })
 
-  it('uploads a photo, publishes it, and returns its public URL', async () => {
+  it('uploads a photo, publishes it, and returns its file id and public URL', async () => {
     fetchMock.mockResolvedValueOnce(
       new Response(
         JSON.stringify({
@@ -48,6 +48,7 @@ describe('uploadPhotoToGoogleDrive', () => {
       }),
     ).resolves.toEqual({
       publicUrl: 'https://drive.example/kyoto.jpg',
+      fileId: 'file-id',
     })
 
     let uploadBody = fetchMock.mock.calls[0]?.[1]?.body

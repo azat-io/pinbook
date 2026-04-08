@@ -4,6 +4,7 @@ import type { GoogleDriveConfig } from '../types/google-drive-config'
 import { replaceLocalPhotosWithPublicUrls } from './replace-local-photos-with-public-urls'
 import { getGoogleDriveUploadContext } from './get-google-drive-upload-context'
 import { preparePhotoForGoogleDrive } from './prepare-photo-for-google-drive'
+import { deletePhotoFromGoogleDrive } from './delete-photo-from-google-drive'
 import { uploadPhotoToGoogleDrive } from './upload-photo-to-google-drive'
 import { collectLocalPhotoPaths } from './collect-local-photo-paths'
 import { loadPhotoUploadCache } from './load-photo-upload-cache'
@@ -93,6 +94,12 @@ interface ResolveGoogleDrivePhotosOptions {
   googleDriveConfig?: Partial<GoogleDriveConfig>
 
   /**
+   * Optional callback invoked when stale Google Drive cleanup fails after a
+   * successful replacement upload.
+   */
+  onWarning?(message: string): void
+
+  /**
    * Optional path to the JSON cache that stores previously uploaded photo
    * metadata.
    */
@@ -155,6 +162,7 @@ export async function resolveGoogleDrivePhotos(
   let cacheEntries = { ...cache.entries }
   let publicUrlByPath: Record<string, string> = {}
   let cacheChanged = false
+  let staleFileIdsToDelete = new Set<string>()
   let progressState: ResolveGoogleDrivePhotosProgressSnapshot = {
     total: localPhotoPaths.length,
     completed: 0,
@@ -172,6 +180,15 @@ export async function resolveGoogleDrivePhotos(
    */
   function emitProgress(event: ResolveGoogleDrivePhotosProgressEvent): void {
     options.onProgress?.(event)
+  }
+
+  /**
+   * Forwards a warning message to the optional external listener.
+   *
+   * @param message - Human-readable warning that should not fail the build.
+   */
+  function emitWarning(message: string): void {
+    options.onWarning?.(message)
   }
 
   emitProgress({
@@ -249,8 +266,13 @@ export async function resolveGoogleDrivePhotos(
       return {
         cacheEntry: {
           publicUrl: uploadedPhoto.publicUrl,
+          fileId: uploadedPhoto.fileId,
           hash: preparedPhoto.hash,
         },
+        staleFileId:
+          cachedEntry?.fileId && cachedEntry.fileId !== uploadedPhoto.fileId ?
+            cachedEntry.fileId
+          : undefined,
         publicUrl: uploadedPhoto.publicUrl,
         photoPath,
       }
@@ -268,6 +290,14 @@ export async function resolveGoogleDrivePhotos(
     }
 
     cacheEntries[photoResult.photoPath] = cacheEntry
+
+    if (
+      'staleFileId' in photoResult &&
+      typeof photoResult.staleFileId === 'string'
+    ) {
+      staleFileIdsToDelete.add(photoResult.staleFileId)
+    }
+
     cacheChanged = true
   }
 
@@ -278,6 +308,27 @@ export async function resolveGoogleDrivePhotos(
         entries: cacheEntries,
       },
       options.cachePath,
+    )
+  }
+
+  if (staleFileIdsToDelete.size > 0 && googleDriveUploadContextPromise) {
+    let googleDriveUploadContext = await googleDriveUploadContextPromise
+
+    await Promise.all(
+      [...staleFileIdsToDelete].map(async staleFileId => {
+        try {
+          await deletePhotoFromGoogleDrive({
+            accessToken: googleDriveUploadContext.accessToken,
+            fileId: staleFileId,
+          })
+        } catch (error) {
+          emitWarning(
+            error instanceof Error ?
+              error.message
+            : `Google Drive file deletion failed for "${staleFileId}".`,
+          )
+        }
+      }),
     )
   }
 

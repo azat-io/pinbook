@@ -142,6 +142,9 @@ export async function build(targetPath?: string): Promise<void> {
     }
 
     resolvedConfig = await resolveGoogleDrivePhotos(resolvedConfig, {
+      onWarning(message) {
+        log.warn(message)
+      },
       onProgress: photoProgressReporter.onProgress,
       cachePath: photoUploadCachePath,
       googleDriveConfig,

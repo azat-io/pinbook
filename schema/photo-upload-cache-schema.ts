@@ -11,6 +11,12 @@ export let photoUploadCacheSchema = z
         z.string(),
         z
           .object({
+            fileId: z
+              .string()
+              .trim()
+              .min(1)
+              .optional()
+              .describe('Google Drive file id for the last uploaded photo'),
             publicUrl: z.string().trim().min(1),
             hash: z.string().trim().min(1),
           })

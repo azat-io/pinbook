@@ -280,7 +280,9 @@ GOOGLE_DRIVE_FOLDER_ID=your-google-drive-folder-id
 
 Uploaded photo metadata is cached locally at
 `node_modules/.cache/pinbook/photo-cache.json` so unchanged files are not
-uploaded again on every build.
+uploaded again on every build. When a local photo changes, Pinbook uploads the
+new version and removes the stale Google Drive file when its cached file id is
+available.
 
 `pinbook drive-auth` stores these values in the local project `.env` file next
 to your YAML config and ensures that `.env` is ignored by Git.

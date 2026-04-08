@@ -66,6 +66,37 @@ describe('loadPhotoUploadCache', () => {
     })
   })
 
+  it('loads a valid photo upload cache file with a Drive file id', async () => {
+    let temporaryDirectory = await createTemporaryDirectory()
+    let filePath = join(temporaryDirectory, 'photo-cache.json')
+
+    await writeFile(
+      filePath,
+      JSON.stringify({
+        entries: {
+          '/tmp/kyoto.jpg': {
+            publicUrl: 'https://example.com/photo.jpg',
+            fileId: 'drive-file-id',
+            hash: 'sha256-hash',
+          },
+        },
+        version: 2,
+      }),
+      'utf8',
+    )
+
+    await expect(loadPhotoUploadCache(filePath)).resolves.toEqual({
+      entries: {
+        '/tmp/kyoto.jpg': {
+          publicUrl: 'https://example.com/photo.jpg',
+          fileId: 'drive-file-id',
+          hash: 'sha256-hash',
+        },
+      },
+      version: 2,
+    })
+  })
+
   it('rejects the old photo upload cache format', async () => {
     let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, 'photo-cache.json')

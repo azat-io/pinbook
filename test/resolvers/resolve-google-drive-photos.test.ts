@@ -401,6 +401,7 @@ describe('resolveGoogleDrivePhotos', () => {
         [photoPath]: {
           publicUrl: 'https://drive.example/kyoto.jpg',
           hash: preparedPhoto.hash,
+          fileId: 'drive-file-id',
         },
       },
       version: 2,
@@ -600,6 +601,496 @@ describe('resolveGoogleDrivePhotos', () => {
     })
 
     expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('uploads a changed photo, updates the cache, and deletes the stale Drive file', async () => {
+    let temporaryDirectory = await createTemporaryDirectory()
+    let cachePath = join(temporaryDirectory, 'photo-cache.json')
+    let photoPath = join(temporaryDirectory, 'kyoto.jpg')
+    let photoBuffer = await createLocalPhoto(photoPath)
+    let preparedPhoto = await preparePhotoForGoogleDrive({
+      buffer: photoBuffer,
+      photoPath,
+    })
+
+    await writeFile(
+      cachePath,
+      JSON.stringify(
+        {
+          entries: {
+            [photoPath]: {
+              publicUrl: 'https://drive.example/old-kyoto.jpg',
+              fileId: 'old-drive-file-id',
+              hash: 'old-hash',
+            },
+          },
+          version: 2,
+        },
+        null,
+        2,
+      ),
+      'utf8',
+    )
+
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          // eslint-disable-next-line camelcase
+          access_token: 'access-token',
+        }),
+        {
+          status: 200,
+        },
+      ),
+    )
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          files: [
+            {
+              id: 'map-folder-id',
+            },
+          ],
+        }),
+        {
+          status: 200,
+        },
+      ),
+    )
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          id: 'new-drive-file-id',
+        }),
+        {
+          status: 200,
+        },
+      ),
+    )
+    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          webContentLink: 'https://drive.example/new-kyoto.jpg',
+        }),
+        {
+          status: 200,
+        },
+      ),
+    )
+    fetchMock.mockResolvedValueOnce(new Response(null, { status: 204 }))
+
+    await expect(
+      resolveGoogleDrivePhotos(
+        {
+          pins: [
+            {
+              coords: [35.0116, 135.7681],
+              title: 'Kyoto Station',
+              id: 'kyoto-station',
+              icon: 'shapes-pin',
+              photo: photoPath,
+              color: 'red-500',
+            },
+          ],
+          map: {
+            title: 'Kyoto',
+          },
+          layers: [],
+        },
+        {
+          googleDriveConfig: {
+            clientSecret: 'client-secret',
+            refreshToken: 'refresh-token',
+            clientId: 'client-id',
+            folderId: 'folder-id',
+          },
+          cachePath,
+        },
+      ),
+    ).resolves.toMatchObject({
+      pins: [
+        {
+          photo: 'https://drive.example/new-kyoto.jpg',
+        },
+      ],
+    })
+
+    expect(fetchMock).toHaveBeenCalledTimes(6)
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'https://www.googleapis.com/drive/v3/files/old-drive-file-id?supportsAllDrives=true',
+      {
+        headers: {
+          Authorization: 'Bearer access-token',
+        },
+        method: 'DELETE',
+      },
+    )
+    await expect(
+      readFile(cachePath, 'utf8').then(source => JSON.parse(source) as unknown),
+    ).resolves.toEqual({
+      entries: {
+        [photoPath]: {
+          publicUrl: 'https://drive.example/new-kyoto.jpg',
+          fileId: 'new-drive-file-id',
+          hash: preparedPhoto.hash,
+        },
+      },
+      version: 2,
+    })
+  })
+
+  it('uploads a changed photo without deleting when the old cache entry has no file id', async () => {
+    let temporaryDirectory = await createTemporaryDirectory()
+    let cachePath = join(temporaryDirectory, 'photo-cache.json')
+    let photoPath = join(temporaryDirectory, 'kyoto.jpg')
+
+    await createLocalPhoto(photoPath)
+    await writeFile(
+      cachePath,
+      JSON.stringify(
+        {
+          entries: {
+            [photoPath]: {
+              publicUrl: 'https://drive.example/old-kyoto.jpg',
+              hash: 'old-hash',
+            },
+          },
+          version: 2,
+        },
+        null,
+        2,
+      ),
+      'utf8',
+    )
+
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          // eslint-disable-next-line camelcase
+          access_token: 'access-token',
+        }),
+        {
+          status: 200,
+        },
+      ),
+    )
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          files: [
+            {
+              id: 'map-folder-id',
+            },
+          ],
+        }),
+        {
+          status: 200,
+        },
+      ),
+    )
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          id: 'new-drive-file-id',
+        }),
+        {
+          status: 200,
+        },
+      ),
+    )
+    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          webContentLink: 'https://drive.example/new-kyoto.jpg',
+        }),
+        {
+          status: 200,
+        },
+      ),
+    )
+
+    await expect(
+      resolveGoogleDrivePhotos(
+        {
+          pins: [
+            {
+              coords: [35.0116, 135.7681],
+              title: 'Kyoto Station',
+              id: 'kyoto-station',
+              icon: 'shapes-pin',
+              photo: photoPath,
+              color: 'red-500',
+            },
+          ],
+          map: {
+            title: 'Kyoto',
+          },
+          layers: [],
+        },
+        {
+          googleDriveConfig: {
+            clientSecret: 'client-secret',
+            refreshToken: 'refresh-token',
+            clientId: 'client-id',
+            folderId: 'folder-id',
+          },
+          cachePath,
+        },
+      ),
+    ).resolves.toMatchObject({
+      pins: [
+        {
+          photo: 'https://drive.example/new-kyoto.jpg',
+        },
+      ],
+    })
+
+    expect(fetchMock).toHaveBeenCalledTimes(5)
+  })
+
+  it('warns and continues when stale Drive photo deletion fails', async () => {
+    let temporaryDirectory = await createTemporaryDirectory()
+    let cachePath = join(temporaryDirectory, 'photo-cache.json')
+    let photoPath = join(temporaryDirectory, 'kyoto.jpg')
+    let onWarning = vi.fn<(message: string) => void>()
+
+    await createLocalPhoto(photoPath)
+    await writeFile(
+      cachePath,
+      JSON.stringify(
+        {
+          entries: {
+            [photoPath]: {
+              publicUrl: 'https://drive.example/old-kyoto.jpg',
+              fileId: 'old-drive-file-id',
+              hash: 'old-hash',
+            },
+          },
+          version: 2,
+        },
+        null,
+        2,
+      ),
+      'utf8',
+    )
+
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          // eslint-disable-next-line camelcase
+          access_token: 'access-token',
+        }),
+        {
+          status: 200,
+        },
+      ),
+    )
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          files: [
+            {
+              id: 'map-folder-id',
+            },
+          ],
+        }),
+        {
+          status: 200,
+        },
+      ),
+    )
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          id: 'new-drive-file-id',
+        }),
+        {
+          status: 200,
+        },
+      ),
+    )
+    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          webContentLink: 'https://drive.example/new-kyoto.jpg',
+        }),
+        {
+          status: 200,
+        },
+      ),
+    )
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          error: {
+            message: 'delete failed',
+          },
+        }),
+        {
+          status: 500,
+        },
+      ),
+    )
+
+    await expect(
+      resolveGoogleDrivePhotos(
+        {
+          pins: [
+            {
+              coords: [35.0116, 135.7681],
+              title: 'Kyoto Station',
+              id: 'kyoto-station',
+              icon: 'shapes-pin',
+              photo: photoPath,
+              color: 'red-500',
+            },
+          ],
+          map: {
+            title: 'Kyoto',
+          },
+          layers: [],
+        },
+        {
+          googleDriveConfig: {
+            clientSecret: 'client-secret',
+            refreshToken: 'refresh-token',
+            clientId: 'client-id',
+            folderId: 'folder-id',
+          },
+          onWarning,
+          cachePath,
+        },
+      ),
+    ).resolves.toMatchObject({
+      pins: [
+        {
+          photo: 'https://drive.example/new-kyoto.jpg',
+        },
+      ],
+    })
+
+    expect(onWarning).toHaveBeenCalledWith(
+      'Google Drive file deletion failed for "old-drive-file-id": delete failed',
+    )
+  })
+
+  it('warns with a fallback message when stale Drive photo deletion throws a non-Error value', async () => {
+    let temporaryDirectory = await createTemporaryDirectory()
+    let cachePath = join(temporaryDirectory, 'photo-cache.json')
+    let photoPath = join(temporaryDirectory, 'kyoto.jpg')
+    let onWarning = vi.fn<(message: string) => void>()
+
+    await createLocalPhoto(photoPath)
+    await writeFile(
+      cachePath,
+      JSON.stringify(
+        {
+          entries: {
+            [photoPath]: {
+              publicUrl: 'https://drive.example/old-kyoto.jpg',
+              fileId: 'old-drive-file-id',
+              hash: 'old-hash',
+            },
+          },
+          version: 2,
+        },
+        null,
+        2,
+      ),
+      'utf8',
+    )
+
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          // eslint-disable-next-line camelcase
+          access_token: 'access-token',
+        }),
+        {
+          status: 200,
+        },
+      ),
+    )
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          files: [
+            {
+              id: 'map-folder-id',
+            },
+          ],
+        }),
+        {
+          status: 200,
+        },
+      ),
+    )
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          id: 'new-drive-file-id',
+        }),
+        {
+          status: 200,
+        },
+      ),
+    )
+    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          webContentLink: 'https://drive.example/new-kyoto.jpg',
+        }),
+        {
+          status: 200,
+        },
+      ),
+    )
+    fetchMock.mockRejectedValueOnce('delete failed')
+
+    await expect(
+      resolveGoogleDrivePhotos(
+        {
+          pins: [
+            {
+              coords: [35.0116, 135.7681],
+              title: 'Kyoto Station',
+              id: 'kyoto-station',
+              icon: 'shapes-pin',
+              photo: photoPath,
+              color: 'red-500',
+            },
+          ],
+          map: {
+            title: 'Kyoto',
+          },
+          layers: [],
+        },
+        {
+          googleDriveConfig: {
+            clientSecret: 'client-secret',
+            refreshToken: 'refresh-token',
+            clientId: 'client-id',
+            folderId: 'folder-id',
+          },
+          onWarning,
+          cachePath,
+        },
+      ),
+    ).resolves.toMatchObject({
+      pins: [
+        {
+          photo: 'https://drive.example/new-kyoto.jpg',
+        },
+      ],
+    })
+
+    expect(onWarning).toHaveBeenCalledWith(
+      'Google Drive file deletion failed for "old-drive-file-id".',
+    )
   })
 
   it('emits progress updates while local photos are processed', async () => {

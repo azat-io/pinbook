@@ -39,6 +39,7 @@ vi.mock('@clack/prompts', () => ({
     error: vi.fn(),
     info: vi.fn(),
     step: vi.fn(),
+    warn: vi.fn(),
   },
   progress: vi.fn(),
   cancel: vi.fn(),
@@ -604,6 +605,60 @@ describe('build', () => {
     await build(filePath)
 
     expect(progress).not.toHaveBeenCalled()
+    expect(log.success).toHaveBeenCalledWith(
+      `Map written to ${exampleBuildOutputPath}.`,
+    )
+  })
+
+  it('logs Google Drive cleanup warnings and still completes the build', async () => {
+    let filePath = exampleConfigFilePath
+    let config: MapConfigSchema = {
+      pins: [
+        {
+          coords: [35.0116, 135.7681],
+          icon: 'shapes-pin' as const,
+          color: 'red-500' as const,
+          title: 'Kyoto Station',
+          id: 'kyoto-station',
+        },
+      ],
+      map: {
+        title: 'Kyoto 2026',
+      },
+      layers: [],
+    }
+    let resolvedConfig: ResolvedMapConfig = {
+      ...config,
+      pins: [
+        {
+          coords: [35.0116, 135.7681],
+          title: 'Kyoto Station',
+          id: 'kyoto-station',
+          icon: 'shapes-pin',
+          color: 'red-500',
+        },
+      ],
+    }
+
+    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('test-key')
+    vi.mocked(resolveConfig).mockResolvedValueOnce(resolvedConfig)
+    vi.mocked(resolveGoogleDrivePhotos).mockImplementationOnce(
+      (resolved, options) => {
+        options?.onWarning?.(
+          'Google Drive file deletion failed for "old-file-id": delete failed',
+        )
+
+        return Promise.resolve(resolved)
+      },
+    )
+    vi.mocked(exportKml).mockReturnValueOnce('<kml>map</kml>')
+
+    await build(filePath)
+
+    expect(log.warn).toHaveBeenCalledWith(
+      'Google Drive file deletion failed for "old-file-id": delete failed',
+    )
     expect(log.success).toHaveBeenCalledWith(
       `Map written to ${exampleBuildOutputPath}.`,
     )
