@@ -1,5 +1,20 @@
 # Changelog
 
+## v1.2.0
+
+[compare changes](https://github.com/azat-io/pinbook/compare/v1.1.0...v1.2.0)
+
+### 🚀 Features
+
+- Add build progress logging for geocoding and photo uploads
+  ([457251b](https://github.com/azat-io/pinbook/commit/457251b))
+- Clean up stale google drive photo uploads
+  ([efa3ca3](https://github.com/azat-io/pinbook/commit/efa3ca3))
+
+### ❤️ Contributors
+
+- Azat S. ([@azat-io](https://github.com/azat-io))
+
 ## v1.1.0
 
 [compare changes](https://github.com/azat-io/pinbook/compare/v1.0.0...v1.1.0)
