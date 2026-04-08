@@ -4,6 +4,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import sharp from 'sharp'
 
+import type { ResolveGoogleDrivePhotosProgressEvent } from '../../resolvers/resolve-google-drive-photos'
+
 import { preparePhotoForGoogleDrive } from '../../resolvers/prepare-photo-for-google-drive'
 import { resolveGoogleDrivePhotos } from '../../resolvers/resolve-google-drive-photos'
 
@@ -598,6 +600,279 @@ describe('resolveGoogleDrivePhotos', () => {
     })
 
     expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('emits progress updates while local photos are processed', async () => {
+    let temporaryDirectory = await createTemporaryDirectory()
+    let cachePath = join(temporaryDirectory, 'photo-cache.json')
+    let photoPath = join(temporaryDirectory, 'kyoto.jpg')
+    let photoBuffer = await createLocalPhoto(photoPath)
+    let preparedPhoto = await preparePhotoForGoogleDrive({
+      buffer: photoBuffer,
+      photoPath,
+    })
+    let onProgressSpy =
+      vi.fn<(event: ResolveGoogleDrivePhotosProgressEvent) => void>()
+
+    function onProgress(event: ResolveGoogleDrivePhotosProgressEvent): void {
+      onProgressSpy(event)
+    }
+
+    await writeFile(
+      cachePath,
+      JSON.stringify(
+        {
+          entries: {
+            [photoPath]: {
+              publicUrl: 'https://drive.example/kyoto.jpg',
+              hash: preparedPhoto.hash,
+            },
+          },
+          version: 2,
+        },
+        null,
+        2,
+      ),
+      'utf8',
+    )
+
+    await expect(
+      resolveGoogleDrivePhotos(
+        {
+          pins: [
+            {
+              coords: [35.0116, 135.7681],
+              title: 'Kyoto Station',
+              id: 'kyoto-station',
+              icon: 'shapes-pin',
+              photo: photoPath,
+              color: 'red-500',
+            },
+          ],
+          map: {
+            title: 'Kyoto',
+          },
+          layers: [],
+        },
+        {
+          googleDriveConfig: {
+            clientSecret: 'client-secret',
+            refreshToken: 'refresh-token',
+            clientId: 'client-id',
+          },
+          onProgress,
+          cachePath,
+        },
+      ),
+    ).resolves.toMatchObject({
+      pins: [
+        {
+          photo: 'https://drive.example/kyoto.jpg',
+        },
+      ],
+    })
+
+    expect(onProgressSpy).toHaveBeenNthCalledWith(1, {
+      type: 'start',
+      completed: 0,
+      uploaded: 0,
+      cached: 0,
+      total: 1,
+    })
+    expect(onProgressSpy).toHaveBeenNthCalledWith(2, {
+      type: 'cache-hit',
+      completed: 1,
+      uploaded: 0,
+      photoPath,
+      cached: 1,
+      total: 1,
+    })
+    expect(onProgressSpy).toHaveBeenNthCalledWith(3, {
+      type: 'complete',
+      completed: 1,
+      uploaded: 0,
+      cached: 1,
+      total: 1,
+    })
+  })
+
+  it('reuses a single Drive upload context for multiple uncached photos', async () => {
+    let temporaryDirectory = await createTemporaryDirectory()
+    let cachePath = join(temporaryDirectory, 'photo-cache.json')
+    let firstPhotoPath = join(temporaryDirectory, 'kyoto.jpg')
+    let secondPhotoPath = join(temporaryDirectory, 'osaka.jpg')
+    let onProgressSpy =
+      vi.fn<(event: ResolveGoogleDrivePhotosProgressEvent) => void>()
+    let folderLookupCount = 0
+    let folderCreateCount = 0
+    let uploadCount = 0
+
+    await createLocalPhoto(firstPhotoPath)
+    await createLocalPhoto(secondPhotoPath)
+
+    function onProgress(event: ResolveGoogleDrivePhotosProgressEvent): void {
+      onProgressSpy(event)
+    }
+
+    fetchMock.mockImplementation(input => {
+      let url: URL
+
+      if (input instanceof Request) {
+        url = new URL(input.url)
+      } else if (input instanceof URL) {
+        url = input
+      } else {
+        url = new URL(input)
+      }
+
+      if (url.pathname === '/token') {
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({
+              // eslint-disable-next-line camelcase
+              access_token: 'access-token',
+            }),
+            {
+              status: 200,
+            },
+          ),
+        )
+      }
+
+      if (
+        url.pathname === '/drive/v3/files' &&
+        url.searchParams.get('fields') === 'files(id)'
+      ) {
+        folderLookupCount += 1
+
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({
+              files: [],
+            }),
+            {
+              status: 200,
+            },
+          ),
+        )
+      }
+
+      if (
+        url.pathname === '/drive/v3/files' &&
+        !url.searchParams.has('uploadType')
+      ) {
+        folderCreateCount += 1
+
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({
+              id: 'map-folder-id',
+            }),
+            {
+              status: 200,
+            },
+          ),
+        )
+      }
+
+      if (url.pathname === '/upload/drive/v3/files') {
+        uploadCount += 1
+
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({
+              id: `drive-file-id-${uploadCount}`,
+            }),
+            {
+              status: 200,
+            },
+          ),
+        )
+      }
+
+      if (url.pathname.endsWith('/permissions')) {
+        return Promise.resolve(new Response('{}', { status: 200 }))
+      }
+
+      if (url.pathname.startsWith('/drive/v3/files/')) {
+        let fileId = url.pathname.split('/').at(-1)
+
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({
+              webContentLink: `https://drive.example/${fileId}.jpg`,
+            }),
+            {
+              status: 200,
+            },
+          ),
+        )
+      }
+
+      throw new TypeError(`Unexpected fetch URL in test: ${url}`)
+    })
+
+    let resolvedConfig = await resolveGoogleDrivePhotos(
+      {
+        pins: [
+          {
+            coords: [35.0116, 135.7681],
+            title: 'Kyoto Station',
+            photo: firstPhotoPath,
+            id: 'kyoto-station',
+            icon: 'shapes-pin',
+            color: 'red-500',
+          },
+          {
+            coords: [34.6937, 135.5023],
+            title: 'Osaka Station',
+            photo: secondPhotoPath,
+            id: 'osaka-station',
+            icon: 'shapes-pin',
+            color: 'red-500',
+          },
+        ],
+        map: {
+          title: 'Japan Trip',
+        },
+        layers: [],
+      },
+      {
+        googleDriveConfig: {
+          clientSecret: 'client-secret',
+          refreshToken: 'refresh-token',
+          clientId: 'client-id',
+          folderId: 'folder-id',
+        },
+        onProgress,
+        cachePath,
+      },
+    )
+
+    expect(resolvedConfig.pins).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          photo: 'https://drive.example/drive-file-id-1.jpg',
+        }),
+        expect.objectContaining({
+          photo: 'https://drive.example/drive-file-id-2.jpg',
+        }),
+      ]),
+    )
+
+    expect(folderLookupCount).toBe(1)
+    expect(folderCreateCount).toBe(1)
+    expect(uploadCount).toBe(2)
+    expect(
+      onProgressSpy.mock.calls.filter(
+        ([event]) => event.type === 'drive-auth-start',
+      ),
+    ).toHaveLength(1)
+    expect(
+      onProgressSpy.mock.calls.filter(
+        ([event]) => event.type === 'drive-auth-complete',
+      ),
+    ).toHaveLength(1)
   })
 
   it('surfaces Google authentication failures', async () => {

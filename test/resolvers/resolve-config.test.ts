@@ -3,6 +3,8 @@ import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
+import type { ResolveConfigProgressEvent } from '../../types/resolve-config-options'
+
 import { loadResolutionCache } from '../../resolvers/load-resolution-cache'
 import { saveResolutionCache } from '../../resolvers/save-resolution-cache'
 import { mapConfigSchema } from '../../schema/map-config-schema'
@@ -11,6 +13,27 @@ import { resolveConfig } from '../../resolvers/resolve-config'
 let temporaryDirectories: string[] = []
 let fetchMock = vi.fn<typeof fetch>()
 let originalFetch = globalThis.fetch
+
+function createGeocodingResponse(): Response {
+  return new Response(
+    JSON.stringify({
+      results: [
+        {
+          geometry: {
+            location: {
+              lng: 139.7967,
+              lat: 35.7148,
+            },
+          },
+        },
+      ],
+      status: 'OK',
+    }),
+    {
+      status: 200,
+    },
+  )
+}
 
 async function createTemporaryDirectory(): Promise<string> {
   let temporaryDirectory = await mkdtemp(join(tmpdir(), 'pinbook-resolve-'))
@@ -189,6 +212,78 @@ describe('resolveConfig', () => {
       },
       version: 1,
     })
+  })
+
+  it('emits progress updates while uncached addresses are geocoded', async () => {
+    let temporaryDirectory = await createTemporaryDirectory()
+    let cachePath = join(temporaryDirectory, 'cache.json')
+    let onProgressSpy = vi.fn<(event: ResolveConfigProgressEvent) => void>()
+    let config = mapConfigSchema.parse({
+      pins: [
+        {
+          address: 'Senso-ji, Tokyo',
+          title: 'Senso-ji',
+          id: 'senso-ji',
+        },
+        {
+          address: 'Tokyo Station, Tokyo',
+          title: 'Tokyo Station',
+          id: 'tokyo-station',
+        },
+      ],
+      map: {
+        title: 'Tokyo',
+      },
+    })
+
+    fetchMock.mockImplementation(async () => {
+      await Promise.resolve()
+
+      return createGeocodingResponse()
+    })
+
+    function onProgress(event: ResolveConfigProgressEvent): void {
+      onProgressSpy(event)
+    }
+
+    let resolvedConfig = await resolveConfig(config, {
+      googleMapsApiKey: 'test-key',
+      onProgress,
+      cachePath,
+    })
+
+    expect(resolvedConfig.pins).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          address: 'Senso-ji, Tokyo',
+        }),
+        expect.objectContaining({
+          address: 'Tokyo Station, Tokyo',
+        }),
+      ]),
+    )
+
+    expect(onProgressSpy).toHaveBeenNthCalledWith(1, {
+      type: 'geocoding-start',
+      total: 2,
+    })
+    expect(onProgressSpy).toHaveBeenCalledTimes(3)
+    expect(onProgressSpy).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        type: 'geocoding-progress',
+        completed: 1,
+        total: 2,
+      }),
+    )
+    expect(onProgressSpy).toHaveBeenNthCalledWith(
+      3,
+      expect.objectContaining({
+        type: 'geocoding-progress',
+        completed: 2,
+        total: 2,
+      }),
+    )
   })
 
   it('throws a helpful error when uncached addresses exist and the API key is missing', async () => {

@@ -58,14 +58,34 @@ export async function resolveConfig(
     throw error
   }
 
+  if (missingAddresses.length > 0) {
+    options.onProgress?.({
+      total: missingAddresses.length,
+      type: 'geocoding-start',
+    })
+  }
+
+  let geocodedAddressCount = 0
   let geocodedAddresses = await Promise.all(
-    missingAddresses.map(async address => ({
-      coordinates: await geocodeAddressWithGoogle(
+    missingAddresses.map(async address => {
+      let coordinates = await geocodeAddressWithGoogle(
         address,
         options.googleMapsApiKey!,
-      ),
-      address,
-    })),
+      )
+
+      geocodedAddressCount += 1
+      options.onProgress?.({
+        completed: geocodedAddressCount,
+        total: missingAddresses.length,
+        type: 'geocoding-progress',
+        address,
+      })
+
+      return {
+        coordinates,
+        address,
+      }
+    }),
   )
 
   for (let geocodedAddress of geocodedAddresses) {

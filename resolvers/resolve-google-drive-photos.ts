@@ -11,10 +11,81 @@ import { savePhotoUploadCache } from './save-photo-upload-cache'
 import { readLocalPhoto } from './read-local-photo'
 
 /**
+ * Progress events emitted while local photos are normalized, cached, and
+ * uploaded to Google Drive.
+ */
+export type ResolveGoogleDrivePhotosProgressEvent =
+  | ({
+      /**
+       * Signals that a photo upload to Google Drive has started.
+       */
+      type: 'upload-start'
+
+      /**
+       * Absolute local path of the photo being uploaded.
+       */
+      photoPath: string
+    } & ResolveGoogleDrivePhotosProgressSnapshot)
+  | ({
+      /**
+       * Signals that a photo upload to Google Drive has completed.
+       */
+      type: 'upload-complete'
+
+      /**
+       * Absolute local path of the uploaded photo.
+       */
+      photoPath: string
+    } & ResolveGoogleDrivePhotosProgressSnapshot)
+  | ({
+      /**
+       * Signals that a photo was reused from the local upload cache.
+       */
+      type: 'cache-hit'
+
+      /**
+       * Absolute local path of the cached photo.
+       */
+      photoPath: string
+    } & ResolveGoogleDrivePhotosProgressSnapshot)
+  | ({
+      /**
+       * Signals that Drive authentication and target folder resolution have
+       * completed.
+       */
+      type: 'drive-auth-complete'
+    } & ResolveGoogleDrivePhotosProgressSnapshot)
+  | ({
+      /**
+       * Signals that Drive authentication and target folder resolution have
+       * started.
+       */
+      type: 'drive-auth-start'
+    } & ResolveGoogleDrivePhotosProgressSnapshot)
+  | ({
+      /**
+       * Signals that all local photo processing for the current build has
+       * completed.
+       */
+      type: 'complete'
+    } & ResolveGoogleDrivePhotosProgressSnapshot)
+  | ({
+      /**
+       * Signals that local photo processing is about to begin.
+       */
+      type: 'start'
+    } & ResolveGoogleDrivePhotosProgressSnapshot)
+
+/**
  * Options that control how local photos are uploaded and cached during config
  * resolution.
  */
 interface ResolveGoogleDrivePhotosOptions {
+  /**
+   * Optional callback invoked while local photos are processed and uploaded.
+   */
+  onProgress?(event: ResolveGoogleDrivePhotosProgressEvent): void
+
   /**
    * Partial Google Drive credentials loaded from `.env` and the process
    * environment.
@@ -28,6 +99,35 @@ interface ResolveGoogleDrivePhotosOptions {
   cachePath?: string
 }
 
+/**
+ * Aggregate counters reported while local photos are prepared and uploaded.
+ */
+interface ResolveGoogleDrivePhotosProgressSnapshot {
+  /**
+   * Number of local photos that have finished processing.
+   */
+  completed: number
+
+  /**
+   * Number of photos uploaded to Google Drive during the current build.
+   */
+  uploaded: number
+
+  /**
+   * Number of photos reused from the local upload cache.
+   */
+  cached: number
+
+  /**
+   * Total number of distinct local photos referenced by the map.
+   */
+  total: number
+}
+
+/**
+ * Resolved Google Drive auth token and target folder reused across photo
+ * uploads within a single build.
+ */
 type GoogleDriveUploadContext = Awaited<
   ReturnType<typeof getGoogleDriveUploadContext>
 >
@@ -55,9 +155,29 @@ export async function resolveGoogleDrivePhotos(
   let cacheEntries = { ...cache.entries }
   let publicUrlByPath: Record<string, string> = {}
   let cacheChanged = false
+  let progressState: ResolveGoogleDrivePhotosProgressSnapshot = {
+    total: localPhotoPaths.length,
+    completed: 0,
+    uploaded: 0,
+    cached: 0,
+  }
   let googleDriveUploadContextPromise:
     | Promise<GoogleDriveUploadContext>
     | undefined
+
+  /**
+   * Forwards a progress event to the optional external listener.
+   *
+   * @param event - Snapshot describing the current local photo progress state.
+   */
+  function emitProgress(event: ResolveGoogleDrivePhotosProgressEvent): void {
+    options.onProgress?.(event)
+  }
+
+  emitProgress({
+    ...progressState,
+    type: 'start',
+  })
 
   let photoResults = await Promise.all(
     localPhotoPaths.map(async photoPath => {
@@ -69,26 +189,60 @@ export async function resolveGoogleDrivePhotos(
       let cachedEntry = cacheEntries[photoPath]
 
       if (cachedEntry?.hash === preparedPhoto.hash) {
+        progressState.cached += 1
+        progressState.completed += 1
+        emitProgress({
+          ...progressState,
+          type: 'cache-hit',
+          photoPath,
+        })
+
         return {
           publicUrl: cachedEntry.publicUrl,
           photoPath,
         }
       }
 
-      googleDriveUploadContextPromise = getGoogleDriveUploadContext(
-        googleDriveUploadContextPromise,
-        {
-          googleDriveConfig: options.googleDriveConfig,
-          mapTitle: config.map.title,
-        },
-      )
+      if (!googleDriveUploadContextPromise) {
+        emitProgress({
+          ...progressState,
+          type: 'drive-auth-start',
+        })
+        googleDriveUploadContextPromise = getGoogleDriveUploadContext(
+          googleDriveUploadContextPromise,
+          {
+            googleDriveConfig: options.googleDriveConfig,
+            mapTitle: config.map.title,
+          },
+        ).then(googleDriveUploadContext => {
+          emitProgress({
+            ...progressState,
+            type: 'drive-auth-complete',
+          })
+
+          return googleDriveUploadContext
+        })
+      }
 
       let googleDriveUploadContext = await googleDriveUploadContextPromise
+      emitProgress({
+        ...progressState,
+        type: 'upload-start',
+        photoPath,
+      })
       let uploadedPhoto = await uploadPhotoToGoogleDrive({
         targetFolderId: googleDriveUploadContext.targetFolderId,
         accessToken: googleDriveUploadContext.accessToken,
         uploadFileName: preparedPhoto.uploadFileName,
         buffer: preparedPhoto.buffer,
+        photoPath,
+      })
+
+      progressState.uploaded += 1
+      progressState.completed += 1
+      emitProgress({
+        ...progressState,
+        type: 'upload-complete',
         photoPath,
       })
 
@@ -126,6 +280,11 @@ export async function resolveGoogleDrivePhotos(
       options.cachePath,
     )
   }
+
+  emitProgress({
+    ...progressState,
+    type: 'complete',
+  })
 
   return {
     ...config,

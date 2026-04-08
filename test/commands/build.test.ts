@@ -1,6 +1,6 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
+import { progress, cancel, log } from '@clack/prompts'
 import { writeFile, mkdir } from 'node:fs/promises'
-import { cancel, log } from '@clack/prompts'
 import { join } from 'node:path'
 
 import type { ResolvedMapConfig } from '../../types/resolved-map-config'
@@ -38,7 +38,9 @@ vi.mock('@clack/prompts', () => ({
     success: vi.fn(),
     error: vi.fn(),
     info: vi.fn(),
+    step: vi.fn(),
   },
+  progress: vi.fn(),
   cancel: vi.fn(),
 }))
 
@@ -155,6 +157,19 @@ let examplePhotoUploadCachePath = join(
   'photo-cache.json',
 )
 
+function createProgressHandle(): ReturnType<typeof progress> {
+  return {
+    advance: vi.fn<(step?: number, message?: string) => void>(),
+    message: vi.fn<(message?: string) => void>(),
+    cancel: vi.fn<(message?: string) => void>(),
+    start: vi.fn<(message?: string) => void>(),
+    error: vi.fn<(message?: string) => void>(),
+    stop: vi.fn<(message?: string) => void>(),
+    clear: vi.fn<() => void>(),
+    isCancelled: false,
+  }
+}
+
 function restoreInteractiveTerminal(): void {
   if (originalStdinIsTTY) {
     Object.defineProperty(process.stdin, 'isTTY', originalStdinIsTTY)
@@ -265,6 +280,7 @@ describe('build', () => {
     vi.mocked(resolveGoogleDrivePhotos).mockImplementation(
       (config: ResolvedMapConfig) => Promise.resolve(config),
     )
+    vi.mocked(progress).mockImplementation(() => createProgressHandle())
   })
 
   afterEach(() => {
@@ -310,10 +326,15 @@ describe('build', () => {
     await build(filePath)
 
     expect(loadConfig).toHaveBeenCalledWith(filePath)
-    expect(resolveConfig).toHaveBeenCalledWith(config, {
+    expect(log.step).toHaveBeenCalledWith(`Building map from ${filePath}.`)
+    expect(vi.mocked(resolveConfig).mock.calls[0]?.[0]).toBe(config)
+    expect(vi.mocked(resolveConfig).mock.calls[0]?.[1]).toMatchObject({
       cachePath: exampleResolutionCachePath,
       googleMapsApiKey: 'test-key',
     })
+    expect(typeof vi.mocked(resolveConfig).mock.calls[0]?.[1]?.onProgress).toBe(
+      'function',
+    )
     expect(exportKml).toHaveBeenCalledWith(resolvedConfig, {
       documentDescription: true,
     })
@@ -325,10 +346,267 @@ describe('build', () => {
       '<kml>map</kml>',
       'utf8',
     )
+    expect(log.step).toHaveBeenCalledWith(
+      `Writing KML artifact to ${exampleBuildOutputPath}.`,
+    )
     expect(log.success).toHaveBeenCalledWith(
       `Map written to ${exampleBuildOutputPath}.`,
     )
     expect(process.exitCode).toBeUndefined()
+  })
+
+  it('shows address resolution progress while uncached addresses are geocoded', async () => {
+    let filePath = exampleConfigFilePath
+    let config: MapConfigSchema = {
+      pins: [
+        {
+          icon: 'shapes-pin' as const,
+          address: 'Senso-ji, Tokyo',
+          color: 'red-500' as const,
+          title: 'Senso-ji',
+          id: 'senso-ji',
+        },
+      ],
+      map: {
+        title: 'Tokyo 2026',
+      },
+      layers: [],
+    }
+    let resolvedConfig: ResolvedMapConfig = {
+      ...config,
+      pins: [
+        {
+          coords: [35.7148, 139.7967],
+          address: 'Senso-ji, Tokyo',
+          icon: 'shapes-pin',
+          title: 'Senso-ji',
+          color: 'red-500',
+          id: 'senso-ji',
+        },
+      ],
+    }
+    let addressProgressHandle = createProgressHandle()
+
+    vi.mocked(progress).mockImplementationOnce(() => addressProgressHandle)
+    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('test-key')
+    vi.mocked(resolveConfig).mockImplementationOnce((_config, options) => {
+      options?.onProgress?.({
+        type: 'geocoding-start',
+        total: 1,
+      })
+      options?.onProgress?.({
+        type: 'geocoding-progress',
+        address: 'Senso-ji, Tokyo',
+        completed: 1,
+        total: 1,
+      })
+
+      return Promise.resolve(resolvedConfig)
+    })
+    vi.mocked(exportKml).mockReturnValueOnce('<kml>map</kml>')
+
+    await build(filePath)
+
+    expect(progress).toHaveBeenCalledWith({
+      max: 1,
+    })
+    expect(addressProgressHandle.start).toHaveBeenCalledWith(
+      'Resolving 1 uncached address with Google Maps...',
+    )
+    expect(addressProgressHandle.advance).toHaveBeenCalledWith(
+      1,
+      'Resolved 1/1 address with Google Maps...',
+    )
+    expect(addressProgressHandle.stop).toHaveBeenCalledWith(
+      'Address resolution complete.',
+    )
+  })
+
+  it('shows Google Drive photo progress while local photos are processed', async () => {
+    let filePath = exampleConfigFilePath
+    let config: MapConfigSchema = {
+      pins: [
+        {
+          coords: [35.0116, 135.7681],
+          icon: 'shapes-pin' as const,
+          color: 'red-500' as const,
+          title: 'Kyoto Station',
+          id: 'kyoto-station',
+        },
+      ],
+      map: {
+        title: 'Kyoto 2026',
+      },
+      layers: [],
+    }
+    let resolvedConfig: ResolvedMapConfig = {
+      ...config,
+      pins: [
+        {
+          coords: [35.0116, 135.7681],
+          title: 'Kyoto Station',
+          id: 'kyoto-station',
+          icon: 'shapes-pin',
+          color: 'red-500',
+        },
+      ],
+    }
+    let photoProgressHandle = createProgressHandle()
+
+    vi.mocked(progress).mockImplementationOnce(() => photoProgressHandle)
+    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('test-key')
+    vi.mocked(resolveConfig).mockResolvedValueOnce(resolvedConfig)
+    vi.mocked(resolveGoogleDrivePhotos).mockImplementationOnce(
+      (resolved, options) => {
+        options?.onProgress?.({
+          type: 'start',
+          completed: 0,
+          uploaded: 0,
+          cached: 0,
+          total: 2,
+        })
+        options?.onProgress?.({
+          type: 'drive-auth-start',
+          completed: 0,
+          uploaded: 0,
+          cached: 0,
+          total: 2,
+        })
+        options?.onProgress?.({
+          type: 'drive-auth-complete',
+          completed: 0,
+          uploaded: 0,
+          cached: 0,
+          total: 2,
+        })
+        options?.onProgress?.({
+          photoPath: '/tmp/kyoto.jpg',
+          type: 'upload-start',
+          completed: 0,
+          uploaded: 0,
+          cached: 0,
+          total: 2,
+        })
+        options?.onProgress?.({
+          photoPath: '/tmp/kyoto.jpg',
+          type: 'upload-complete',
+          completed: 1,
+          uploaded: 1,
+          cached: 0,
+          total: 2,
+        })
+        options?.onProgress?.({
+          photoPath: '/tmp/osaka.jpg',
+          type: 'cache-hit',
+          completed: 2,
+          uploaded: 1,
+          cached: 1,
+          total: 2,
+        })
+        options?.onProgress?.({
+          type: 'complete',
+          completed: 2,
+          uploaded: 1,
+          cached: 1,
+          total: 2,
+        })
+
+        return Promise.resolve(resolved)
+      },
+    )
+    vi.mocked(exportKml).mockReturnValueOnce('<kml>map</kml>')
+
+    await build(filePath)
+
+    expect(progress).toHaveBeenCalledWith({
+      max: 2,
+    })
+    expect(photoProgressHandle.start).toHaveBeenCalledWith(
+      'Processing 2 local photos...',
+    )
+    expect(photoProgressHandle.message).toHaveBeenNthCalledWith(
+      1,
+      'Authenticating with Google Drive... (0/2 ready)',
+    )
+    expect(photoProgressHandle.message).toHaveBeenNthCalledWith(
+      2,
+      'Google Drive ready. Uploading photos... (0/2 ready)',
+    )
+    expect(photoProgressHandle.message).toHaveBeenNthCalledWith(
+      3,
+      'Uploading kyoto.jpg... (0/2 ready)',
+    )
+    expect(photoProgressHandle.advance).toHaveBeenNthCalledWith(
+      1,
+      1,
+      'Uploaded 1 photo (1/2).',
+    )
+    expect(photoProgressHandle.advance).toHaveBeenNthCalledWith(
+      2,
+      1,
+      'Reused cached photo (2/2).',
+    )
+    expect(photoProgressHandle.stop).toHaveBeenCalledWith(
+      'Photos ready: 1 uploaded, 1 reused.',
+    )
+  })
+
+  it('ignores Google Drive photo progress events emitted before start', async () => {
+    let filePath = exampleConfigFilePath
+    let config: MapConfigSchema = {
+      pins: [
+        {
+          coords: [35.0116, 135.7681],
+          icon: 'shapes-pin' as const,
+          color: 'red-500' as const,
+          title: 'Kyoto Station',
+          id: 'kyoto-station',
+        },
+      ],
+      map: {
+        title: 'Kyoto 2026',
+      },
+      layers: [],
+    }
+    let resolvedConfig: ResolvedMapConfig = {
+      ...config,
+      pins: [
+        {
+          coords: [35.0116, 135.7681],
+          title: 'Kyoto Station',
+          id: 'kyoto-station',
+          icon: 'shapes-pin',
+          color: 'red-500',
+        },
+      ],
+    }
+
+    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('test-key')
+    vi.mocked(resolveConfig).mockResolvedValueOnce(resolvedConfig)
+    vi.mocked(resolveGoogleDrivePhotos).mockImplementationOnce(
+      (resolved, options) => {
+        options?.onProgress?.({
+          type: 'complete',
+          completed: 0,
+          uploaded: 0,
+          cached: 0,
+          total: 0,
+        })
+
+        return Promise.resolve(resolved)
+      },
+    )
+    vi.mocked(exportKml).mockReturnValueOnce('<kml>map</kml>')
+
+    await build(filePath)
+
+    expect(progress).not.toHaveBeenCalled()
+    expect(log.success).toHaveBeenCalledWith(
+      `Map written to ${exampleBuildOutputPath}.`,
+    )
   })
 
   it('treats a directory target path as a project directory with index.yaml', async () => {
@@ -456,16 +734,81 @@ describe('build', () => {
 
     await build(filePath)
 
-    expect(resolveConfig).toHaveBeenNthCalledWith(1, config, {
+    expect(vi.mocked(resolveConfig).mock.calls[0]?.[0]).toBe(config)
+    expect(vi.mocked(resolveConfig).mock.calls[0]?.[1]).toMatchObject({
       cachePath: exampleResolutionCachePath,
     })
+    expect(typeof vi.mocked(resolveConfig).mock.calls[0]?.[1]?.onProgress).toBe(
+      'function',
+    )
     expect(requestGoogleMapsApiKey).toHaveBeenCalledWith('missing')
     expect(saveGoogleMapsApiKey).toHaveBeenCalledWith(filePath, 'prompted-key')
-    expect(resolveConfig).toHaveBeenNthCalledWith(2, config, {
+    expect(vi.mocked(resolveConfig).mock.calls[1]?.[0]).toBe(config)
+    expect(vi.mocked(resolveConfig).mock.calls[1]?.[1]).toMatchObject({
       cachePath: exampleResolutionCachePath,
       googleMapsApiKey: 'prompted-key',
     })
+    expect(typeof vi.mocked(resolveConfig).mock.calls[1]?.[1]?.onProgress).toBe(
+      'function',
+    )
     expect(process.env['GOOGLE_MAPS_API_KEY']).toBe('prompted-key')
+    expect(process.exitCode).toBeUndefined()
+  })
+
+  it('retries build without googleMapsApiKey when the prompted key trims to empty', async () => {
+    let filePath = exampleConfigFilePath
+    let config: MapConfigSchema = {
+      pins: [
+        {
+          address: 'Senso-ji, Tokyo',
+          icon: 'shapes-pin',
+          title: 'Senso-ji',
+          color: 'red-500',
+          id: 'senso-ji',
+        },
+      ],
+      map: {
+        title: 'Tokyo',
+      },
+      layers: [],
+    }
+    let missingApiKeyError = new Error(
+      'Pins with addresses require the GOOGLE_MAPS_API_KEY environment variable when coordinates are missing from the cache.',
+    )
+    let resolvedConfig: ResolvedMapConfig = {
+      ...config,
+      pins: [
+        {
+          coords: [35.7148, 139.7967],
+          address: 'Senso-ji, Tokyo',
+          icon: 'shapes-pin',
+          title: 'Senso-ji',
+          color: 'red-500',
+          id: 'senso-ji',
+        },
+      ],
+    }
+
+    missingApiKeyError.name = 'GoogleMapsApiKeyMissingError'
+
+    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
+    vi.mocked(resolveConfig)
+      .mockRejectedValueOnce(missingApiKeyError)
+      .mockResolvedValueOnce(resolvedConfig)
+    vi.mocked(requestGoogleMapsApiKey).mockResolvedValueOnce('   ')
+    vi.mocked(exportKml).mockReturnValueOnce('<kml>map</kml>')
+
+    await build(filePath)
+
+    expect(saveGoogleMapsApiKey).toHaveBeenCalledWith(filePath, '')
+    expect(vi.mocked(resolveConfig).mock.calls[1]?.[1]).toMatchObject({
+      cachePath: exampleResolutionCachePath,
+    })
+    expect(vi.mocked(resolveConfig).mock.calls[1]?.[1]).not.toHaveProperty(
+      'googleMapsApiKey',
+    )
+    expect(process.env['GOOGLE_MAPS_API_KEY']).toBe('')
     expect(process.exitCode).toBeUndefined()
   })
 
@@ -596,10 +939,14 @@ describe('build', () => {
       filePath,
       'replacement-key',
     )
-    expect(resolveConfig).toHaveBeenNthCalledWith(2, config, {
+    expect(vi.mocked(resolveConfig).mock.calls[1]?.[0]).toBe(config)
+    expect(vi.mocked(resolveConfig).mock.calls[1]?.[1]).toMatchObject({
       cachePath: exampleResolutionCachePath,
       googleMapsApiKey: 'replacement-key',
     })
+    expect(typeof vi.mocked(resolveConfig).mock.calls[1]?.[1]?.onProgress).toBe(
+      'function',
+    )
     expect(process.env['GOOGLE_MAPS_API_KEY']).toBe('replacement-key')
     expect(process.exitCode).toBeUndefined()
   })
