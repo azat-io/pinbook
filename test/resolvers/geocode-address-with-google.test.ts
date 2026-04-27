@@ -77,7 +77,7 @@ describe('geocodeAddressWithGoogle', () => {
       geocodeAddressWithGoogle('Senso-ji, Tokyo', 'test-key'),
     ).rejects.toMatchObject({
       message:
-        'Google returned status REQUEST_DENIED. The provided API key is invalid.',
+        'Google returned status REQUEST_DENIED for "Senso-ji, Tokyo". The provided API key is invalid.',
       name: 'GoogleGeocodingError',
       status: 'REQUEST_DENIED',
       isInvalidApiKey: true,
@@ -94,7 +94,7 @@ describe('geocodeAddressWithGoogle', () => {
     await expect(
       geocodeAddressWithGoogle('Senso-ji, Tokyo', 'test-key'),
     ).rejects.toMatchObject({
-      message: 'Request failed with HTTP 500.',
+      message: 'Request failed for "Senso-ji, Tokyo" with HTTP 500.',
       name: 'GoogleGeocodingError',
     })
   })
@@ -105,7 +105,7 @@ describe('geocodeAddressWithGoogle', () => {
     await expect(
       geocodeAddressWithGoogle('Senso-ji, Tokyo', 'test-key'),
     ).rejects.toMatchObject({
-      message: 'Request failed: fetch failed.',
+      message: 'Request failed for "Senso-ji, Tokyo": fetch failed.',
       name: 'GoogleGeocodingError',
     })
   })
@@ -116,7 +116,7 @@ describe('geocodeAddressWithGoogle', () => {
     await expect(
       geocodeAddressWithGoogle('Senso-ji, Tokyo', 'test-key'),
     ).rejects.toMatchObject({
-      message: 'Request failed: Unknown transport error.',
+      message: 'Request failed for "Senso-ji, Tokyo": Unknown transport error.',
       name: 'GoogleGeocodingError',
     })
   })
@@ -145,7 +145,8 @@ describe('geocodeAddressWithGoogle', () => {
     await expect(
       geocodeAddressWithGoogle('Senso-ji, Tokyo', 'test-key'),
     ).rejects.toMatchObject({
-      message: 'Google returned a response without valid coordinates.',
+      message:
+        'Google returned a response without valid coordinates for "Senso-ji, Tokyo".',
       name: 'GoogleGeocodingError',
     })
   })
@@ -165,7 +166,7 @@ describe('geocodeAddressWithGoogle', () => {
     await expect(
       geocodeAddressWithGoogle('Senso-ji, Tokyo', 'test-key'),
     ).rejects.toMatchObject({
-      message: 'Google returned status OVER_QUERY_LIMIT.',
+      message: 'Google returned status OVER_QUERY_LIMIT for "Senso-ji, Tokyo".',
       name: 'GoogleGeocodingError',
       status: 'OVER_QUERY_LIMIT',
       isInvalidApiKey: false,
@@ -187,7 +188,7 @@ describe('geocodeAddressWithGoogle', () => {
     await expect(
       geocodeAddressWithGoogle('Senso-ji, Tokyo', 'test-key'),
     ).rejects.toMatchObject({
-      message: 'Google returned status UNKNOWN.',
+      message: 'Google returned status UNKNOWN for "Senso-ji, Tokyo".',
       name: 'GoogleGeocodingError',
     })
   })

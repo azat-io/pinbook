@@ -96,13 +96,13 @@ export async function geocodeAddressWithGoogle(
     response = await fetch(url)
   } catch (error) {
     throw createGoogleGeocodingError(
-      `Request failed: ${error instanceof Error ? error.message : 'Unknown transport error'}.`,
+      `Request failed for "${address}": ${error instanceof Error ? error.message : 'Unknown transport error'}.`,
     )
   }
 
   if (!response.ok) {
     throw createGoogleGeocodingError(
-      `Request failed with HTTP ${response.status}.`,
+      `Request failed for "${address}" with HTTP ${response.status}.`,
     )
   }
 
@@ -122,7 +122,7 @@ export async function geocodeAddressWithGoogle(
       body.error_message === 'The provided API key is invalid.'
 
     throw createGoogleGeocodingError(
-      `Google returned status ${body.status ?? 'UNKNOWN'}.${detail}`,
+      `Google returned status ${body.status ?? 'UNKNOWN'} for "${address}".${detail}`,
       {
         status: body.status,
         isInvalidApiKey,
@@ -134,7 +134,7 @@ export async function geocodeAddressWithGoogle(
 
   if (typeof location?.lat !== 'number' || typeof location.lng !== 'number') {
     throw createGoogleGeocodingError(
-      'Google returned a response without valid coordinates.',
+      `Google returned a response without valid coordinates for "${address}".`,
     )
   }
 
