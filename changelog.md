@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.3.0
+
+[compare changes](https://github.com/azat-io/pinbook/compare/v1.2.0...v1.3.0)
+
+### 🚀 Features
+
+- Add address to geocoding error messages
+  ([797b90a](https://github.com/azat-io/pinbook/commit/797b90a))
+
+### ❤️ Contributors
+
+- Azat S. ([@azat-io](https://github.com/azat-io))
+
 ## v1.2.0
 
 [compare changes](https://github.com/azat-io/pinbook/compare/v1.1.0...v1.2.0)
