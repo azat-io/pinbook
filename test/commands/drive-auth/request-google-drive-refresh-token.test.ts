@@ -1,4 +1,3 @@
-import type { createServer } from 'node:http'
 import type { AddressInfo } from 'node:net'
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -107,9 +106,7 @@ describe('requestGoogleDriveRefreshToken', () => {
   it('opens the browser flow, exchanges the callback code, and closes the server', async () => {
     let server = new MockServer()
 
-    createServerMock.mockReturnValue(
-      server as unknown as ReturnType<typeof createServer>,
-    )
+    createServerMock.mockReturnValue(server)
     vi.mocked(waitForAuthorizationCode).mockResolvedValueOnce(
       'authorization-code',
     )
@@ -165,9 +162,7 @@ describe('requestGoogleDriveRefreshToken', () => {
     let server = new MockServer()
 
     server.address.mockReturnValueOnce(null)
-    createServerMock.mockReturnValue(
-      server as unknown as ReturnType<typeof createServer>,
-    )
+    createServerMock.mockReturnValue(server)
 
     await expect(
       requestGoogleDriveRefreshToken({
@@ -183,9 +178,7 @@ describe('requestGoogleDriveRefreshToken', () => {
     let server = new MockServer()
 
     server.address.mockReturnValueOnce('127.0.0.1:56125')
-    createServerMock.mockReturnValue(
-      server as unknown as ReturnType<typeof createServer>,
-    )
+    createServerMock.mockReturnValue(server)
 
     await expect(
       requestGoogleDriveRefreshToken({
@@ -200,9 +193,7 @@ describe('requestGoogleDriveRefreshToken', () => {
   it('closes the server when the token exchange fails', async () => {
     let server = new MockServer()
 
-    createServerMock.mockReturnValue(
-      server as unknown as ReturnType<typeof createServer>,
-    )
+    createServerMock.mockReturnValue(server)
     vi.mocked(waitForAuthorizationCode).mockResolvedValueOnce(
       'authorization-code',
     )
