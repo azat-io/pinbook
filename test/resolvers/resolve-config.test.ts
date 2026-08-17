@@ -12,7 +12,7 @@ import { resolveConfig } from '../../resolvers/resolve-config'
 
 let temporaryDirectories: string[] = []
 let fetchMock = vi.fn<typeof fetch>()
-let originalFetch = globalThis.fetch
+let originalFetch = fetch
 
 function createGeocodingResponse(): Response {
   return new Response(

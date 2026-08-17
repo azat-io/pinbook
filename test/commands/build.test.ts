@@ -10,7 +10,6 @@ import {
   PhotoUploadCacheValidationError,
   PhotoUploadCacheSyntaxError,
 } from '../../resolvers/load-photo-upload-cache'
-import { GoogleDriveConfigurationError } from '../../resolvers/google-drive-configuration-error'
 import { LocalPhotoFileNotFoundError } from '../../resolvers/local-photo-file-not-found-error'
 import { GoogleDrivePhotoUploadError } from '../../resolvers/google-drive-photo-upload-error'
 import {
@@ -19,6 +18,7 @@ import {
 } from '../../resolvers/resolve-config'
 import { LocalPhotoProcessingError } from '../../resolvers/local-photo-processing-error'
 import { resolveGoogleDrivePhotos } from '../../resolvers/resolve-google-drive-photos'
+import { GoogleDriveConfigError } from '../../resolvers/google-drive-config-error'
 import { requestGoogleMapsApiKey } from '../../cli/request-google-maps-api-key'
 import { loadGoogleDriveConfig } from '../../config/load-google-drive-config'
 import { saveGoogleMapsApiKey } from '../../config/save-google-maps-api-key'
@@ -80,13 +80,13 @@ vi.mock('../../resolvers/resolve-google-drive-photos', () => ({
   ),
 }))
 
-vi.mock('../../resolvers/google-drive-configuration-error', () => ({
-  GoogleDriveConfigurationError: class MockGoogleDriveConfigurationError extends Error {
+vi.mock('../../resolvers/google-drive-config-error', () => ({
+  GoogleDriveConfigError: class MockGoogleDriveConfigError extends Error {
     public missingVariables: string[]
 
     public constructor(missingVariables: string[]) {
       super('Google Drive configuration is incomplete')
-      this.name = 'GoogleDriveConfigurationError'
+      this.name = 'GoogleDriveConfigError'
       this.missingVariables = missingVariables
     }
   },
@@ -125,8 +125,9 @@ vi.mock('../../resolvers/resolve-config', () => {
         address: string
         pinId: string
       }[],
+      options?: ErrorOptions,
     ) {
-      super('Location resolution failed')
+      super('Location resolution failed', options)
       this.name = 'MockLocationResolutionError'
       this.unresolvedLocations = unresolvedLocations
     }
@@ -158,6 +159,68 @@ let examplePhotoUploadCachePath = join(
   'photo-cache.json',
 )
 
+class GoogleGeocodingError extends Error {
+  public isInvalidApiKey?: boolean
+
+  public constructor(
+    message: string,
+    options: {
+      isInvalidApiKey?: boolean
+    } & ErrorOptions = {},
+  ) {
+    super(message, options)
+    this.name = 'GoogleGeocodingError'
+
+    if ('isInvalidApiKey' in options) {
+      this.isInvalidApiKey = options.isInvalidApiKey
+    }
+  }
+}
+
+class GoogleMapsApiKeyMissingError extends Error {
+  public constructor(options?: ErrorOptions) {
+    super(
+      'Pins with addresses require the GOOGLE_MAPS_API_KEY environment variable when coordinates are missing from the cache.',
+      options,
+    )
+    this.name = 'GoogleMapsApiKeyMissingError'
+  }
+}
+
+class ResolutionCacheValidationError extends Error {
+  public issues: string[]
+
+  public constructor(issues: string[], options?: ErrorOptions) {
+    super('Resolution cache validation failed', options)
+    this.name = 'ResolutionCacheValidationError'
+    this.issues = issues
+  }
+}
+
+class ConfigValidationError extends Error {
+  public issues: string[]
+
+  public constructor(issues: string[], options?: ErrorOptions) {
+    super('Config validation failed', options)
+    this.name = 'ConfigValidationError'
+    this.issues = issues
+  }
+}
+
+class ResolutionCacheSyntaxError extends Error {
+  public constructor(message: string, options?: ErrorOptions) {
+    super(message, options)
+    this.name = 'ResolutionCacheSyntaxError'
+  }
+}
+
+class ConfigSyntaxError extends Error {
+  public constructor(message: string, options?: ErrorOptions) {
+    super(message, options)
+    this.name = 'ConfigSyntaxError'
+  }
+}
+
 function createProgressHandle(): ReturnType<typeof progress> {
   return {
     advance: vi.fn<(step?: number, message?: string) => void>(),
@@ -185,38 +248,6 @@ function restoreInteractiveTerminal(): void {
   }
 }
 
-function createGoogleGeocodingError(
-  message: string,
-  options: {
-    isInvalidApiKey?: boolean
-  } = {},
-): Error {
-  let error = new Error(message) as {
-    isInvalidApiKey?: boolean
-  } & Error
-
-  error.name = 'GoogleGeocodingError'
-
-  if ('isInvalidApiKey' in options) {
-    error.isInvalidApiKey = options.isInvalidApiKey
-  }
-
-  return error
-}
-
-function createResolutionCacheValidationError(
-  issues: string[],
-): { issues: string[] } & Error {
-  let error = new Error('Resolution cache validation failed') as {
-    issues: string[]
-  } & Error
-
-  error.name = 'ResolutionCacheValidationError'
-  error.issues = issues
-
-  return error
-}
-
 function setInteractiveTerminal(isInteractive: boolean): void {
   Object.defineProperty(process.stdin, 'isTTY', {
     value: isInteractive,
@@ -228,19 +259,6 @@ function setInteractiveTerminal(isInteractive: boolean): void {
   })
 }
 
-function createConfigValidationError(
-  issues: string[],
-): { issues: string[] } & Error {
-  let error = new Error('Config validation failed') as {
-    issues: string[]
-  } & Error
-
-  error.name = 'ConfigValidationError'
-  error.issues = issues
-
-  return error
-}
-
 function createLocationResolutionError(
   unresolvedLocations: {
     address: string
@@ -250,12 +268,13 @@ function createLocationResolutionError(
   return new LocationResolutionError(unresolvedLocations)
 }
 
-function createResolutionCacheSyntaxError(message: string): Error {
-  let error = new Error(message)
-
-  error.name = 'ResolutionCacheSyntaxError'
-
-  return error
+function createGoogleGeocodingError(
+  message: string,
+  options: {
+    isInvalidApiKey?: boolean
+  } = {},
+): Error {
+  return new GoogleGeocodingError(message, options)
 }
 
 function createPhotoUploadCacheValidationError(
@@ -264,12 +283,24 @@ function createPhotoUploadCacheValidationError(
   return new PhotoUploadCacheValidationError(issues)
 }
 
+function createResolutionCacheValidationError(
+  issues: string[],
+): { issues: string[] } & Error {
+  return new ResolutionCacheValidationError(issues)
+}
+
+function createConfigValidationError(
+  issues: string[],
+): { issues: string[] } & Error {
+  return new ConfigValidationError(issues)
+}
+
+function createResolutionCacheSyntaxError(message: string): Error {
+  return new ResolutionCacheSyntaxError(message)
+}
+
 function createConfigSyntaxError(message: string): Error {
-  let error = new Error(message)
-
-  error.name = 'ConfigSyntaxError'
-
-  return error
+  return new ConfigSyntaxError(message)
 }
 
 describe('build', () => {
@@ -760,9 +791,7 @@ describe('build', () => {
       },
       layers: [],
     }
-    let missingApiKeyError = new Error(
-      'Pins with addresses require the GOOGLE_MAPS_API_KEY environment variable when coordinates are missing from the cache.',
-    )
+    let missingApiKeyError = new GoogleMapsApiKeyMissingError()
     let resolvedConfig: ResolvedMapConfig = {
       ...config,
       pins: [
@@ -776,8 +805,6 @@ describe('build', () => {
         },
       ],
     }
-
-    missingApiKeyError.name = 'GoogleMapsApiKeyMissingError'
 
     vi.mocked(loadConfig).mockResolvedValueOnce(config)
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
@@ -827,9 +854,7 @@ describe('build', () => {
       },
       layers: [],
     }
-    let missingApiKeyError = new Error(
-      'Pins with addresses require the GOOGLE_MAPS_API_KEY environment variable when coordinates are missing from the cache.',
-    )
+    let missingApiKeyError = new GoogleMapsApiKeyMissingError()
     let resolvedConfig: ResolvedMapConfig = {
       ...config,
       pins: [
@@ -844,14 +869,12 @@ describe('build', () => {
       ],
     }
 
-    missingApiKeyError.name = 'GoogleMapsApiKeyMissingError'
-
     vi.mocked(loadConfig).mockResolvedValueOnce(config)
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
     vi.mocked(resolveConfig)
       .mockRejectedValueOnce(missingApiKeyError)
       .mockResolvedValueOnce(resolvedConfig)
-    vi.mocked(requestGoogleMapsApiKey).mockResolvedValueOnce('   ')
+    vi.mocked(requestGoogleMapsApiKey).mockResolvedValueOnce(' '.repeat(3))
     vi.mocked(exportKml).mockReturnValueOnce('<kml>map</kml>')
 
     await build(filePath)
@@ -884,11 +907,7 @@ describe('build', () => {
       },
       layers: [],
     }
-    let missingApiKeyError = new Error(
-      'Pins with addresses require the GOOGLE_MAPS_API_KEY environment variable when coordinates are missing from the cache.',
-    )
-
-    missingApiKeyError.name = 'GoogleMapsApiKeyMissingError'
+    let missingApiKeyError = new GoogleMapsApiKeyMissingError()
 
     vi.mocked(loadConfig).mockResolvedValueOnce(config)
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
@@ -920,11 +939,7 @@ describe('build', () => {
       },
       layers: [],
     }
-    let missingApiKeyError = new Error(
-      'Pins with addresses require the GOOGLE_MAPS_API_KEY environment variable when coordinates are missing from the cache.',
-    )
-
-    missingApiKeyError.name = 'GoogleMapsApiKeyMissingError'
+    let missingApiKeyError = new GoogleMapsApiKeyMissingError()
 
     setInteractiveTerminal(false)
     vi.mocked(loadConfig).mockResolvedValueOnce(config)
@@ -1345,7 +1360,7 @@ describe('build', () => {
 
     await build(filePath)
 
-    expect(requestGoogleMapsApiKey).toHaveBeenCalledOnce()
+    expect(requestGoogleMapsApiKey).toHaveBeenCalledExactlyOnceWith('invalid')
     expect(log.error).toHaveBeenCalledWith(
       `Google geocoding failed: ${invalidApiKeyError.message}`,
     )
@@ -1369,7 +1384,7 @@ describe('build', () => {
       pins: [],
     })
     vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(
-      new GoogleDriveConfigurationError(['GOOGLE_DRIVE_CLIENT_ID']),
+      new GoogleDriveConfigError(['GOOGLE_DRIVE_CLIENT_ID']),
     )
 
     await build(exampleConfigFilePath)
@@ -1401,7 +1416,7 @@ describe('build', () => {
       pins: [],
     })
     vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(
-      new GoogleDriveConfigurationError(['GOOGLE_DRIVE_CLIENT_ID']),
+      new GoogleDriveConfigError(['GOOGLE_DRIVE_CLIENT_ID']),
     )
 
     await build()
@@ -1457,7 +1472,9 @@ describe('build', () => {
       pins: [],
     })
     vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(
-      new LocalPhotoProcessingError('/tmp/kyoto.jpg', new Error('bad image')),
+      new LocalPhotoProcessingError('/tmp/kyoto.jpg', {
+        cause: new Error('bad image'),
+      }),
     )
 
     await build(exampleConfigFilePath)

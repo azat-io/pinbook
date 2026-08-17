@@ -22,7 +22,7 @@ let fallbackPinIconId: PinIconId = 'shapes-pin'
  * @returns Resolved icon definition.
  */
 export function getPinIconDefinition(icon: string): PinIconDefinition {
-  if (icon in pinIconsById) {
+  if (Object.hasOwn(pinIconsById, icon)) {
     return pinIconsById[icon as PinIconId]
   }
 

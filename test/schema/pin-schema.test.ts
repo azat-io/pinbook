@@ -134,8 +134,8 @@ describe('pinSchema', () => {
     expect(
       pinSchema.safeParse({
         coords: [35.0116, 135.7681],
+        title: ' '.repeat(3),
         id: 'kyoto-station',
-        title: '   ',
       }),
     ).toMatchObject({
       error: {

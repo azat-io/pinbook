@@ -36,8 +36,11 @@ vi.mock('../../commands/drive-auth', () => ({
 class ProcessExitError extends Error {
   public code: undefined | number | string | null
 
-  public constructor(code: undefined | number | string | null) {
-    super('ProcessExit')
+  public constructor(
+    code: undefined | number | string | null,
+    options?: ErrorOptions,
+  ) {
+    super('ProcessExit', options)
     this.name = 'ProcessExitError'
     this.code = code
   }

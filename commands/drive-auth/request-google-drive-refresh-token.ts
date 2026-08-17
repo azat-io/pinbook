@@ -87,7 +87,7 @@ function buildGoogleAuthorizationUrl(
   authorizationUrl.searchParams.set('response_type', 'code')
   authorizationUrl.searchParams.set('state', state)
 
-  return authorizationUrl.toString()
+  return authorizationUrl.href
 }
 
 /**

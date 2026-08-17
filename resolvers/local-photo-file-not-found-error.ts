@@ -11,9 +11,10 @@ export class LocalPhotoFileNotFoundError extends Error {
    * Creates a local file not found error.
    *
    * @param photoPath - Absolute path of the missing photo.
+   * @param options - Standard error options such as `cause`.
    */
-  public constructor(photoPath: string) {
-    super(`Local photo file not found: ${photoPath}`)
+  public constructor(photoPath: string, options?: ErrorOptions) {
+    super(`Local photo file not found: ${photoPath}`, options)
     this.name = 'LocalPhotoFileNotFoundError'
     this.photoPath = photoPath
   }

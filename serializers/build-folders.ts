@@ -14,7 +14,7 @@ import { escapeXml } from './escape-xml'
 export function buildFolders(config: ResolvedMapConfig): string {
   let pinsByLayer = groupPinsByLayer(config)
 
-  return [...pinsByLayer.entries()]
+  return [...pinsByLayer]
     .map(([layerId, pins]) => {
       let layer = config.layers.find(item => item.id === layerId)
       let placemarks = pins.map(pin => renderPlacemark(pin)).join('\n')

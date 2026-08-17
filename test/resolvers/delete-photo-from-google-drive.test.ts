@@ -3,7 +3,7 @@ import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 import { deletePhotoFromGoogleDrive } from '../../resolvers/delete-photo-from-google-drive'
 
 let fetchMock = vi.fn<typeof fetch>()
-let originalFetch = globalThis.fetch
+let originalFetch = fetch
 
 describe('deletePhotoFromGoogleDrive', () => {
   beforeEach(() => {

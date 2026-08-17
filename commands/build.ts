@@ -9,7 +9,6 @@ import {
   PhotoUploadCacheValidationError,
   PhotoUploadCacheSyntaxError,
 } from '../resolvers/load-photo-upload-cache'
-import { GoogleDriveConfigurationError } from '../resolvers/google-drive-configuration-error'
 import { getDefaultPhotoUploadCachePath } from '../paths/get-default-photo-upload-cache-path'
 import { LocalPhotoFileNotFoundError } from '../resolvers/local-photo-file-not-found-error'
 import { GoogleDrivePhotoUploadError } from '../resolvers/google-drive-photo-upload-error'
@@ -20,6 +19,7 @@ import {
 } from '../resolvers/resolve-config'
 import { LocalPhotoProcessingError } from '../resolvers/local-photo-processing-error'
 import { resolveGoogleDrivePhotos } from '../resolvers/resolve-google-drive-photos'
+import { GoogleDriveConfigError } from '../resolvers/google-drive-config-error'
 import { getBuildOutputDirectory } from '../paths/get-build-output-directory'
 import { requestGoogleMapsApiKey } from '../cli/request-google-maps-api-key'
 import { loadGoogleDriveConfig } from '../config/load-google-drive-config'
@@ -98,7 +98,7 @@ export async function build(targetPath?: string): Promise<void> {
     try {
       resolvedConfig = await resolveConfig(config, {
         cachePath: resolutionCachePath,
-        ...(googleMapsApiKey ? { googleMapsApiKey } : {}),
+        ...(googleMapsApiKey && { googleMapsApiKey }),
         onProgress: addressProgressReporter.onProgress,
       })
       addressProgressReporter.finish()
@@ -135,7 +135,7 @@ export async function build(targetPath?: string): Promise<void> {
 
       resolvedConfig = await resolveConfig(config, {
         cachePath: resolutionCachePath,
-        ...(googleMapsApiKey ? { googleMapsApiKey } : {}),
+        ...(googleMapsApiKey && { googleMapsApiKey }),
         onProgress: addressProgressReporter.onProgress,
       })
       addressProgressReporter.finish()
@@ -204,7 +204,7 @@ export async function build(targetPath?: string): Promise<void> {
       return
     }
 
-    if (error instanceof GoogleDriveConfigurationError) {
+    if (error instanceof GoogleDriveConfigError) {
       let driveAuthCommand =
         targetPath ? `pinbook drive-auth ${targetPath}` : 'pinbook drive-auth'
 

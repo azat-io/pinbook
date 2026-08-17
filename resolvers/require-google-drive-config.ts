@@ -1,14 +1,13 @@
 import type { GoogleDriveConfig } from '../types/google-drive-config'
 
-import { GoogleDriveConfigurationError } from './google-drive-configuration-error'
+import { GoogleDriveConfigError } from './google-drive-config-error'
 
 /**
  * Validates that all required Drive OAuth values are present.
  *
  * @param googleDriveConfig - Partial Drive config loaded from environment.
  * @returns Fully populated Drive config safe to use for uploads.
- * @throws {GoogleDriveConfigurationError} Thrown when required variables are
- *   missing.
+ * @throws {GoogleDriveConfigError} Thrown when required variables are missing.
  */
 export function requireGoogleDriveConfig(
   googleDriveConfig: Partial<GoogleDriveConfig> | undefined,
@@ -28,15 +27,15 @@ export function requireGoogleDriveConfig(
   }
 
   if (missingVariables.length > 0) {
-    throw new GoogleDriveConfigurationError(missingVariables)
+    throw new GoogleDriveConfigError(missingVariables)
   }
 
   return {
     clientSecret: googleDriveConfig!.clientSecret!,
     refreshToken: googleDriveConfig!.refreshToken!,
     clientId: googleDriveConfig!.clientId!,
-    ...(googleDriveConfig?.folderId ?
-      { folderId: googleDriveConfig.folderId }
-    : {}),
+    ...(googleDriveConfig?.folderId && {
+      folderId: googleDriveConfig.folderId,
+    }),
   }
 }

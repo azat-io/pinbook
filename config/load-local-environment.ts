@@ -43,11 +43,12 @@ export async function loadLocalEnvironment(
       : normalizedLine
     let separatorIndex = environmentAssignment.indexOf('=')
     let key = environmentAssignment.slice(0, separatorIndex).trim()
-    let rawValue = environmentAssignment.slice(separatorIndex + 1).trim()
 
     if (key === '') {
       continue
     }
+
+    let rawValue = environmentAssignment.slice(separatorIndex + 1).trim()
 
     let value =
       (

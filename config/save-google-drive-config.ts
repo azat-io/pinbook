@@ -64,9 +64,8 @@ function upsertEnvironmentLine(
   value: string,
 ): void {
   let environmentLine = `${key}=${value}`
-  let lineIndex = lines.findIndex(line =>
-    new RegExp(String.raw`^(?:export\s+)?${key}\s*=`, 'u').test(line),
-  )
+  let keyPattern = new RegExp(String.raw`^(?:export\s+)?${key}\s*=`, 'u')
+  let lineIndex = lines.findIndex(line => keyPattern.test(line))
 
   if (lineIndex === -1) {
     lines.push(environmentLine)

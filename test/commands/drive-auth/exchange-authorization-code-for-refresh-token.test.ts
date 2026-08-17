@@ -2,7 +2,14 @@ import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 
 import { exchangeAuthorizationCodeForRefreshToken } from '../../../commands/drive-auth/exchange-authorization-code-for-refresh-token'
 
-let originalFetch = globalThis.fetch
+let originalFetch = fetch
+
+class TimeoutError extends Error {
+  public constructor(message?: string, options?: ErrorOptions) {
+    super(message, options)
+    this.name = 'TimeoutError'
+  }
+}
 
 function getExchangeOptions(): {
   authorizationCode: string
@@ -28,7 +35,7 @@ describe('exchangeAuthorizationCodeForRefreshToken', () => {
   })
 
   it('exchanges the authorization code for a refresh token', async () => {
-    vi.mocked(globalThis.fetch).mockResolvedValueOnce(
+    vi.mocked(fetch).mockResolvedValueOnce(
       new Response(
         JSON.stringify({
           // eslint-disable-next-line camelcase
@@ -44,7 +51,7 @@ describe('exchangeAuthorizationCodeForRefreshToken', () => {
       exchangeAuthorizationCodeForRefreshToken(getExchangeOptions()),
     ).resolves.toBe('refresh-token')
 
-    expect(globalThis.fetch).toHaveBeenCalledWith(
+    expect(fetch).toHaveBeenCalledWith(
       'https://oauth2.googleapis.com/token',
       expect.objectContaining({
         method: 'POST',
@@ -53,9 +60,7 @@ describe('exchangeAuthorizationCodeForRefreshToken', () => {
   })
 
   it('surfaces a generic network failure message from fetch', async () => {
-    vi.mocked(globalThis.fetch).mockRejectedValueOnce(
-      new Error('network unavailable'),
-    )
+    vi.mocked(fetch).mockRejectedValueOnce(new Error('network unavailable'))
 
     await expect(
       exchangeAuthorizationCodeForRefreshToken(getExchangeOptions()),
@@ -63,10 +68,9 @@ describe('exchangeAuthorizationCodeForRefreshToken', () => {
   })
 
   it('surfaces a timeout while contacting Google', async () => {
-    let timeoutError = new Error('request timed out')
+    let timeoutError = new TimeoutError('request timed out')
 
-    timeoutError.name = 'TimeoutError'
-    vi.mocked(globalThis.fetch).mockRejectedValueOnce(timeoutError)
+    vi.mocked(fetch).mockRejectedValueOnce(timeoutError)
 
     await expect(
       exchangeAuthorizationCodeForRefreshToken(getExchangeOptions()),
@@ -76,7 +80,7 @@ describe('exchangeAuthorizationCodeForRefreshToken', () => {
   })
 
   it('wraps non-Error fetch failures into a normal Error message', async () => {
-    vi.mocked(globalThis.fetch).mockRejectedValueOnce('network unavailable')
+    vi.mocked(fetch).mockRejectedValueOnce('network unavailable')
 
     await expect(
       exchangeAuthorizationCodeForRefreshToken(getExchangeOptions()),
@@ -84,7 +88,7 @@ describe('exchangeAuthorizationCodeForRefreshToken', () => {
   })
 
   it('surfaces error_description responses from Google', async () => {
-    vi.mocked(globalThis.fetch).mockResolvedValueOnce(
+    vi.mocked(fetch).mockResolvedValueOnce(
       new Response(
         JSON.stringify({
           // eslint-disable-next-line camelcase
@@ -104,7 +108,7 @@ describe('exchangeAuthorizationCodeForRefreshToken', () => {
   })
 
   it('surfaces string error responses from Google', async () => {
-    vi.mocked(globalThis.fetch).mockResolvedValueOnce(
+    vi.mocked(fetch).mockResolvedValueOnce(
       new Response(
         JSON.stringify({
           error: 'access_denied',
@@ -121,7 +125,7 @@ describe('exchangeAuthorizationCodeForRefreshToken', () => {
   })
 
   it('surfaces raw text responses from Google as error messages', async () => {
-    vi.mocked(globalThis.fetch).mockResolvedValueOnce(
+    vi.mocked(fetch).mockResolvedValueOnce(
       new Response('oauth gateway failed', {
         status: 502,
       }),
@@ -135,7 +139,7 @@ describe('exchangeAuthorizationCodeForRefreshToken', () => {
   })
 
   it('falls back to an unknown error for empty error responses', async () => {
-    vi.mocked(globalThis.fetch).mockResolvedValueOnce(
+    vi.mocked(fetch).mockResolvedValueOnce(
       new Response('', {
         status: 500,
       }),
@@ -147,7 +151,7 @@ describe('exchangeAuthorizationCodeForRefreshToken', () => {
   })
 
   it('rejects successful responses that omit the refresh token', async () => {
-    vi.mocked(globalThis.fetch).mockResolvedValueOnce(
+    vi.mocked(fetch).mockResolvedValueOnce(
       new Response(
         JSON.stringify({
           // eslint-disable-next-line camelcase
@@ -167,11 +171,11 @@ describe('exchangeAuthorizationCodeForRefreshToken', () => {
   })
 
   it('rejects successful responses whose refresh token is blank', async () => {
-    vi.mocked(globalThis.fetch).mockResolvedValueOnce(
+    vi.mocked(fetch).mockResolvedValueOnce(
       new Response(
         JSON.stringify({
           // eslint-disable-next-line camelcase
-          refresh_token: '   ',
+          refresh_token: ' '.repeat(3),
         }),
         {
           status: 200,

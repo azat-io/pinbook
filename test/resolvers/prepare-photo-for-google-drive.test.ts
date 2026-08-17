@@ -74,7 +74,9 @@ describe('preparePhotoForGoogleDrive', () => {
   })
 
   it('falls back to a generic error suffix when the cause has no message', () => {
-    expect(new LocalPhotoProcessingError('/tmp/kyoto.jpg', null).message).toBe(
+    let error = new LocalPhotoProcessingError('/tmp/kyoto.jpg', { cause: null })
+
+    expect(error.message).toBe(
       'Local photo processing failed for /tmp/kyoto.jpg.',
     )
   })

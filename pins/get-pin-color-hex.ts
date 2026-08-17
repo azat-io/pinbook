@@ -47,11 +47,11 @@ export function getPinColorHex(color: string): string {
     let { tone: toneValue, colorId } =
       colorWithToneMatch.groups as PinColorWithToneMatchGroups
 
-    if (colorId && toneValue && colorId in pinColorsById) {
+    if (colorId && toneValue && Object.hasOwn(pinColorsById, colorId)) {
       let pinColorDefinition = pinColorsById[colorId as PinColorId]
       let tone = Number(toneValue) as PinColorTone
 
-      if (tone in pinColorDefinition.tones) {
+      if (Object.hasOwn(pinColorDefinition.tones, tone)) {
         return pinColorDefinition.tones[tone]
       }
 

@@ -143,7 +143,7 @@ describe('create', () => {
     await expect(
       readFile(join(projectDirectoryPath, 'package.json'), 'utf8'),
     ).resolves.toContain('"name": "weekend-map"')
-    expect(requestProjectDirectory).toHaveBeenCalledOnce()
+    expect(requestProjectDirectory).toHaveBeenCalledExactlyOnceWith()
   })
 
   it('cancels project creation when the directory prompt is canceled', async () => {

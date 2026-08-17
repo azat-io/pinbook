@@ -20,9 +20,10 @@ class ResolutionCacheValidationError extends Error {
    * Creates a validation error with a list of human-readable issues.
    *
    * @param issues - Formatted validation issues.
+   * @param options - Standard error options such as `cause`.
    */
-  public constructor(issues: string[]) {
-    super('Resolution cache validation failed')
+  public constructor(issues: string[], options?: ErrorOptions) {
+    super('Resolution cache validation failed', options)
     this.name = 'ResolutionCacheValidationError'
     this.issues = issues
   }
@@ -36,9 +37,10 @@ export class ResolutionCacheSyntaxError extends Error {
    * Creates a syntax error for invalid JSON cache content.
    *
    * @param message - Human-readable syntax error message.
+   * @param options - Standard error options such as `cause`.
    */
-  public constructor(message: string) {
-    super(message)
+  public constructor(message: string, options?: ErrorOptions) {
+    super(message, options)
     this.name = 'ResolutionCacheSyntaxError'
   }
 }

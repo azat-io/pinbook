@@ -26,7 +26,9 @@ export function buildStyles(config: ResolvedMapConfig): string {
     })
   }
 
-  return [...styles.values()]
+  return styles
+    .values()
     .map(({ color, icon }) => renderStyle(color, icon))
+    .toArray()
     .join('\n')
 }

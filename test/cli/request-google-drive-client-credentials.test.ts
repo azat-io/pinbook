@@ -29,31 +29,39 @@ describe('requestGoogleDriveClientCredentials', () => {
     expect(log.info).toHaveBeenCalledWith(
       'Google Drive uploads need an OAuth desktop client from Google Cloud Console.',
     )
-    expect(text).toHaveBeenCalledOnce()
-    expect(password).toHaveBeenCalledOnce()
+    expect(text).toHaveBeenCalledExactlyOnceWith(expect.any(Object))
+    expect(password).toHaveBeenCalledExactlyOnceWith(expect.any(Object))
     let [textCall] = vi.mocked(text).mock.calls
     let [textOptions] = textCall!
     let [passwordCall] = vi.mocked(password).mock.calls
     let [passwordOptions] = passwordCall!
 
     expect(textOptions.message).toBe('Enter your Google Drive OAuth client ID:')
-    expect(textOptions.validate?.('')).toBe(
+
+    let validateClientId = textOptions.validate as (
+      value?: string,
+    ) => undefined | string
+
+    expect(validateClientId('')).toBe('Google Drive client ID is required.')
+    expect(validateClientId(undefined)).toBe(
       'Google Drive client ID is required.',
     )
-    expect(textOptions.validate?.(undefined)).toBe(
-      'Google Drive client ID is required.',
-    )
-    expect(textOptions.validate?.('client-id')).toBeUndefined()
+    expect(validateClientId('client-id')).toBeUndefined()
     expect(passwordOptions.message).toBe(
       'Enter your Google Drive OAuth client secret:',
     )
-    expect(passwordOptions.validate?.('')).toBe(
+
+    let validateClientSecret = passwordOptions.validate as (
+      value?: string,
+    ) => undefined | string
+
+    expect(validateClientSecret('')).toBe(
       'Google Drive client secret is required.',
     )
-    expect(passwordOptions.validate?.(undefined)).toBe(
+    expect(validateClientSecret(undefined)).toBe(
       'Google Drive client secret is required.',
     )
-    expect(passwordOptions.validate?.('client-secret')).toBeUndefined()
+    expect(validateClientSecret('client-secret')).toBeUndefined()
     expect(passwordOptions.mask).toBe('*')
   })
 

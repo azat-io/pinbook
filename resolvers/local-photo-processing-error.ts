@@ -11,15 +11,17 @@ export class LocalPhotoProcessingError extends Error {
    * Creates a local photo processing error.
    *
    * @param photoPath - Absolute path of the photo that failed to process.
-   * @param cause - Original image processing failure.
+   * @param options - Standard error options carrying the original image
+   *   processing failure as `cause`.
    */
-  public constructor(photoPath: string, cause: unknown) {
+  public constructor(photoPath: string, options?: ErrorOptions) {
+    let cause = options?.cause
     let details =
       cause instanceof Error && cause.message.trim().length > 0 ?
         `: ${cause.message}`
       : '.'
 
-    super(`Local photo processing failed for ${photoPath}${details}`)
+    super(`Local photo processing failed for ${photoPath}${details}`, options)
     this.name = 'LocalPhotoProcessingError'
     this.photoPath = photoPath
   }

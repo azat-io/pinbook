@@ -11,7 +11,7 @@ import { resolveGoogleDrivePhotos } from '../../resolvers/resolve-google-drive-p
 
 let temporaryDirectories: string[] = []
 let fetchMock = vi.fn<typeof fetch>()
-let originalFetch = globalThis.fetch
+let originalFetch = fetch
 
 /**
  * Returns a fetch call URL as a concrete `URL` instance.
@@ -139,7 +139,7 @@ describe('resolveGoogleDrivePhotos', () => {
         'GOOGLE_DRIVE_CLIENT_SECRET',
         'GOOGLE_DRIVE_REFRESH_TOKEN',
       ],
-      name: 'GoogleDriveConfigurationError',
+      name: 'GoogleDriveConfigError',
     })
   })
 
@@ -394,9 +394,9 @@ describe('resolveGoogleDrivePhotos', () => {
       'Content-Type: image/webp',
     )
 
-    await expect(
-      readFile(cachePath, 'utf8').then(source => JSON.parse(source) as unknown),
-    ).resolves.toEqual({
+    let cacheSource = await readFile(cachePath, 'utf8')
+
+    expect(JSON.parse(cacheSource) as unknown).toEqual({
       entries: {
         [photoPath]: {
           publicUrl: 'https://drive.example/kyoto.jpg',
@@ -726,9 +726,9 @@ describe('resolveGoogleDrivePhotos', () => {
         method: 'DELETE',
       },
     )
-    await expect(
-      readFile(cachePath, 'utf8').then(source => JSON.parse(source) as unknown),
-    ).resolves.toEqual({
+    let cacheSource = await readFile(cachePath, 'utf8')
+
+    expect(JSON.parse(cacheSource) as unknown).toEqual({
       entries: {
         [photoPath]: {
           publicUrl: 'https://drive.example/new-kyoto.jpg',

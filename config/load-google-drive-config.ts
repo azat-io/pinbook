@@ -37,9 +37,9 @@ function readGoogleDriveConfig(
   let folderId = environment['GOOGLE_DRIVE_FOLDER_ID']?.trim()
 
   return {
-    ...(clientId ? { clientId } : {}),
-    ...(clientSecret ? { clientSecret } : {}),
-    ...(refreshToken ? { refreshToken } : {}),
-    ...(folderId ? { folderId } : {}),
+    ...(clientId && { clientId }),
+    ...(clientSecret && { clientSecret }),
+    ...(refreshToken && { refreshToken }),
+    ...(folderId && { folderId }),
   }
 }

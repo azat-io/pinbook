@@ -155,7 +155,7 @@ describe('requestGoogleDriveRefreshToken', () => {
     expect(vi.mocked(log.info).mock.calls[2]?.[0]).toBe(
       'Google authorization code received. Exchanging it for a refresh token...',
     )
-    expect(server.close).toHaveBeenCalledOnce()
+    expect(server.close).toHaveBeenCalledExactlyOnceWith(expect.any(Function))
   })
 
   it('throws when the local callback port cannot be determined from a null address', async () => {
@@ -171,7 +171,7 @@ describe('requestGoogleDriveRefreshToken', () => {
       }),
     ).rejects.toThrow('Could not determine local OAuth callback port.')
 
-    expect(server.close).toHaveBeenCalledOnce()
+    expect(server.close).toHaveBeenCalledExactlyOnceWith(expect.any(Function))
   })
 
   it('throws when the local callback port cannot be determined from a string address', async () => {
@@ -187,7 +187,7 @@ describe('requestGoogleDriveRefreshToken', () => {
       }),
     ).rejects.toThrow('Could not determine local OAuth callback port.')
 
-    expect(server.close).toHaveBeenCalledOnce()
+    expect(server.close).toHaveBeenCalledExactlyOnceWith(expect.any(Function))
   })
 
   it('closes the server when the token exchange fails', async () => {
@@ -208,6 +208,6 @@ describe('requestGoogleDriveRefreshToken', () => {
       }),
     ).rejects.toThrow('exchange failed')
 
-    expect(server.close).toHaveBeenCalledOnce()
+    expect(server.close).toHaveBeenCalledExactlyOnceWith(expect.any(Function))
   })
 })

@@ -170,8 +170,7 @@ export async function resolveGoogleDrivePhotos(
     cached: 0,
   }
   let googleDriveUploadContextPromise:
-    | Promise<GoogleDriveUploadContext>
-    | undefined
+    Promise<GoogleDriveUploadContext> | undefined
 
   /**
    * Forwards a progress event to the optional external listener.
@@ -225,20 +224,24 @@ export async function resolveGoogleDrivePhotos(
           ...progressState,
           type: 'drive-auth-start',
         })
-        googleDriveUploadContextPromise = getGoogleDriveUploadContext(
+        let pendingGoogleDriveUploadContext = getGoogleDriveUploadContext(
           googleDriveUploadContextPromise,
           {
             googleDriveConfig: options.googleDriveConfig,
             mapTitle: config.map.title,
           },
-        ).then(googleDriveUploadContext => {
+        )
+
+        googleDriveUploadContextPromise = (async () => {
+          let googleDriveUploadContext = await pendingGoogleDriveUploadContext
+
           emitProgress({
             ...progressState,
             type: 'drive-auth-complete',
           })
 
           return googleDriveUploadContext
-        })
+        })()
       }
 
       let googleDriveUploadContext = await googleDriveUploadContextPromise
@@ -311,7 +314,7 @@ export async function resolveGoogleDrivePhotos(
     )
   }
 
-  if (staleFileIdsToDelete.size > 0 && googleDriveUploadContextPromise) {
+  if (googleDriveUploadContextPromise && staleFileIdsToDelete.size > 0) {
     let googleDriveUploadContext = await googleDriveUploadContextPromise
 
     await Promise.all(

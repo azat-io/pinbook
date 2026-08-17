@@ -3,7 +3,7 @@ import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 import { getGoogleDriveUploadContext } from '../../resolvers/get-google-drive-upload-context'
 
 let fetchMock = vi.fn<typeof fetch>()
-let originalFetch = globalThis.fetch
+let originalFetch = fetch
 
 function getFetchCallUrl(callIndex: number): URL {
   let input = fetchMock.mock.calls[callIndex]?.[0]
@@ -64,7 +64,7 @@ describe('getGoogleDriveUploadContext', () => {
         'GOOGLE_DRIVE_CLIENT_SECRET',
         'GOOGLE_DRIVE_REFRESH_TOKEN',
       ],
-      name: 'GoogleDriveConfigurationError',
+      name: 'GoogleDriveConfigError',
     })
   })
 

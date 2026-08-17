@@ -3,7 +3,7 @@ import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 import { geocodeAddressWithGoogle } from '../../resolvers/geocode-address-with-google'
 
 let fetchMock = vi.fn<typeof fetch>()
-let originalFetch = globalThis.fetch
+let originalFetch = fetch
 
 describe('geocodeAddressWithGoogle', () => {
   beforeEach(() => {

@@ -101,11 +101,9 @@ async function createGoogleDriveFolder(
     {
       body: JSON.stringify({
         mimeType: googleDriveFolderMimeType,
-        ...(options.parentFolderId ?
-          {
-            parents: [options.parentFolderId],
-          }
-        : {}),
+        ...(options.parentFolderId && {
+          parents: [options.parentFolderId],
+        }),
         name: options.folderName,
       }),
       headers: {
@@ -192,20 +190,6 @@ function buildGoogleDriveFolderQuery(
   ].join(' and ')
 }
 
-function hasArrayField<Key extends string>(
-  value: unknown,
-  key: Key,
-): value is Record<Key, unknown[]> {
-  let record = value as Record<Key, unknown>
-
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    key in value &&
-    Array.isArray(record[key])
-  )
-}
-
 function extractGoogleDriveFolderId(payload: unknown): string | null {
   if (!hasArrayField(payload, 'files')) {
     return null
@@ -218,6 +202,17 @@ function extractGoogleDriveFolderId(payload: unknown): string | null {
   }
 
   return null
+}
+
+function hasArrayField<Key extends string>(
+  value: unknown,
+  key: Key,
+): value is Record<Key, unknown[]> {
+  let record = value as Record<Key, unknown>
+
+  return (
+    typeof value === 'object' && value !== null && Array.isArray(record[key])
+  )
 }
 
 async function getOrCreateGoogleDriveFolder(

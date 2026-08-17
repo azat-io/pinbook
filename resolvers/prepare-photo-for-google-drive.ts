@@ -42,7 +42,7 @@ export async function preparePhotoForGoogleDrive(options: {
       buffer,
     }
   } catch (error) {
-    throw new LocalPhotoProcessingError(options.photoPath, error)
+    throw new LocalPhotoProcessingError(options.photoPath, { cause: error })
   }
 }
 

@@ -14,7 +14,6 @@ export function hasStringField<Key extends string>(
   return (
     typeof value === 'object' &&
     value !== null &&
-    key in value &&
     typeof record[key] === 'string' &&
     record[key].trim() !== ''
   )

@@ -69,6 +69,38 @@ interface GoogleGeocodingResult {
 }
 
 /**
+ * Error thrown for Google geocoding transport and API failures.
+ */
+class GoogleGeocodingError extends Error {
+  /**
+   * Whether the failure can likely be fixed by replacing the API key.
+   */
+  public isInvalidApiKey?: boolean
+
+  /**
+   * Google Geocoding API status associated with the failure.
+   */
+  public status?: string
+
+  /**
+   * Creates a named geocoding error for Google transport and API failures.
+   *
+   * @param message - Human-readable error description.
+   * @param options - Structured details about the Google geocoding failure and
+   *   standard error options such as `cause`.
+   */
+  public constructor(
+    message: string,
+    options: GoogleGeocodingErrorMetadata & ErrorOptions = {},
+  ) {
+    super(message, options)
+    this.name = 'GoogleGeocodingError'
+    this.isInvalidApiKey = options.isInvalidApiKey
+    this.status = options.status
+  }
+}
+
+/**
  * Resolves a single address via the Google Maps Geocoding API.
  *
  * Returns `null` when Google explicitly reports `ZERO_RESULTS`. Throws a named
@@ -84,24 +116,25 @@ export async function geocodeAddressWithGoogle(
   apiKey: string,
 ): Promise<[number, number] | null> {
   let url = new URL('https://maps.googleapis.com/maps/api/geocode/json')
-
-  url.search = new URLSearchParams({
+  let searchParameters = new URLSearchParams({
     key: apiKey,
     address,
-  }).toString()
+  })
+
+  url.search = searchParameters.toString()
 
   let response: Response
 
   try {
     response = await fetch(url)
   } catch (error) {
-    throw createGoogleGeocodingError(
+    throw new GoogleGeocodingError(
       `Request failed for "${address}": ${error instanceof Error ? error.message : 'Unknown transport error'}.`,
     )
   }
 
   if (!response.ok) {
-    throw createGoogleGeocodingError(
+    throw new GoogleGeocodingError(
       `Request failed for "${address}" with HTTP ${response.status}.`,
     )
   }
@@ -121,7 +154,7 @@ export async function geocodeAddressWithGoogle(
       body.status === 'REQUEST_DENIED' &&
       body.error_message === 'The provided API key is invalid.'
 
-    throw createGoogleGeocodingError(
+    throw new GoogleGeocodingError(
       `Google returned status ${body.status ?? 'UNKNOWN'} for "${address}".${detail}`,
       {
         status: body.status,
@@ -133,28 +166,10 @@ export async function geocodeAddressWithGoogle(
   let location = body.results?.[0]?.geometry?.location
 
   if (typeof location?.lat !== 'number' || typeof location.lng !== 'number') {
-    throw createGoogleGeocodingError(
+    throw new GoogleGeocodingError(
       `Google returned a response without valid coordinates for "${address}".`,
     )
   }
 
   return [location.lat, location.lng]
-}
-
-/**
- * Creates a named geocoding error for Google transport and API failures.
- *
- * @param message - Human-readable error description.
- * @param metadata - Structured details about the Google geocoding failure.
- * @returns Error tagged with the `GoogleGeocodingError` name.
- */
-function createGoogleGeocodingError(
-  message: string,
-  metadata: GoogleGeocodingErrorMetadata = {},
-): Error {
-  let error = new Error(message)
-
-  error.name = 'GoogleGeocodingError'
-
-  return Object.assign(error, metadata)
 }

@@ -18,15 +18,20 @@ describe('requestProjectDirectory', () => {
 
     await expect(requestProjectDirectory()).resolves.toBe('maps/tokyo')
 
-    expect(text).toHaveBeenCalledOnce()
+    expect(text).toHaveBeenCalledExactlyOnceWith(expect.any(Object))
     let [textCall] = vi.mocked(text).mock.calls
     let [textOptions] = textCall!
 
     expect(textOptions.message).toBe(
       'Enter a directory name for the new map project:',
     )
-    expect(textOptions.validate?.('')).toBe('Directory name is required.')
-    expect(textOptions.validate?.('maps/tokyo')).toBeUndefined()
+
+    let validate = textOptions.validate as (
+      value?: string,
+    ) => undefined | string
+
+    expect(validate('')).toBe('Directory name is required.')
+    expect(validate('maps/tokyo')).toBeUndefined()
   })
 
   it('returns null when the directory prompt is canceled', async () => {

@@ -9,6 +9,24 @@ import { loadResolutionCache } from './load-resolution-cache'
 import { saveResolutionCache } from './save-resolution-cache'
 
 /**
+ * Error thrown when geocoding is required but no Google Maps API key is set.
+ */
+class GoogleMapsApiKeyMissingError extends Error {
+  /**
+   * Creates an error explaining how to provide the missing API key.
+   *
+   * @param options - Standard error options such as `cause`.
+   */
+  public constructor(options?: ErrorOptions) {
+    super(
+      'Pins with addresses require the GOOGLE_MAPS_API_KEY environment variable when coordinates are missing from the cache.',
+      options,
+    )
+    this.name = 'GoogleMapsApiKeyMissingError'
+  }
+}
+
+/**
  * Error thrown when one or more pin addresses cannot be resolved.
  */
 export class LocationResolutionError extends Error {
@@ -21,9 +39,13 @@ export class LocationResolutionError extends Error {
    * Creates a location resolution error with unresolved address entries.
    *
    * @param unresolvedLocations - Unresolved pin identifiers and addresses.
+   * @param options - Standard error options such as `cause`.
    */
-  public constructor(unresolvedLocations: LocationResolutionIssue[]) {
-    super('Location resolution failed')
+  public constructor(
+    unresolvedLocations: LocationResolutionIssue[],
+    options?: ErrorOptions,
+  ) {
+    super('Location resolution failed', options)
     this.name = 'LocationResolutionError'
     this.unresolvedLocations = unresolvedLocations
   }
@@ -44,18 +66,12 @@ export async function resolveConfig(
   let addresses = { ...cache.addresses }
   let unresolvedLocations: LocationResolutionIssue[] = []
   let uncachedPins = config.pins.filter(
-    pin => !pin.coords && pin.address && !addresses[pin.address],
+    pin => !pin.coords && pin.address && !Object.hasOwn(addresses, pin.address),
   )
   let missingAddresses = [...new Set(uncachedPins.map(pin => pin.address!))]
 
   if (missingAddresses.length > 0 && !options.googleMapsApiKey) {
-    let error = new Error(
-      'Pins with addresses require the GOOGLE_MAPS_API_KEY environment variable when coordinates are missing from the cache.',
-    )
-
-    error.name = 'GoogleMapsApiKeyMissingError'
-
-    throw error
+    throw new GoogleMapsApiKeyMissingError()
   }
 
   if (missingAddresses.length > 0) {

@@ -18,7 +18,7 @@ describe('requireGoogleDriveConfig', () => {
         'GOOGLE_DRIVE_CLIENT_SECRET',
         'GOOGLE_DRIVE_REFRESH_TOKEN',
       ],
-      name: 'GoogleDriveConfigurationError',
+      name: 'GoogleDriveConfigError',
     })
   })
 

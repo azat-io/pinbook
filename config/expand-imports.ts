@@ -25,9 +25,10 @@ export class ImportsResolutionError extends Error {
    * Creates an error with the collected import resolution issues.
    *
    * @param issues - Human-readable import resolution issues.
+   * @param options - Standard error options such as `cause`.
    */
-  public constructor(issues: ConfigIssue[]) {
-    super('Import resolution failed')
+  public constructor(issues: ConfigIssue[], options?: ErrorOptions) {
+    super('Import resolution failed', options)
     this.name = 'ImportsResolutionError'
     this.issues = issues
   }
@@ -146,19 +147,12 @@ async function expandPatternSegments(
       let nextPathGroups = await Promise.all(
         currentPaths.map(async currentPath => {
           if (containsWildcard(segment)) {
-            let entries = await readdir(currentPath, {
-              withFileTypes: true,
-            }).catch(error => {
-              if (
-                error instanceof Error &&
-                'code' in error &&
-                error.code === 'ENOENT'
-              ) {
-                return []
-              }
-
-              throw error
-            })
+            let entries = await withMissingPathFallback(
+              readdir(currentPath, {
+                withFileTypes: true,
+              }),
+              [],
+            )
 
             return entries
               .filter(entry => matchPathSegment(entry.name, segment))
@@ -169,17 +163,10 @@ async function expandPatternSegments(
           }
 
           let nextPath = join(currentPath, segment)
-          let nextPathStats = await stat(nextPath).catch(error => {
-            if (
-              error instanceof Error &&
-              'code' in error &&
-              error.code === 'ENOENT'
-            ) {
-              return null
-            }
-
-            throw error
-          })
+          let nextPathStats = await withMissingPathFallback(
+            stat(nextPath),
+            null,
+          )
 
           if (
             nextPathStats !== null &&
@@ -228,17 +215,10 @@ async function resolveImportEntry(
       )
     }
 
-    let exactFileStats = await stat(exactFilePath).catch(error => {
-      if (
-        error instanceof Error &&
-        'code' in error &&
-        error.code === 'ENOENT'
-      ) {
-        return null
-      }
-
-      throw error
-    })
+    let exactFileStats = await withMissingPathFallback(
+      stat(exactFilePath),
+      null,
+    )
 
     if (exactFileStats === null) {
       return []
@@ -290,6 +270,29 @@ function matchPathSegment(value: string, pattern: string): boolean {
   let regularExpression = new RegExp(`^${regularExpressionSource}$`, 'u')
 
   return regularExpression.test(value)
+}
+
+/**
+ * Awaits a file system operation and substitutes a fallback value when the
+ * target path does not exist.
+ *
+ * @param operation - Pending file system operation.
+ * @param fallback - Value returned when the path is missing.
+ * @returns Operation result or the fallback for missing paths.
+ */
+async function withMissingPathFallback<Value, Fallback>(
+  operation: Promise<Value>,
+  fallback: Fallback,
+): Promise<Fallback | Value> {
+  try {
+    return await operation
+  } catch (error) {
+    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
+      return fallback
+    }
+
+    throw error
+  }
 }
 
 /**

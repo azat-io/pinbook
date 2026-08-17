@@ -24,7 +24,7 @@ describe('requestGoogleMapsApiKey', () => {
     expect(log.info).toHaveBeenCalledWith(
       'Google Maps API key is required to geocode uncached addresses.',
     )
-    expect(password).toHaveBeenCalledOnce()
+    expect(password).toHaveBeenCalledExactlyOnceWith(expect.any(Object))
     let [passwordCall] = vi.mocked(password).mock.calls
     let [passwordOptions] = passwordCall!
 
@@ -32,10 +32,13 @@ describe('requestGoogleMapsApiKey', () => {
       'Enter your Google Maps API key to geocode uncached addresses:',
     )
     expect(passwordOptions.mask).toBe('*')
-    expect(passwordOptions.validate?.('')).toBe(
-      'Google Maps API key is required.',
-    )
-    expect(passwordOptions.validate?.('test-key')).toBeUndefined()
+
+    let validate = passwordOptions.validate as (
+      value?: string,
+    ) => undefined | string
+
+    expect(validate('')).toBe('Google Maps API key is required.')
+    expect(validate('test-key')).toBeUndefined()
   })
 
   it('prompts for a replacement Google Maps API key after an invalid key error', async () => {

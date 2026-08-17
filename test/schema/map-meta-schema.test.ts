@@ -28,7 +28,7 @@ describe('mapMetaSchema', () => {
   })
 
   it('rejects a blank title', () => {
-    expect(mapMetaSchema.safeParse({ title: '   ' })).toMatchObject({
+    expect(mapMetaSchema.safeParse({ title: ' '.repeat(3) })).toMatchObject({
       error: {
         issues: [
           expect.objectContaining({

@@ -3,7 +3,7 @@ import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 import { refreshGoogleDriveAccessToken } from '../../resolvers/refresh-google-drive-access-token'
 
 let fetchMock = vi.fn<typeof fetch>()
-let originalFetch = globalThis.fetch
+let originalFetch = fetch
 
 describe('refreshGoogleDriveAccessToken', () => {
   beforeEach(() => {

@@ -44,11 +44,9 @@ export async function driveAuth(targetPath?: string): Promise<void> {
     clientSecret: credentials.clientSecret,
     clientId: credentials.clientId,
     refreshToken,
-    ...(savedGoogleDriveConfig.folderId ?
-      {
-        folderId: savedGoogleDriveConfig.folderId,
-      }
-    : {}),
+    ...(savedGoogleDriveConfig.folderId && {
+      folderId: savedGoogleDriveConfig.folderId,
+    }),
   })
 
   log.success('Google Drive auth saved to the local .env file.')
