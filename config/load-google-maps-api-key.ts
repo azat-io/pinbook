@@ -1,5 +1,6 @@
-import { readFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
+
+import { readOptionalTextFile } from './read-optional-text-file'
 
 /**
  * Loads the Google Maps API key from the process environment or a local `.env`
@@ -17,18 +18,9 @@ export async function loadGoogleMapsApiKey(
     return environmentApiKey
   }
 
-  let environmentPath = join(dirname(filePath), '.env')
-  let environmentContents: string
-
-  try {
-    environmentContents = await readFile(environmentPath, 'utf8')
-  } catch (error) {
-    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
-      return null
-    }
-
-    throw error
-  }
+  let environmentContents = await readOptionalTextFile(
+    join(dirname(filePath), '.env'),
+  )
 
   for (let line of environmentContents.split(/\r?\n/u)) {
     let normalizedLine = line.trimStart()

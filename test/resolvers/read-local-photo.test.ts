@@ -1,33 +1,11 @@
-import { afterEach, describe, expect, it } from 'vitest'
 import * as fsPromises from 'node:fs/promises'
-import { tmpdir } from 'node:os'
+import { describe, expect, it } from 'vitest'
 import { join } from 'node:path'
 
+import { createTemporaryDirectory } from '../helpers/create-temporary-directory'
 import { readLocalPhoto } from '../../resolvers/read-local-photo'
 
-let temporaryDirectories: string[] = []
-
-async function createTemporaryDirectory(): Promise<string> {
-  let temporaryDirectory = await fsPromises.mkdtemp(
-    join(tmpdir(), 'pinbook-local-photo-'),
-  )
-
-  temporaryDirectories.push(temporaryDirectory)
-
-  return temporaryDirectory
-}
-
 describe('readLocalPhoto', () => {
-  afterEach(async () => {
-    await Promise.all(
-      temporaryDirectories.map(directory =>
-        fsPromises.rm(directory, { recursive: true, force: true }),
-      ),
-    )
-
-    temporaryDirectories = []
-  })
-
   it('reads a local photo', async () => {
     let temporaryDirectory = await createTemporaryDirectory()
     let photoPath = join(temporaryDirectory, 'kyoto.jpg')

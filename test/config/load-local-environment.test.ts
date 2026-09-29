@@ -1,33 +1,13 @@
-import { writeFile, mkdtemp, mkdir, rm } from 'node:fs/promises'
-import { afterEach, describe, expect, it } from 'vitest'
-import { tmpdir } from 'node:os'
+import { writeFile, mkdir } from 'node:fs/promises'
+import { describe, expect, it } from 'vitest'
 import { join } from 'node:path'
 
+import { createTemporaryDirectory } from '../helpers/create-temporary-directory'
 import { loadLocalEnvironment } from '../../config/load-local-environment'
 
-let temporaryDirectories: string[] = []
-
-async function createTemporaryConfigDirectory(): Promise<string> {
-  let temporaryDirectory = await mkdtemp(join(tmpdir(), 'pinbook-env-'))
-
-  temporaryDirectories.push(temporaryDirectory)
-
-  return temporaryDirectory
-}
-
 describe('loadLocalEnvironment', () => {
-  afterEach(async () => {
-    await Promise.all(
-      temporaryDirectories.map(directory =>
-        rm(directory, { recursive: true, force: true }),
-      ),
-    )
-
-    temporaryDirectories = []
-  })
-
   it('returns an empty object when the local .env file does not exist', async () => {
-    let temporaryDirectory = await createTemporaryConfigDirectory()
+    let temporaryDirectory = await createTemporaryDirectory()
 
     await expect(
       loadLocalEnvironment(join(temporaryDirectory, 'index.yaml')),
@@ -35,7 +15,7 @@ describe('loadLocalEnvironment', () => {
   })
 
   it('parses exported variables, quoted values, comments, and blank lines', async () => {
-    let temporaryDirectory = await createTemporaryConfigDirectory()
+    let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, 'index.yaml')
 
     await writeFile(
@@ -61,7 +41,7 @@ describe('loadLocalEnvironment', () => {
   })
 
   it('ignores assignments without a variable name', async () => {
-    let temporaryDirectory = await createTemporaryConfigDirectory()
+    let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, 'index.yaml')
 
     await writeFile(
@@ -76,7 +56,7 @@ describe('loadLocalEnvironment', () => {
   })
 
   it('rethrows unexpected .env read errors', async () => {
-    let temporaryDirectory = await createTemporaryConfigDirectory()
+    let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, 'index.yaml')
 
     await mkdir(join(temporaryDirectory, '.env'))

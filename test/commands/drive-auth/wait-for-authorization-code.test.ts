@@ -1,35 +1,7 @@
-import type { createServer } from 'node:http'
-
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { createServer } from 'node:http'
 
 import { waitForAuthorizationCode } from '../../../commands/drive-auth/wait-for-authorization-code'
-
-type MockListener = (...arguments_: unknown[]) => void
-
-class MockServer {
-  private readonly listeners = new Map<string, { listener: MockListener }[]>()
-
-  public emit(eventName: string, ...arguments_: unknown[]): void {
-    let listeners = this.listeners.get(eventName) ?? []
-
-    this.listeners.delete(eventName)
-
-    for (let entry of listeners) {
-      entry.listener(...arguments_)
-    }
-  }
-
-  public once(eventName: string, listener: MockListener): this {
-    let listeners = this.listeners.get(eventName) ?? []
-
-    listeners.push({
-      listener,
-    })
-    this.listeners.set(eventName, listeners)
-
-    return this
-  }
-}
 
 function createMockResponse(): {
   setHeader: ReturnType<typeof vi.fn>
@@ -43,17 +15,13 @@ function createMockResponse(): {
   }
 }
 
-function createMockServer(): ReturnType<typeof createServer> {
-  return new MockServer() as unknown as ReturnType<typeof createServer>
-}
-
 describe('waitForAuthorizationCode', () => {
   beforeEach(() => {
     vi.useRealTimers()
   })
 
   it('resolves the callback code and returns the success page', async () => {
-    let server = createMockServer()
+    let server = createServer()
     let response = createMockResponse()
     let authorizationCodePromise = waitForAuthorizationCode(
       server,
@@ -84,7 +52,7 @@ describe('waitForAuthorizationCode', () => {
   })
 
   it('rejects unexpected callback paths and falls back to the default host and path inputs', async () => {
-    let server = createMockServer()
+    let server = createServer()
     let response = createMockResponse()
     let authorizationCodePromise = waitForAuthorizationCode(
       server,
@@ -109,7 +77,7 @@ describe('waitForAuthorizationCode', () => {
   })
 
   it('rejects OAuth callbacks that include a Google error', async () => {
-    let server = createMockServer()
+    let server = createServer()
     let response = createMockResponse()
     let authorizationCodePromise = waitForAuthorizationCode(
       server,
@@ -138,7 +106,7 @@ describe('waitForAuthorizationCode', () => {
   })
 
   it('rejects callbacks whose state does not match', async () => {
-    let server = createMockServer()
+    let server = createServer()
     let response = createMockResponse()
     let authorizationCodePromise = waitForAuthorizationCode(
       server,
@@ -164,7 +132,7 @@ describe('waitForAuthorizationCode', () => {
   })
 
   it('rejects callbacks that do not include a code', async () => {
-    let server = createMockServer()
+    let server = createServer()
     let response = createMockResponse()
     let authorizationCodePromise = waitForAuthorizationCode(
       server,
@@ -190,7 +158,7 @@ describe('waitForAuthorizationCode', () => {
   })
 
   it('rejects unexpected parsing errors from the callback request', async () => {
-    let server = createMockServer()
+    let server = createServer()
     let response = createMockResponse()
     let authorizationCodePromise = waitForAuthorizationCode(
       server,
@@ -214,7 +182,7 @@ describe('waitForAuthorizationCode', () => {
   it('times out when no callback arrives', async () => {
     vi.useFakeTimers()
 
-    let server = createMockServer()
+    let server = createServer()
     let authorizationCodePromise = waitForAuthorizationCode(
       server,
       'expected-state',

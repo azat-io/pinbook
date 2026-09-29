@@ -4,24 +4,11 @@ import sharp from 'sharp'
 
 import { preparePhotoForGoogleDrive } from '../../resolvers/prepare-photo-for-google-drive'
 import { LocalPhotoProcessingError } from '../../resolvers/local-photo-processing-error'
+import { createTestImage } from '../helpers/create-test-image'
 
 describe('preparePhotoForGoogleDrive', () => {
   it('converts a local image into a fixed-size WebP upload artifact', async () => {
-    let sourceBuffer = await sharp({
-      create: {
-        background: {
-          g: 120,
-          b: 220,
-          r: 20,
-        },
-        height: 1000,
-        width: 2000,
-        channels: 3,
-      },
-    })
-      .jpeg()
-      .toBuffer()
-
+    let sourceBuffer = await createTestImage().jpeg().toBuffer()
     let preparedPhoto = await preparePhotoForGoogleDrive({
       photoPath: '/tmp/kyoto.jpg',
       buffer: sourceBuffer,
@@ -50,21 +37,7 @@ describe('preparePhotoForGoogleDrive', () => {
   })
 
   it('uses a webp extension even when the source file has no extension', async () => {
-    let sourceBuffer = await sharp({
-      create: {
-        background: {
-          g: 120,
-          b: 220,
-          r: 20,
-        },
-        height: 1000,
-        width: 2000,
-        channels: 3,
-      },
-    })
-      .png()
-      .toBuffer()
-
+    let sourceBuffer = await createTestImage().png().toBuffer()
     let preparedPhoto = await preparePhotoForGoogleDrive({
       photoPath: '/tmp/kyoto',
       buffer: sourceBuffer,

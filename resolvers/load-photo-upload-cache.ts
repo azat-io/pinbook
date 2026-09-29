@@ -1,11 +1,10 @@
 import type { ZodError } from 'zod'
 
-import { readFile } from 'node:fs/promises'
-
 import type { PhotoUploadCacheSchema } from '../schema/photo-upload-cache-schema'
 
 import { photoUploadCacheSchema } from '../schema/photo-upload-cache-schema'
 import { DEFAULT_PHOTO_UPLOAD_CACHE_PATH } from '../constants'
+import { loadJsonCache } from './load-json-cache'
 
 /**
  * Error thrown when the parsed photo upload cache does not satisfy the schema.
@@ -55,27 +54,15 @@ export class PhotoUploadCacheSyntaxError extends Error {
 export async function loadPhotoUploadCache(
   filePath: string = DEFAULT_PHOTO_UPLOAD_CACHE_PATH,
 ): Promise<PhotoUploadCacheSchema> {
-  try {
-    let source = await readFile(filePath, 'utf8')
-    let parsed = parseJson(source)
-    let result = photoUploadCacheSchema.safeParse(parsed)
-
-    if (!result.success) {
-      throw new PhotoUploadCacheValidationError(
-        formatZodIssues(result.error).map(
-          issue => `${issue.path}: ${issue.message}`,
-        ),
-      )
-    }
-
-    return result.data
-  } catch (error) {
-    if (isNodeError(error) && error.code === 'ENOENT') {
-      return createEmptyPhotoUploadCache()
-    }
-
-    throw error
-  }
+  return loadJsonCache(filePath, {
+    createValidationError: error =>
+      new PhotoUploadCacheValidationError(
+        formatZodIssues(error).map(issue => `${issue.path}: ${issue.message}`),
+      ),
+    createSyntaxError: message => new PhotoUploadCacheSyntaxError(message),
+    createEmptyCache: createEmptyPhotoUploadCache,
+    schema: photoUploadCacheSchema,
+  })
 }
 
 /**
@@ -89,32 +76,6 @@ function formatZodIssues(error: ZodError): { message: string; path: string }[] {
     path: issue.path.join('.'),
     message: issue.message,
   }))
-}
-
-/**
- * Parses JSON cache content and throws a named syntax error on invalid input.
- *
- * @param source - Raw JSON file contents.
- * @returns Parsed JSON value.
- * @throws {PhotoUploadCacheSyntaxError} Thrown when the input is not valid
- *   JSON.
- */
-function parseJson(source: string): unknown {
-  try {
-    return JSON.parse(source) as unknown
-  } catch {
-    throw new PhotoUploadCacheSyntaxError('Invalid JSON')
-  }
-}
-
-/**
- * Checks whether the thrown value looks like a Node.js filesystem error.
- *
- * @param error - Unknown thrown value.
- * @returns `true` when the value is an Error with a `code` property.
- */
-function isNodeError(error: unknown): error is NodeJS.ErrnoException & Error {
-  return error instanceof Error && 'code' in error
 }
 
 /**

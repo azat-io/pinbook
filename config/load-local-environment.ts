@@ -1,5 +1,6 @@
-import { readFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
+
+import { readOptionalTextFile } from './read-optional-text-file'
 
 /**
  * Loads simple `KEY=value` assignments from a local `.env` file next to the
@@ -11,19 +12,9 @@ import { dirname, join } from 'node:path'
 export async function loadLocalEnvironment(
   filePath: string,
 ): Promise<Record<string, string>> {
-  let environmentPath = join(dirname(filePath), '.env')
-  let environmentContents: string
-
-  try {
-    environmentContents = await readFile(environmentPath, 'utf8')
-  } catch (error) {
-    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
-      return {}
-    }
-
-    throw error
-  }
-
+  let environmentContents = await readOptionalTextFile(
+    join(dirname(filePath), '.env'),
+  )
   let environment: Record<string, string> = {}
 
   for (let line of environmentContents.split(/\r?\n/u)) {

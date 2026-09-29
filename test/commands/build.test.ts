@@ -23,15 +23,10 @@ import { requestGoogleMapsApiKey } from '../../cli/request-google-maps-api-key'
 import { loadGoogleDriveConfig } from '../../config/load-google-drive-config'
 import { saveGoogleMapsApiKey } from '../../config/save-google-maps-api-key'
 import { loadGoogleMapsApiKey } from '../../config/load-google-maps-api-key'
+import { isInteractiveTerminal } from '../../cli/is-interactive-terminal'
 import { exportKml } from '../../serializers/export-kml'
 import { loadConfig } from '../../config/load-config'
 import { build } from '../../commands/build'
-
-let originalStdinIsTTY = Object.getOwnPropertyDescriptor(process.stdin, 'isTTY')
-let originalStdoutIsTTY = Object.getOwnPropertyDescriptor(
-  process.stdout,
-  'isTTY',
-)
 
 vi.mock('@clack/prompts', () => ({
   log: {
@@ -68,6 +63,10 @@ vi.mock('../../config/save-google-maps-api-key', () => ({
 
 vi.mock('../../cli/request-google-maps-api-key', () => ({
   requestGoogleMapsApiKey: vi.fn(),
+}))
+
+vi.mock('../../cli/is-interactive-terminal', () => ({
+  isInteractiveTerminal: vi.fn(),
 }))
 
 vi.mock('../../serializers/export-kml', () => ({
@@ -234,29 +233,103 @@ function createProgressHandle(): ReturnType<typeof progress> {
   }
 }
 
-function restoreInteractiveTerminal(): void {
-  if (originalStdinIsTTY) {
-    Object.defineProperty(process.stdin, 'isTTY', originalStdinIsTTY)
-  } else {
-    Reflect.deleteProperty(process.stdin, 'isTTY')
-  }
+function mockSuccessfulBuild(
+  config: MapConfigSchema = createKyotoStationConfig(),
+  resolvedConfig: ResolvedMapConfig = createKyotoStationConfig(),
+): void {
+  vi.mocked(loadConfig).mockResolvedValueOnce(config)
+  vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('test-key')
+  vi.mocked(resolveConfig).mockResolvedValueOnce(resolvedConfig)
+  vi.mocked(exportKml).mockReturnValueOnce('<kml>map</kml>')
+}
 
-  if (originalStdoutIsTTY) {
-    Object.defineProperty(process.stdout, 'isTTY', originalStdoutIsTTY)
-  } else {
-    Reflect.deleteProperty(process.stdout, 'isTTY')
+function createResolvedSensoJiConfig(): ResolvedMapConfig {
+  return {
+    pins: [
+      {
+        coords: [35.7148, 139.7967],
+        address: 'Senso-ji, Tokyo',
+        icon: 'shapes-pin',
+        title: 'Senso-ji',
+        color: 'red-500',
+        id: 'senso-ji',
+      },
+    ],
+    map: {
+      title: 'Tokyo',
+    },
+    layers: [],
   }
 }
 
-function setInteractiveTerminal(isInteractive: boolean): void {
-  Object.defineProperty(process.stdin, 'isTTY', {
-    value: isInteractive,
-    configurable: true,
-  })
-  Object.defineProperty(process.stdout, 'isTTY', {
-    value: isInteractive,
-    configurable: true,
-  })
+function mockGoogleDrivePhotosError(error: Error): void {
+  vi.mocked(loadConfig).mockResolvedValueOnce(createEmptyConfig())
+  vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
+  vi.mocked(resolveConfig).mockResolvedValueOnce(createEmptyConfig())
+  vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(error)
+}
+
+function createKyotoStationConfig(): ResolvedMapConfig {
+  return {
+    pins: [
+      {
+        coords: [35.0116, 135.7681],
+        title: 'Kyoto Station',
+        id: 'kyoto-station',
+        icon: 'shapes-pin',
+        color: 'red-500',
+      },
+    ],
+    map: {
+      title: 'Kyoto 2026',
+    },
+    layers: [],
+  }
+}
+
+function createMissingPlaceConfig(): MapConfigSchema {
+  return {
+    pins: [
+      {
+        address: 'Missing Place, Tokyo',
+        title: 'Missing Place',
+        id: 'missing-place',
+        icon: 'shapes-pin',
+        color: 'red-500',
+      },
+    ],
+    map: {
+      title: 'Tokyo',
+    },
+    layers: [],
+  }
+}
+
+function createSensoJiConfig(): MapConfigSchema {
+  return {
+    pins: [
+      {
+        address: 'Senso-ji, Tokyo',
+        icon: 'shapes-pin',
+        title: 'Senso-ji',
+        color: 'red-500',
+        id: 'senso-ji',
+      },
+    ],
+    map: {
+      title: 'Tokyo',
+    },
+    layers: [],
+  }
+}
+
+function createInvalidApiKeyError(): Error {
+  return createGoogleGeocodingError(
+    'Google returned status REQUEST_DENIED. The provided API key is invalid.',
+    {
+      isInvalidApiKey: true,
+    },
+  )
 }
 
 function createLocationResolutionError(
@@ -289,6 +362,16 @@ function createResolutionCacheValidationError(
   return new ResolutionCacheValidationError(issues)
 }
 
+function createEmptyConfig(): ResolvedMapConfig {
+  return {
+    map: {
+      title: 'Kyoto 2026',
+    },
+    layers: [],
+    pins: [],
+  }
+}
+
 function createConfigValidationError(
   issues: string[],
 ): { issues: string[] } & Error {
@@ -307,7 +390,7 @@ describe('build', () => {
   beforeEach(() => {
     process.exitCode = undefined
     vi.clearAllMocks()
-    setInteractiveTerminal(true)
+    vi.mocked(isInteractiveTerminal).mockReturnValue(true)
     vi.mocked(loadGoogleDriveConfig).mockResolvedValue({})
     vi.mocked(resolveGoogleDrivePhotos).mockImplementation(
       (config: ResolvedMapConfig) => Promise.resolve(config),
@@ -317,43 +400,14 @@ describe('build', () => {
 
   afterEach(() => {
     delete process.env['GOOGLE_MAPS_API_KEY']
-    restoreInteractiveTerminal()
   })
 
   it('writes the generated KML artifact for a valid config', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          coords: [35.0116, 135.7681],
-          icon: 'shapes-pin' as const,
-          color: 'red-500' as const,
-          title: 'Kyoto Station',
-          id: 'kyoto-station',
-        },
-      ],
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-    }
-    let resolvedConfig: ResolvedMapConfig = {
-      ...config,
-      pins: [
-        {
-          coords: [35.0116, 135.7681],
-          title: 'Kyoto Station',
-          id: 'kyoto-station',
-          icon: 'shapes-pin',
-          color: 'red-500',
-        },
-      ],
-    }
+    let config = createKyotoStationConfig()
+    let resolvedConfig = createKyotoStationConfig()
 
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
-    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('test-key')
-    vi.mocked(resolveConfig).mockResolvedValueOnce(resolvedConfig)
-    vi.mocked(exportKml).mockReturnValueOnce('<kml>map</kml>')
+    mockSuccessfulBuild(config, resolvedConfig)
 
     await build(filePath)
 
@@ -389,38 +443,11 @@ describe('build', () => {
 
   it('shows address resolution progress while uncached addresses are geocoded', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          icon: 'shapes-pin' as const,
-          address: 'Senso-ji, Tokyo',
-          color: 'red-500' as const,
-          title: 'Senso-ji',
-          id: 'senso-ji',
-        },
-      ],
-      map: {
-        title: 'Tokyo 2026',
-      },
-      layers: [],
-    }
-    let resolvedConfig: ResolvedMapConfig = {
-      ...config,
-      pins: [
-        {
-          coords: [35.7148, 139.7967],
-          address: 'Senso-ji, Tokyo',
-          icon: 'shapes-pin',
-          title: 'Senso-ji',
-          color: 'red-500',
-          id: 'senso-ji',
-        },
-      ],
-    }
+    let resolvedConfig = createResolvedSensoJiConfig()
     let addressProgressHandle = createProgressHandle()
 
     vi.mocked(progress).mockImplementationOnce(() => addressProgressHandle)
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(loadConfig).mockResolvedValueOnce(createSensoJiConfig())
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('test-key')
     vi.mocked(resolveConfig).mockImplementationOnce((_config, options) => {
       options?.onProgress?.({
@@ -457,39 +484,10 @@ describe('build', () => {
 
   it('shows Google Drive photo progress while local photos are processed', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          coords: [35.0116, 135.7681],
-          icon: 'shapes-pin' as const,
-          color: 'red-500' as const,
-          title: 'Kyoto Station',
-          id: 'kyoto-station',
-        },
-      ],
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-    }
-    let resolvedConfig: ResolvedMapConfig = {
-      ...config,
-      pins: [
-        {
-          coords: [35.0116, 135.7681],
-          title: 'Kyoto Station',
-          id: 'kyoto-station',
-          icon: 'shapes-pin',
-          color: 'red-500',
-        },
-      ],
-    }
     let photoProgressHandle = createProgressHandle()
 
     vi.mocked(progress).mockImplementationOnce(() => photoProgressHandle)
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
-    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('test-key')
-    vi.mocked(resolveConfig).mockResolvedValueOnce(resolvedConfig)
+    mockSuccessfulBuild()
     vi.mocked(resolveGoogleDrivePhotos).mockImplementationOnce(
       (resolved, options) => {
         options?.onProgress?.({
@@ -548,7 +546,6 @@ describe('build', () => {
         return Promise.resolve(resolved)
       },
     )
-    vi.mocked(exportKml).mockReturnValueOnce('<kml>map</kml>')
 
     await build(filePath)
 
@@ -587,37 +584,8 @@ describe('build', () => {
 
   it('ignores Google Drive photo progress events emitted before start', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          coords: [35.0116, 135.7681],
-          icon: 'shapes-pin' as const,
-          color: 'red-500' as const,
-          title: 'Kyoto Station',
-          id: 'kyoto-station',
-        },
-      ],
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-    }
-    let resolvedConfig: ResolvedMapConfig = {
-      ...config,
-      pins: [
-        {
-          coords: [35.0116, 135.7681],
-          title: 'Kyoto Station',
-          id: 'kyoto-station',
-          icon: 'shapes-pin',
-          color: 'red-500',
-        },
-      ],
-    }
 
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
-    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('test-key')
-    vi.mocked(resolveConfig).mockResolvedValueOnce(resolvedConfig)
+    mockSuccessfulBuild()
     vi.mocked(resolveGoogleDrivePhotos).mockImplementationOnce(
       (resolved, options) => {
         options?.onProgress?.({
@@ -631,7 +599,6 @@ describe('build', () => {
         return Promise.resolve(resolved)
       },
     )
-    vi.mocked(exportKml).mockReturnValueOnce('<kml>map</kml>')
 
     await build(filePath)
 
@@ -643,37 +610,8 @@ describe('build', () => {
 
   it('logs Google Drive cleanup warnings and still completes the build', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          coords: [35.0116, 135.7681],
-          icon: 'shapes-pin' as const,
-          color: 'red-500' as const,
-          title: 'Kyoto Station',
-          id: 'kyoto-station',
-        },
-      ],
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-    }
-    let resolvedConfig: ResolvedMapConfig = {
-      ...config,
-      pins: [
-        {
-          coords: [35.0116, 135.7681],
-          title: 'Kyoto Station',
-          id: 'kyoto-station',
-          icon: 'shapes-pin',
-          color: 'red-500',
-        },
-      ],
-    }
 
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
-    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('test-key')
-    vi.mocked(resolveConfig).mockResolvedValueOnce(resolvedConfig)
+    mockSuccessfulBuild()
     vi.mocked(resolveGoogleDrivePhotos).mockImplementationOnce(
       (resolved, options) => {
         options?.onWarning?.(
@@ -683,7 +621,6 @@ describe('build', () => {
         return Promise.resolve(resolved)
       },
     )
-    vi.mocked(exportKml).mockReturnValueOnce('<kml>map</kml>')
 
     await build(filePath)
 
@@ -697,38 +634,8 @@ describe('build', () => {
 
   it('treats a directory target path as a project directory with index.yaml', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          coords: [35.0116, 135.7681],
-          icon: 'shapes-pin' as const,
-          color: 'red-500' as const,
-          title: 'Kyoto Station',
-          id: 'kyoto-station',
-        },
-      ],
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-    }
-    let resolvedConfig: ResolvedMapConfig = {
-      ...config,
-      pins: [
-        {
-          coords: [35.0116, 135.7681],
-          title: 'Kyoto Station',
-          id: 'kyoto-station',
-          icon: 'shapes-pin',
-          color: 'red-500',
-        },
-      ],
-    }
 
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
-    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('test-key')
-    vi.mocked(resolveConfig).mockResolvedValueOnce(resolvedConfig)
-    vi.mocked(exportKml).mockReturnValueOnce('<kml>map</kml>')
+    mockSuccessfulBuild()
 
     await build(exampleDirectoryPath)
 
@@ -736,38 +643,7 @@ describe('build', () => {
   })
 
   it('uses index.yaml in the current directory when build target path is omitted', async () => {
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          coords: [35.0116, 135.7681],
-          icon: 'shapes-pin' as const,
-          color: 'red-500' as const,
-          title: 'Kyoto Station',
-          id: 'kyoto-station',
-        },
-      ],
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-    }
-    let resolvedConfig: ResolvedMapConfig = {
-      ...config,
-      pins: [
-        {
-          coords: [35.0116, 135.7681],
-          title: 'Kyoto Station',
-          id: 'kyoto-station',
-          icon: 'shapes-pin',
-          color: 'red-500',
-        },
-      ],
-    }
-
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
-    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('test-key')
-    vi.mocked(resolveConfig).mockResolvedValueOnce(resolvedConfig)
-    vi.mocked(exportKml).mockReturnValueOnce('<kml>map</kml>')
+    mockSuccessfulBuild()
 
     await build()
 
@@ -776,41 +652,14 @@ describe('build', () => {
 
   it('prompts for a missing Google Maps API key, saves it, and retries the build', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          address: 'Senso-ji, Tokyo',
-          icon: 'shapes-pin',
-          title: 'Senso-ji',
-          color: 'red-500',
-          id: 'senso-ji',
-        },
-      ],
-      map: {
-        title: 'Tokyo',
-      },
-      layers: [],
-    }
+    let config = createSensoJiConfig()
     let missingApiKeyError = new GoogleMapsApiKeyMissingError()
-    let resolvedConfig: ResolvedMapConfig = {
-      ...config,
-      pins: [
-        {
-          coords: [35.7148, 139.7967],
-          address: 'Senso-ji, Tokyo',
-          icon: 'shapes-pin',
-          title: 'Senso-ji',
-          color: 'red-500',
-          id: 'senso-ji',
-        },
-      ],
-    }
 
     vi.mocked(loadConfig).mockResolvedValueOnce(config)
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
     vi.mocked(resolveConfig)
       .mockRejectedValueOnce(missingApiKeyError)
-      .mockResolvedValueOnce(resolvedConfig)
+      .mockResolvedValueOnce(createResolvedSensoJiConfig())
     vi.mocked(requestGoogleMapsApiKey).mockResolvedValueOnce('prompted-key')
     vi.mocked(exportKml).mockReturnValueOnce('<kml>map</kml>')
 
@@ -839,41 +688,13 @@ describe('build', () => {
 
   it('retries build without googleMapsApiKey when the prompted key trims to empty', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          address: 'Senso-ji, Tokyo',
-          icon: 'shapes-pin',
-          title: 'Senso-ji',
-          color: 'red-500',
-          id: 'senso-ji',
-        },
-      ],
-      map: {
-        title: 'Tokyo',
-      },
-      layers: [],
-    }
     let missingApiKeyError = new GoogleMapsApiKeyMissingError()
-    let resolvedConfig: ResolvedMapConfig = {
-      ...config,
-      pins: [
-        {
-          coords: [35.7148, 139.7967],
-          address: 'Senso-ji, Tokyo',
-          icon: 'shapes-pin',
-          title: 'Senso-ji',
-          color: 'red-500',
-          id: 'senso-ji',
-        },
-      ],
-    }
 
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(loadConfig).mockResolvedValueOnce(createSensoJiConfig())
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
     vi.mocked(resolveConfig)
       .mockRejectedValueOnce(missingApiKeyError)
-      .mockResolvedValueOnce(resolvedConfig)
+      .mockResolvedValueOnce(createResolvedSensoJiConfig())
     vi.mocked(requestGoogleMapsApiKey).mockResolvedValueOnce(' '.repeat(3))
     vi.mocked(exportKml).mockReturnValueOnce('<kml>map</kml>')
 
@@ -892,24 +713,9 @@ describe('build', () => {
 
   it('cancels the build when the Google Maps API key prompt is canceled', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          address: 'Senso-ji, Tokyo',
-          icon: 'shapes-pin',
-          title: 'Senso-ji',
-          color: 'red-500',
-          id: 'senso-ji',
-        },
-      ],
-      map: {
-        title: 'Tokyo',
-      },
-      layers: [],
-    }
     let missingApiKeyError = new GoogleMapsApiKeyMissingError()
 
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(loadConfig).mockResolvedValueOnce(createSensoJiConfig())
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
     vi.mocked(resolveConfig).mockRejectedValueOnce(missingApiKeyError)
     vi.mocked(requestGoogleMapsApiKey).mockResolvedValueOnce(null)
@@ -924,25 +730,10 @@ describe('build', () => {
 
   it('does not prompt for a missing Google Maps API key in non-interactive mode', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          address: 'Senso-ji, Tokyo',
-          icon: 'shapes-pin',
-          title: 'Senso-ji',
-          color: 'red-500',
-          id: 'senso-ji',
-        },
-      ],
-      map: {
-        title: 'Tokyo',
-      },
-      layers: [],
-    }
     let missingApiKeyError = new GoogleMapsApiKeyMissingError()
 
-    setInteractiveTerminal(false)
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(isInteractiveTerminal).mockReturnValue(false)
+    vi.mocked(loadConfig).mockResolvedValueOnce(createSensoJiConfig())
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
     vi.mocked(resolveConfig).mockRejectedValueOnce(missingApiKeyError)
 
@@ -958,47 +749,13 @@ describe('build', () => {
 
   it('prompts for a replacement Google Maps API key when a saved key is invalid', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          address: 'Senso-ji, Tokyo',
-          icon: 'shapes-pin',
-          title: 'Senso-ji',
-          color: 'red-500',
-          id: 'senso-ji',
-        },
-      ],
-      map: {
-        title: 'Tokyo',
-      },
-      layers: [],
-    }
-    let resolvedConfig: ResolvedMapConfig = {
-      ...config,
-      pins: [
-        {
-          coords: [35.7148, 139.7967],
-          address: 'Senso-ji, Tokyo',
-          icon: 'shapes-pin',
-          title: 'Senso-ji',
-          color: 'red-500',
-          id: 'senso-ji',
-        },
-      ],
-    }
+    let config = createSensoJiConfig()
 
     vi.mocked(loadConfig).mockResolvedValueOnce(config)
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('saved-invalid-key')
     vi.mocked(resolveConfig)
-      .mockRejectedValueOnce(
-        createGoogleGeocodingError(
-          'Google returned status REQUEST_DENIED. The provided API key is invalid.',
-          {
-            isInvalidApiKey: true,
-          },
-        ),
-      )
-      .mockResolvedValueOnce(resolvedConfig)
+      .mockRejectedValueOnce(createInvalidApiKeyError())
+      .mockResolvedValueOnce(createResolvedSensoJiConfig())
     vi.mocked(requestGoogleMapsApiKey).mockResolvedValueOnce('replacement-key')
     vi.mocked(exportKml).mockReturnValueOnce('<kml>map</kml>')
 
@@ -1023,32 +780,10 @@ describe('build', () => {
 
   it('cancels the build when replacement Google Maps API key prompt is canceled', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          address: 'Senso-ji, Tokyo',
-          icon: 'shapes-pin',
-          title: 'Senso-ji',
-          color: 'red-500',
-          id: 'senso-ji',
-        },
-      ],
-      map: {
-        title: 'Tokyo',
-      },
-      layers: [],
-    }
 
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(loadConfig).mockResolvedValueOnce(createSensoJiConfig())
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('saved-invalid-key')
-    vi.mocked(resolveConfig).mockRejectedValueOnce(
-      createGoogleGeocodingError(
-        'Google returned status REQUEST_DENIED. The provided API key is invalid.',
-        {
-          isInvalidApiKey: true,
-        },
-      ),
-    )
+    vi.mocked(resolveConfig).mockRejectedValueOnce(createInvalidApiKeyError())
     vi.mocked(requestGoogleMapsApiKey).mockResolvedValueOnce(null)
 
     await build(filePath)
@@ -1061,33 +796,11 @@ describe('build', () => {
 
   it('does not prompt for a replacement Google Maps API key in non-interactive mode', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          address: 'Senso-ji, Tokyo',
-          icon: 'shapes-pin',
-          title: 'Senso-ji',
-          color: 'red-500',
-          id: 'senso-ji',
-        },
-      ],
-      map: {
-        title: 'Tokyo',
-      },
-      layers: [],
-    }
 
-    setInteractiveTerminal(false)
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(isInteractiveTerminal).mockReturnValue(false)
+    vi.mocked(loadConfig).mockResolvedValueOnce(createSensoJiConfig())
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('saved-invalid-key')
-    vi.mocked(resolveConfig).mockRejectedValueOnce(
-      createGoogleGeocodingError(
-        'Google returned status REQUEST_DENIED. The provided API key is invalid.',
-        {
-          isInvalidApiKey: true,
-        },
-      ),
-    )
+    vi.mocked(resolveConfig).mockRejectedValueOnce(createInvalidApiKeyError())
 
     await build(filePath)
 
@@ -1144,24 +857,9 @@ describe('build', () => {
 
   it('logs resolution cache syntax errors', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          coords: [35.0116, 135.7681],
-          title: 'Kyoto Station',
-          id: 'kyoto-station',
-          icon: 'shapes-pin',
-          color: 'red-500',
-        },
-      ],
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-    }
     let resolutionCachePath = exampleResolutionCachePath
 
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(loadConfig).mockResolvedValueOnce(createKyotoStationConfig())
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
     vi.mocked(resolveConfig).mockRejectedValueOnce(
       createResolutionCacheSyntaxError('Invalid JSON'),
@@ -1182,24 +880,9 @@ describe('build', () => {
 
   it('logs resolution cache validation issues', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          coords: [35.0116, 135.7681],
-          title: 'Kyoto Station',
-          id: 'kyoto-station',
-          icon: 'shapes-pin',
-          color: 'red-500',
-        },
-      ],
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-    }
     let resolutionCachePath = exampleResolutionCachePath
 
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(loadConfig).mockResolvedValueOnce(createKyotoStationConfig())
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
     vi.mocked(resolveConfig).mockRejectedValueOnce(
       createResolutionCacheValidationError([
@@ -1244,23 +927,8 @@ describe('build', () => {
 
   it('logs unresolved addresses when they are missing from the cache', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          address: 'Missing Place, Tokyo',
-          title: 'Missing Place',
-          id: 'missing-place',
-          icon: 'shapes-pin',
-          color: 'red-500',
-        },
-      ],
-      map: {
-        title: 'Tokyo',
-      },
-      layers: [],
-    }
 
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(loadConfig).mockResolvedValueOnce(createMissingPlaceConfig())
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
     vi.mocked(resolveConfig).mockRejectedValueOnce(
       createLocationResolutionError([
@@ -1292,21 +960,6 @@ describe('build', () => {
 
   it('logs Google geocoding failures', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          address: 'Missing Place, Tokyo',
-          title: 'Missing Place',
-          id: 'missing-place',
-          icon: 'shapes-pin',
-          color: 'red-500',
-        },
-      ],
-      map: {
-        title: 'Tokyo',
-      },
-      layers: [],
-    }
     let error = createGoogleGeocodingError(
       'Google returned status OVER_QUERY_LIMIT.',
       {
@@ -1314,7 +967,7 @@ describe('build', () => {
       },
     )
 
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(loadConfig).mockResolvedValueOnce(createMissingPlaceConfig())
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('test-key')
     vi.mocked(resolveConfig).mockRejectedValueOnce(error)
 
@@ -1329,29 +982,9 @@ describe('build', () => {
 
   it('does not prompt more than once when the replacement Google Maps API key is also invalid', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          address: 'Senso-ji, Tokyo',
-          icon: 'shapes-pin',
-          title: 'Senso-ji',
-          color: 'red-500',
-          id: 'senso-ji',
-        },
-      ],
-      map: {
-        title: 'Tokyo',
-      },
-      layers: [],
-    }
-    let invalidApiKeyError = createGoogleGeocodingError(
-      'Google returned status REQUEST_DENIED. The provided API key is invalid.',
-      {
-        isInvalidApiKey: true,
-      },
-    )
+    let invalidApiKeyError = createInvalidApiKeyError()
 
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(loadConfig).mockResolvedValueOnce(createSensoJiConfig())
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('saved-invalid-key')
     vi.mocked(resolveConfig)
       .mockRejectedValueOnce(invalidApiKeyError)
@@ -1368,22 +1001,7 @@ describe('build', () => {
   })
 
   it('logs missing Google Drive config when local photo uploads need it', async () => {
-    vi.mocked(loadConfig).mockResolvedValueOnce({
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-      pins: [],
-    })
-    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
-    vi.mocked(resolveConfig).mockResolvedValueOnce({
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-      pins: [],
-    })
-    vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(
+    mockGoogleDrivePhotosError(
       new GoogleDriveConfigError(['GOOGLE_DRIVE_CLIENT_ID']),
     )
 
@@ -1400,22 +1018,7 @@ describe('build', () => {
   })
 
   it('logs missing Google Drive config without a target path hint when build uses the current directory', async () => {
-    vi.mocked(loadConfig).mockResolvedValueOnce({
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-      pins: [],
-    })
-    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
-    vi.mocked(resolveConfig).mockResolvedValueOnce({
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-      pins: [],
-    })
-    vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(
+    mockGoogleDrivePhotosError(
       new GoogleDriveConfigError(['GOOGLE_DRIVE_CLIENT_ID']),
     )
 
@@ -1428,22 +1031,7 @@ describe('build', () => {
   })
 
   it('logs local photo file errors', async () => {
-    vi.mocked(loadConfig).mockResolvedValueOnce({
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-      pins: [],
-    })
-    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
-    vi.mocked(resolveConfig).mockResolvedValueOnce({
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-      pins: [],
-    })
-    vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(
+    mockGoogleDrivePhotosError(
       new LocalPhotoFileNotFoundError('/tmp/kyoto.jpg'),
     )
 
@@ -1456,22 +1044,7 @@ describe('build', () => {
   })
 
   it('logs local photo processing errors', async () => {
-    vi.mocked(loadConfig).mockResolvedValueOnce({
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-      pins: [],
-    })
-    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
-    vi.mocked(resolveConfig).mockResolvedValueOnce({
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-      pins: [],
-    })
-    vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(
+    mockGoogleDrivePhotosError(
       new LocalPhotoProcessingError('/tmp/kyoto.jpg', {
         cause: new Error('bad image'),
       }),
@@ -1486,22 +1059,7 @@ describe('build', () => {
   })
 
   it('logs Google Drive upload failures', async () => {
-    vi.mocked(loadConfig).mockResolvedValueOnce({
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-      pins: [],
-    })
-    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
-    vi.mocked(resolveConfig).mockResolvedValueOnce({
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-      pins: [],
-    })
-    vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(
+    mockGoogleDrivePhotosError(
       new GoogleDrivePhotoUploadError('Google Drive upload failed'),
     )
 
@@ -1512,24 +1070,7 @@ describe('build', () => {
   })
 
   it('logs photo upload cache syntax errors', async () => {
-    vi.mocked(loadConfig).mockResolvedValueOnce({
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-      pins: [],
-    })
-    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
-    vi.mocked(resolveConfig).mockResolvedValueOnce({
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-      pins: [],
-    })
-    vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(
-      new PhotoUploadCacheSyntaxError('Invalid JSON'),
-    )
+    mockGoogleDrivePhotosError(new PhotoUploadCacheSyntaxError('Invalid JSON'))
 
     await build(exampleConfigFilePath)
 
@@ -1543,22 +1084,7 @@ describe('build', () => {
   })
 
   it('logs photo upload cache validation issues', async () => {
-    vi.mocked(loadConfig).mockResolvedValueOnce({
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-      pins: [],
-    })
-    vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce(null)
-    vi.mocked(resolveConfig).mockResolvedValueOnce({
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-      pins: [],
-    })
-    vi.mocked(resolveGoogleDrivePhotos).mockRejectedValueOnce(
+    mockGoogleDrivePhotosError(
       createPhotoUploadCacheValidationError(['entries.photo: Invalid input']),
     )
 
@@ -1574,23 +1100,8 @@ describe('build', () => {
 
   it('rethrows unexpected errors', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          coords: [35.0116, 135.7681],
-          title: 'Kyoto Station',
-          id: 'kyoto-station',
-          icon: 'shapes-pin',
-          color: 'red-500',
-        },
-      ],
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-    }
 
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(loadConfig).mockResolvedValueOnce(createKyotoStationConfig())
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('test-key')
     vi.mocked(resolveConfig).mockRejectedValueOnce(new Error('boom'))
 
@@ -1599,23 +1110,8 @@ describe('build', () => {
 
   it('rethrows unexpected non-Error values', async () => {
     let filePath = exampleConfigFilePath
-    let config: MapConfigSchema = {
-      pins: [
-        {
-          coords: [35.0116, 135.7681],
-          title: 'Kyoto Station',
-          id: 'kyoto-station',
-          icon: 'shapes-pin',
-          color: 'red-500',
-        },
-      ],
-      map: {
-        title: 'Kyoto 2026',
-      },
-      layers: [],
-    }
 
-    vi.mocked(loadConfig).mockResolvedValueOnce(config)
+    vi.mocked(loadConfig).mockResolvedValueOnce(createKyotoStationConfig())
     vi.mocked(loadGoogleMapsApiKey).mockResolvedValueOnce('test-key')
     vi.mocked(resolveConfig).mockRejectedValueOnce('boom')
 

@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 
 import { geocodeAddressWithGoogle } from '../../resolvers/geocode-address-with-google'
+import { createJsonResponse } from '../helpers/create-json-response'
 
 let fetchMock = vi.fn<typeof fetch>()
 let originalFetch = fetch
@@ -17,24 +18,19 @@ describe('geocodeAddressWithGoogle', () => {
 
   it('returns coordinates for a successful Google geocoding response', async () => {
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          results: [
-            {
-              geometry: {
-                location: {
-                  lng: 139.7967,
-                  lat: 35.7148,
-                },
+      createJsonResponse({
+        results: [
+          {
+            geometry: {
+              location: {
+                lng: 139.7967,
+                lat: 35.7148,
               },
             },
-          ],
-          status: 'OK',
-        }),
-        {
-          status: 200,
-        },
-      ),
+          },
+        ],
+        status: 'OK',
+      }),
     )
 
     await expect(
@@ -44,15 +40,10 @@ describe('geocodeAddressWithGoogle', () => {
 
   it('returns null when Google reports zero results', async () => {
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          status: 'ZERO_RESULTS',
-          results: [],
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        status: 'ZERO_RESULTS',
+        results: [],
+      }),
     )
 
     await expect(
@@ -67,11 +58,7 @@ describe('geocodeAddressWithGoogle', () => {
       status: 'REQUEST_DENIED',
     }
 
-    fetchMock.mockResolvedValueOnce(
-      new Response(JSON.stringify(responseBody), {
-        status: 200,
-      }),
-    )
+    fetchMock.mockResolvedValueOnce(createJsonResponse(responseBody))
 
     await expect(
       geocodeAddressWithGoogle('Senso-ji, Tokyo', 'test-key'),
@@ -123,23 +110,18 @@ describe('geocodeAddressWithGoogle', () => {
 
   it('throws a named error when Google omits valid coordinates', async () => {
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          results: [
-            {
-              geometry: {
-                location: {
-                  lat: 35.7148,
-                },
+      createJsonResponse({
+        results: [
+          {
+            geometry: {
+              location: {
+                lat: 35.7148,
               },
             },
-          ],
-          status: 'OK',
-        }),
-        {
-          status: 200,
-        },
-      ),
+          },
+        ],
+        status: 'OK',
+      }),
     )
 
     await expect(
@@ -153,14 +135,9 @@ describe('geocodeAddressWithGoogle', () => {
 
   it('throws a named error when Google returns a non-OK status without details', async () => {
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          status: 'OVER_QUERY_LIMIT',
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        status: 'OVER_QUERY_LIMIT',
+      }),
     )
 
     await expect(
@@ -175,14 +152,9 @@ describe('geocodeAddressWithGoogle', () => {
 
   it('throws a named error when Google omits the status field', async () => {
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          results: [],
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        results: [],
+      }),
     )
 
     await expect(

@@ -1,32 +1,12 @@
-import { afterEach, describe, expect, it } from 'vitest'
-import { readFile, mkdtemp, rm } from 'node:fs/promises'
-import { tmpdir } from 'node:os'
+import { describe, expect, it } from 'vitest'
+import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
+import { createTemporaryDirectory } from '../helpers/create-temporary-directory'
 import { loadResolutionCache } from '../../resolvers/load-resolution-cache'
 import { saveResolutionCache } from '../../resolvers/save-resolution-cache'
 
-let temporaryDirectories: string[] = []
-
-async function createTemporaryDirectory(): Promise<string> {
-  let temporaryDirectory = await mkdtemp(join(tmpdir(), 'pinbook-resolver-'))
-
-  temporaryDirectories.push(temporaryDirectory)
-
-  return temporaryDirectory
-}
-
 describe('saveResolutionCache', () => {
-  afterEach(async () => {
-    await Promise.all(
-      temporaryDirectories.map(directory =>
-        rm(directory, { recursive: true, force: true }),
-      ),
-    )
-
-    temporaryDirectories = []
-  })
-
   it('saves a cache file as pretty JSON and can load it again', async () => {
     let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, '.pinbook', 'cache.json')

@@ -1,36 +1,11 @@
-import { writeFile, mkdtemp, mkdir, rm } from 'node:fs/promises'
 import { afterEach, describe, expect, it } from 'vitest'
 import { dirname, join } from 'node:path'
-import { tmpdir } from 'node:os'
 import { vi } from 'vitest'
 
 import type { expandImports as ExpandImports } from '../../config/expand-imports'
 
+import { createTemporaryProject } from '../helpers/create-temporary-project'
 import { expandImports } from '../../config/expand-imports'
-
-let temporaryDirectories: string[] = []
-
-async function createTemporaryProject(
-  files: Record<string, string>,
-): Promise<string> {
-  let temporaryDirectory = await mkdtemp(join(tmpdir(), 'pinbook-imports-'))
-  let rootFilePath = join(temporaryDirectory, 'index.yaml')
-
-  temporaryDirectories.push(temporaryDirectory)
-
-  await Promise.all(
-    Object.entries(files).map(async ([relativeFilePath, content]) => {
-      let filePath = join(temporaryDirectory, relativeFilePath)
-
-      await mkdir(dirname(filePath), {
-        recursive: true,
-      })
-      await writeFile(filePath, content, 'utf8')
-    }),
-  )
-
-  return rootFilePath
-}
 
 async function importExpandImports(): Promise<typeof ExpandImports> {
   let module = await import('../../config/expand-imports')
@@ -39,14 +14,7 @@ async function importExpandImports(): Promise<typeof ExpandImports> {
 }
 
 describe('expandImports', () => {
-  afterEach(async () => {
-    await Promise.all(
-      temporaryDirectories.map(directory =>
-        rm(directory, { recursive: true, force: true }),
-      ),
-    )
-
-    temporaryDirectories = []
+  afterEach(() => {
     vi.clearAllMocks()
     vi.doUnmock('node:fs/promises')
     vi.resetModules()

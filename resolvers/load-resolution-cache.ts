@@ -1,11 +1,10 @@
 import type { ZodError } from 'zod'
 
-import { readFile } from 'node:fs/promises'
-
 import type { ResolutionCacheSchema } from '../schema/resolution-cache-schema'
 
 import { resolutionCacheSchema } from '../schema/resolution-cache-schema'
 import { DEFAULT_RESOLUTION_CACHE_PATH } from '../constants'
+import { loadJsonCache } from './load-json-cache'
 
 /**
  * Error thrown when the parsed resolution cache does not satisfy the schema.
@@ -55,26 +54,13 @@ export class ResolutionCacheSyntaxError extends Error {
 export async function loadResolutionCache(
   filePath: string = DEFAULT_RESOLUTION_CACHE_PATH,
 ): Promise<ResolutionCacheSchema> {
-  let source: string
-
-  try {
-    source = await readFile(filePath, 'utf8')
-  } catch (error) {
-    if (isNodeError(error) && error.code === 'ENOENT') {
-      return createEmptyResolutionCache()
-    }
-
-    throw error
-  }
-
-  let parsed = parseJson(source)
-  let result = resolutionCacheSchema.safeParse(parsed)
-
-  if (!result.success) {
-    throw new ResolutionCacheValidationError(formatZodIssues(result.error))
-  }
-
-  return result.data
+  return loadJsonCache(filePath, {
+    createValidationError: error =>
+      new ResolutionCacheValidationError(formatZodIssues(error)),
+    createSyntaxError: message => new ResolutionCacheSyntaxError(message),
+    createEmptyCache: createEmptyResolutionCache,
+    schema: resolutionCacheSchema,
+  })
 }
 
 /**
@@ -89,31 +75,6 @@ function formatZodIssues(error: ZodError): string[] {
 
     return `${path}: ${issue.message}`
   })
-}
-
-/**
- * Parses JSON cache content and throws a named syntax error on invalid input.
- *
- * @param source - Raw JSON file contents.
- * @returns Parsed JSON value.
- * @throws {ResolutionCacheSyntaxError} Thrown when the input is not valid JSON.
- */
-function parseJson(source: string): unknown {
-  try {
-    return JSON.parse(source) as unknown
-  } catch {
-    throw new ResolutionCacheSyntaxError('Invalid JSON')
-  }
-}
-
-/**
- * Checks whether the thrown value looks like a Node.js filesystem error.
- *
- * @param error - Unknown thrown value.
- * @returns `true` when the value is an Error with a `code` property.
- */
-function isNodeError(error: unknown): error is NodeJS.ErrnoException & Error {
-  return error instanceof Error && 'code' in error
 }
 
 /**

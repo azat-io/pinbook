@@ -1,16 +1,9 @@
-import {
-  writeFile,
-  readFile,
-  mkdtemp,
-  access,
-  mkdir,
-  rm,
-} from 'node:fs/promises'
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
+import { writeFile, readFile, access, mkdir } from 'node:fs/promises'
 import { cancel, log } from '@clack/prompts'
-import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
+import { createTemporaryDirectory } from '../helpers/create-temporary-directory'
 import { requestProjectDirectory } from '../../cli/request-project-directory'
 import { create } from '../../commands/create'
 import { version } from '../../package.json'
@@ -28,30 +21,13 @@ vi.mock('../../cli/request-project-directory', () => ({
   requestProjectDirectory: vi.fn(),
 }))
 
-let temporaryDirectories: string[] = []
-
-async function createTemporaryDirectory(): Promise<string> {
-  let temporaryDirectory = await mkdtemp(join(tmpdir(), 'pinbook-create-'))
-
-  temporaryDirectories.push(temporaryDirectory)
-
-  return temporaryDirectory
-}
-
 describe('create', () => {
   beforeEach(() => {
     process.exitCode = undefined
     vi.clearAllMocks()
   })
 
-  afterEach(async () => {
-    await Promise.all(
-      temporaryDirectories.map(directory =>
-        rm(directory, { recursive: true, force: true }),
-      ),
-    )
-
-    temporaryDirectories = []
+  afterEach(() => {
     vi.doUnmock('node:fs/promises')
     vi.doUnmock('../../config/ensure-gitignore-entries')
     vi.doUnmock('../../cli/request-project-directory')

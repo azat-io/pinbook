@@ -1,34 +1,14 @@
-import { writeFile, mkdtemp, rm } from 'node:fs/promises'
-import { afterEach, describe, expect, it } from 'vitest'
-import { tmpdir } from 'node:os'
+import { describe, expect, it } from 'vitest'
+import { writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 import {
   ResolutionCacheSyntaxError,
   loadResolutionCache,
 } from '../../resolvers/load-resolution-cache'
-
-let temporaryDirectories: string[] = []
-
-async function createTemporaryDirectory(): Promise<string> {
-  let temporaryDirectory = await mkdtemp(join(tmpdir(), 'pinbook-resolver-'))
-
-  temporaryDirectories.push(temporaryDirectory)
-
-  return temporaryDirectory
-}
+import { createTemporaryDirectory } from '../helpers/create-temporary-directory'
 
 describe('loadResolutionCache', () => {
-  afterEach(async () => {
-    await Promise.all(
-      temporaryDirectories.map(directory =>
-        rm(directory, { recursive: true, force: true }),
-      ),
-    )
-
-    temporaryDirectories = []
-  })
-
   it('returns an empty cache when the file does not exist', async () => {
     let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, 'missing-cache.json')

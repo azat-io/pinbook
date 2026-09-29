@@ -1,9 +1,20 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 
 import { uploadPhotoToGoogleDrive } from '../../resolvers/upload-photo-to-google-drive'
+import { createJsonResponse } from '../helpers/create-json-response'
 
 let fetchMock = vi.fn<typeof fetch>()
 let originalFetch = fetch
+
+function uploadKyotoPhoto(): ReturnType<typeof uploadPhotoToGoogleDrive> {
+  return uploadPhotoToGoogleDrive({
+    buffer: Buffer.from('kyoto-photo'),
+    uploadFileName: 'kyoto.webp',
+    targetFolderId: 'folder-id',
+    accessToken: 'access-token',
+    photoPath: '/tmp/kyoto.jpg',
+  })
+}
 
 describe('uploadPhotoToGoogleDrive', () => {
   beforeEach(() => {
@@ -17,36 +28,18 @@ describe('uploadPhotoToGoogleDrive', () => {
 
   it('uploads a photo, publishes it, and returns its file id and public URL', async () => {
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'file-id',
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        id: 'file-id',
+      }),
     )
-    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
+    fetchMock.mockResolvedValueOnce(createJsonResponse({}))
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          webContentLink: 'https://drive.example/kyoto.jpg',
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        webContentLink: 'https://drive.example/kyoto.jpg',
+      }),
     )
 
-    await expect(
-      uploadPhotoToGoogleDrive({
-        buffer: Buffer.from('kyoto-photo'),
-        uploadFileName: 'kyoto.webp',
-        targetFolderId: 'folder-id',
-        accessToken: 'access-token',
-        photoPath: '/tmp/kyoto.jpg',
-      }),
-    ).resolves.toEqual({
+    await expect(uploadKyotoPhoto()).resolves.toEqual({
       publicUrl: 'https://drive.example/kyoto.jpg',
       fileId: 'file-id',
     })
@@ -64,138 +57,79 @@ describe('uploadPhotoToGoogleDrive', () => {
 
   it('surfaces an upload failure and a missing file id response', async () => {
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
+      createJsonResponse(
+        {
           error: {
             message: 'upload failed',
           },
-        }),
-        {
-          status: 500,
         },
+        500,
       ),
     )
 
-    await expect(
-      uploadPhotoToGoogleDrive({
-        buffer: Buffer.from('kyoto-photo'),
-        uploadFileName: 'kyoto.webp',
-        targetFolderId: 'folder-id',
-        accessToken: 'access-token',
-        photoPath: '/tmp/kyoto.jpg',
-      }),
-    ).rejects.toThrow(
+    await expect(uploadKyotoPhoto()).rejects.toThrow(
       'Google Drive upload failed for /tmp/kyoto.jpg: upload failed',
     )
 
     fetchMock.mockReset()
-    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
+    fetchMock.mockResolvedValueOnce(createJsonResponse({}))
 
-    await expect(
-      uploadPhotoToGoogleDrive({
-        buffer: Buffer.from('kyoto-photo'),
-        uploadFileName: 'kyoto.webp',
-        targetFolderId: 'folder-id',
-        accessToken: 'access-token',
-        photoPath: '/tmp/kyoto.jpg',
-      }),
-    ).rejects.toThrow(
+    await expect(uploadKyotoPhoto()).rejects.toThrow(
       'Google Drive upload failed for /tmp/kyoto.jpg: missing file id in response.',
     )
   })
 
   it('surfaces a permission update failure', async () => {
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'file-id',
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        id: 'file-id',
+      }),
     )
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          message: 'permission failed',
-        }),
+      createJsonResponse(
         {
-          status: 500,
+          message: 'permission failed',
         },
+        500,
       ),
     )
 
-    await expect(
-      uploadPhotoToGoogleDrive({
-        buffer: Buffer.from('kyoto-photo'),
-        uploadFileName: 'kyoto.webp',
-        targetFolderId: 'folder-id',
-        accessToken: 'access-token',
-        photoPath: '/tmp/kyoto.jpg',
-      }),
-    ).rejects.toThrow(
+    await expect(uploadKyotoPhoto()).rejects.toThrow(
       'Google Drive permission update failed: permission failed',
     )
   })
 
   it('surfaces metadata lookup failures and missing webContentLink', async () => {
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'file-id',
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        id: 'file-id',
+      }),
     )
-    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
+    fetchMock.mockResolvedValueOnce(createJsonResponse({}))
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
+      createJsonResponse(
+        {
           // eslint-disable-next-line camelcase
           error_description: 'metadata failed',
-        }),
-        {
-          status: 500,
         },
+        500,
       ),
     )
 
-    await expect(
-      uploadPhotoToGoogleDrive({
-        buffer: Buffer.from('kyoto-photo'),
-        uploadFileName: 'kyoto.webp',
-        targetFolderId: 'folder-id',
-        accessToken: 'access-token',
-        photoPath: '/tmp/kyoto.jpg',
-      }),
-    ).rejects.toThrow('Google Drive metadata lookup failed: metadata failed')
+    await expect(uploadKyotoPhoto()).rejects.toThrow(
+      'Google Drive metadata lookup failed: metadata failed',
+    )
 
     fetchMock.mockReset()
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'file-id',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
-    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
-
-    await expect(
-      uploadPhotoToGoogleDrive({
-        buffer: Buffer.from('kyoto-photo'),
-        uploadFileName: 'kyoto.webp',
-        targetFolderId: 'folder-id',
-        accessToken: 'access-token',
-        photoPath: '/tmp/kyoto.jpg',
+      createJsonResponse({
+        id: 'file-id',
       }),
-    ).rejects.toThrow(
+    )
+    fetchMock.mockResolvedValueOnce(createJsonResponse({}))
+    fetchMock.mockResolvedValueOnce(createJsonResponse({}))
+
+    await expect(uploadKyotoPhoto()).rejects.toThrow(
       'Google Drive metadata lookup failed: missing webContentLink in response.',
     )
   })

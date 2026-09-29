@@ -1,46 +1,48 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
-import { mkdtemp, rm } from 'node:fs/promises'
-import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 import type { ResolveConfigProgressEvent } from '../../types/resolve-config-options'
+import type { MapConfigSchema } from '../../schema/map-config-schema'
 
+import { createTemporaryDirectory } from '../helpers/create-temporary-directory'
 import { loadResolutionCache } from '../../resolvers/load-resolution-cache'
 import { saveResolutionCache } from '../../resolvers/save-resolution-cache'
+import { createJsonResponse } from '../helpers/create-json-response'
 import { mapConfigSchema } from '../../schema/map-config-schema'
 import { resolveConfig } from '../../resolvers/resolve-config'
 
-let temporaryDirectories: string[] = []
 let fetchMock = vi.fn<typeof fetch>()
 let originalFetch = fetch
 
-function createGeocodingResponse(): Response {
-  return new Response(
-    JSON.stringify({
-      results: [
-        {
-          geometry: {
-            location: {
-              lng: 139.7967,
-              lat: 35.7148,
-            },
-          },
-        },
-      ],
-      status: 'OK',
-    }),
-    {
-      status: 200,
+function createMissingPlaceConfig(): MapConfigSchema {
+  return mapConfigSchema.parse({
+    pins: [
+      {
+        address: 'Missing Place, Tokyo',
+        title: 'Missing Place',
+        id: 'missing-place',
+      },
+    ],
+    map: {
+      title: 'Tokyo',
     },
-  )
+  })
 }
 
-async function createTemporaryDirectory(): Promise<string> {
-  let temporaryDirectory = await mkdtemp(join(tmpdir(), 'pinbook-resolve-'))
-
-  temporaryDirectories.push(temporaryDirectory)
-
-  return temporaryDirectory
+function createGeocodingResponse(): Response {
+  return createJsonResponse({
+    results: [
+      {
+        geometry: {
+          location: {
+            lng: 139.7967,
+            lat: 35.7148,
+          },
+        },
+      },
+    ],
+    status: 'OK',
+  })
 }
 
 describe('resolveConfig', () => {
@@ -49,14 +51,7 @@ describe('resolveConfig', () => {
     globalThis.fetch = fetchMock
   })
 
-  afterEach(async () => {
-    await Promise.all(
-      temporaryDirectories.map(directory =>
-        rm(directory, { recursive: true, force: true }),
-      ),
-    )
-
-    temporaryDirectories = []
+  afterEach(() => {
     globalThis.fetch = originalFetch
   })
 
@@ -170,26 +165,7 @@ describe('resolveConfig', () => {
       },
     })
 
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          results: [
-            {
-              geometry: {
-                location: {
-                  lng: 139.7967,
-                  lat: 35.7148,
-                },
-              },
-            },
-          ],
-          status: 'OK',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
+    fetchMock.mockResolvedValueOnce(createGeocodingResponse())
 
     await expect(
       resolveConfig(config, {
@@ -289,18 +265,7 @@ describe('resolveConfig', () => {
   it('throws a helpful error when uncached addresses exist and the API key is missing', async () => {
     let temporaryDirectory = await createTemporaryDirectory()
     let cachePath = join(temporaryDirectory, 'cache.json')
-    let config = mapConfigSchema.parse({
-      pins: [
-        {
-          address: 'Missing Place, Tokyo',
-          title: 'Missing Place',
-          id: 'missing-place',
-        },
-      ],
-      map: {
-        title: 'Tokyo',
-      },
-    })
+    let config = createMissingPlaceConfig()
 
     await expect(resolveConfig(config, { cachePath })).rejects.toMatchObject({
       message:
@@ -312,29 +277,13 @@ describe('resolveConfig', () => {
   it('throws LocationResolutionError for unresolved addresses', async () => {
     let temporaryDirectory = await createTemporaryDirectory()
     let cachePath = join(temporaryDirectory, 'cache.json')
-    let config = mapConfigSchema.parse({
-      pins: [
-        {
-          address: 'Missing Place, Tokyo',
-          title: 'Missing Place',
-          id: 'missing-place',
-        },
-      ],
-      map: {
-        title: 'Tokyo',
-      },
-    })
+    let config = createMissingPlaceConfig()
 
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          status: 'ZERO_RESULTS',
-          results: [],
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        status: 'ZERO_RESULTS',
+        results: [],
+      }),
     )
 
     await expect(

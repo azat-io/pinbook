@@ -1,50 +1,20 @@
-import { writeFile, mkdtemp, mkdir, rm } from 'node:fs/promises'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { dirname, join } from 'node:path'
 import assert from 'node:assert/strict'
-import { tmpdir } from 'node:os'
 
 import type { loadConfig as LoadConfig } from '../../config/load-config'
 
-let temporaryDirectories: string[] = []
-
-async function createTemporaryProject(
-  files: Record<string, string>,
-): Promise<string> {
-  let temporaryDirectory = await mkdtemp(join(tmpdir(), 'pinbook-config-'))
-  let rootFilePath = join(temporaryDirectory, 'index.yaml')
-
-  temporaryDirectories.push(temporaryDirectory)
-
-  await Promise.all(
-    Object.entries(files).map(async ([relativeFilePath, content]) => {
-      let filePath = join(temporaryDirectory, relativeFilePath)
-
-      await mkdir(dirname(filePath), {
-        recursive: true,
-      })
-      await writeFile(filePath, content, 'utf8')
-    }),
-  )
-
-  return rootFilePath
-}
-
-async function createTemporaryConfig(content: string): Promise<string> {
-  let temporaryDirectory = await mkdtemp(join(tmpdir(), 'pinbook-config-'))
-  let filePath = join(temporaryDirectory, 'index.yaml')
-
-  temporaryDirectories.push(temporaryDirectory)
-
-  await writeFile(filePath, content, 'utf8')
-
-  return filePath
-}
+import { createTemporaryProject } from '../helpers/create-temporary-project'
 
 async function importLoadConfig(): Promise<typeof LoadConfig> {
   let module = await import('../../config/load-config')
 
   return module.loadConfig
+}
+
+function createTemporaryConfig(content: string): Promise<string> {
+  return createTemporaryProject({
+    'index.yaml': content,
+  })
 }
 
 function createNonError(): Error {
@@ -56,14 +26,7 @@ function createYaml(lines: string[]): string {
 }
 
 describe('loadConfig', () => {
-  afterEach(async () => {
-    await Promise.all(
-      temporaryDirectories.map(directory =>
-        rm(directory, { recursive: true, force: true }),
-      ),
-    )
-
-    temporaryDirectories = []
+  afterEach(() => {
     vi.clearAllMocks()
     vi.doUnmock('../../config/parse-yaml')
     vi.doUnmock('../../config/expand-imports')

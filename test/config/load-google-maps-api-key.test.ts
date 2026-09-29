@@ -1,34 +1,17 @@
-import { writeFile, mkdtemp, mkdir, rm } from 'node:fs/promises'
 import { afterEach, describe, expect, it } from 'vitest'
-import { tmpdir } from 'node:os'
+import { writeFile, mkdir } from 'node:fs/promises'
 import { join } from 'node:path'
 
+import { createTemporaryDirectory } from '../helpers/create-temporary-directory'
 import { loadGoogleMapsApiKey } from '../../config/load-google-maps-api-key'
 
-let temporaryDirectories: string[] = []
-
-async function createTemporaryConfigDirectory(): Promise<string> {
-  let temporaryDirectory = await mkdtemp(join(tmpdir(), 'pinbook-api-key-'))
-
-  temporaryDirectories.push(temporaryDirectory)
-
-  return temporaryDirectory
-}
-
 describe('loadGoogleMapsApiKey', () => {
-  afterEach(async () => {
-    await Promise.all(
-      temporaryDirectories.map(directory =>
-        rm(directory, { recursive: true, force: true }),
-      ),
-    )
-
-    temporaryDirectories = []
+  afterEach(() => {
     delete process.env['GOOGLE_MAPS_API_KEY']
   })
 
   it('prefers the process environment over the local .env file', async () => {
-    let temporaryDirectory = await createTemporaryConfigDirectory()
+    let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, 'index.yaml')
 
     process.env['GOOGLE_MAPS_API_KEY'] = 'environment-key'
@@ -45,7 +28,7 @@ describe('loadGoogleMapsApiKey', () => {
   })
 
   it('loads the Google Maps API key from a local .env file', async () => {
-    let temporaryDirectory = await createTemporaryConfigDirectory()
+    let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, 'index.yaml')
 
     await writeFile(
@@ -58,7 +41,7 @@ describe('loadGoogleMapsApiKey', () => {
   })
 
   it('strips quotes and export syntax from a local .env file', async () => {
-    let temporaryDirectory = await createTemporaryConfigDirectory()
+    let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, 'index.yaml')
 
     await writeFile(
@@ -71,7 +54,7 @@ describe('loadGoogleMapsApiKey', () => {
   })
 
   it('loads a single-quoted Google Maps API key from a local .env file', async () => {
-    let temporaryDirectory = await createTemporaryConfigDirectory()
+    let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, 'index.yaml')
 
     await writeFile(
@@ -86,7 +69,7 @@ describe('loadGoogleMapsApiKey', () => {
   })
 
   it('skips unrelated .env lines until it finds the Google Maps API key', async () => {
-    let temporaryDirectory = await createTemporaryConfigDirectory()
+    let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, 'index.yaml')
 
     await writeFile(
@@ -99,7 +82,7 @@ describe('loadGoogleMapsApiKey', () => {
   })
 
   it('returns null when the local .env file is missing or the key is blank', async () => {
-    let temporaryDirectory = await createTemporaryConfigDirectory()
+    let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, 'index.yaml')
 
     await expect(loadGoogleMapsApiKey(filePath)).resolves.toBeNull()
@@ -114,7 +97,7 @@ describe('loadGoogleMapsApiKey', () => {
   })
 
   it('returns null when the local .env file does not contain the Google Maps API key', async () => {
-    let temporaryDirectory = await createTemporaryConfigDirectory()
+    let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, 'index.yaml')
 
     await writeFile(join(temporaryDirectory, '.env'), 'FOO=bar\n', 'utf8')
@@ -123,7 +106,7 @@ describe('loadGoogleMapsApiKey', () => {
   })
 
   it('rethrows unexpected .env read errors', async () => {
-    let temporaryDirectory = await createTemporaryConfigDirectory()
+    let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, 'index.yaml')
 
     await mkdir(join(temporaryDirectory, '.env'))

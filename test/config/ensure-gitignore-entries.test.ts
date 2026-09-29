@@ -1,31 +1,11 @@
-import { writeFile, readFile, mkdtemp, mkdir, rm } from 'node:fs/promises'
-import { afterEach, describe, expect, it } from 'vitest'
-import { tmpdir } from 'node:os'
+import { writeFile, readFile, mkdir } from 'node:fs/promises'
+import { describe, expect, it } from 'vitest'
 import { join } from 'node:path'
 
+import { createTemporaryDirectory } from '../helpers/create-temporary-directory'
 import { ensureGitIgnoreEntries } from '../../config/ensure-gitignore-entries'
 
-let temporaryDirectories: string[] = []
-
-async function createTemporaryDirectory(): Promise<string> {
-  let temporaryDirectory = await mkdtemp(join(tmpdir(), 'pinbook-gitignore-'))
-
-  temporaryDirectories.push(temporaryDirectory)
-
-  return temporaryDirectory
-}
-
 describe('ensureGitIgnoreEntries', () => {
-  afterEach(async () => {
-    await Promise.all(
-      temporaryDirectories.map(directory =>
-        rm(directory, { recursive: true, force: true }),
-      ),
-    )
-
-    temporaryDirectories = []
-  })
-
   it('creates a local .gitignore file when it is missing', async () => {
     let temporaryDirectory = await createTemporaryDirectory()
 

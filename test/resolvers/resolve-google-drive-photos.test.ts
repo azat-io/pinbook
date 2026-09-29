@@ -1,69 +1,130 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
-import { writeFile, readFile, mkdtemp, rm } from 'node:fs/promises'
-import { tmpdir } from 'node:os'
+import { writeFile, readFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import sharp from 'sharp'
 
 import type { ResolveGoogleDrivePhotosProgressEvent } from '../../resolvers/resolve-google-drive-photos'
+import type { PhotoUploadCacheSchema } from '../../schema/photo-upload-cache-schema'
+import type { ResolvedMapConfig } from '../../types/resolved-map-config'
 
 import { preparePhotoForGoogleDrive } from '../../resolvers/prepare-photo-for-google-drive'
 import { resolveGoogleDrivePhotos } from '../../resolvers/resolve-google-drive-photos'
+import { createTemporaryDirectory } from '../helpers/create-temporary-directory'
+import { createJsonResponse } from '../helpers/create-json-response'
+import { getFetchCallUrl } from '../helpers/get-fetch-call-url'
+import { createTestImage } from '../helpers/create-test-image'
 
-let temporaryDirectories: string[] = []
 let fetchMock = vi.fn<typeof fetch>()
 let originalFetch = fetch
 
-/**
- * Returns a fetch call URL as a concrete `URL` instance.
- *
- * @param callIndex - Zero-based fetch call index.
- * @returns Parsed request URL.
- */
-function getFetchCallUrl(callIndex: number): URL {
-  let input = fetchMock.mock.calls[callIndex]?.[0]
+let googleDriveConfig = {
+  clientSecret: 'client-secret',
+  refreshToken: 'refresh-token',
+  clientId: 'client-id',
+}
 
-  if (input instanceof URL) {
-    return input
+let googleDriveConfigWithFolder = {
+  ...googleDriveConfig,
+  folderId: 'folder-id',
+}
+
+async function createLocalPhotoFixture(): Promise<{
+  photoBuffer: Buffer
+  cachePath: string
+  photoPath: string
+}> {
+  let temporaryDirectory = await createTemporaryDirectory()
+  let photoPath = join(temporaryDirectory, 'kyoto.jpg')
+
+  return {
+    cachePath: join(temporaryDirectory, 'photo-cache.json'),
+    photoBuffer: await createLocalPhoto(photoPath),
+    photoPath,
   }
+}
 
-  if (input instanceof Request) {
-    return new URL(input.url)
+function createKyotoStationConfig(photo: string): ResolvedMapConfig {
+  return {
+    pins: [
+      {
+        coords: [35.0116, 135.7681],
+        title: 'Kyoto Station',
+        id: 'kyoto-station',
+        icon: 'shapes-pin',
+        color: 'red-500',
+        photo,
+      },
+    ],
+    map: {
+      title: 'Kyoto',
+    },
+    layers: [],
   }
+}
 
-  if (typeof input === 'string') {
-    return new URL(input)
-  }
+function mockPhotoUploadResponses(fileId: string, publicUrl: string): void {
+  fetchMock.mockResolvedValueOnce(
+    createJsonResponse({
+      id: fileId,
+    }),
+  )
+  fetchMock.mockResolvedValueOnce(createJsonResponse({}))
+  fetchMock.mockResolvedValueOnce(
+    createJsonResponse({
+      webContentLink: publicUrl,
+    }),
+  )
+}
 
-  throw new TypeError(`Expected fetch call ${callIndex} to contain a URL.`)
+function mockReplacementUploadResponses(): void {
+  mockAccessTokenResponse()
+  fetchMock.mockResolvedValueOnce(
+    createJsonResponse({
+      files: [
+        {
+          id: 'map-folder-id',
+        },
+      ],
+    }),
+  )
+  mockPhotoUploadResponses(
+    'new-drive-file-id',
+    'https://drive.example/new-kyoto.jpg',
+  )
+}
+
+async function writePhotoUploadCache(
+  cachePath: string,
+  entries: PhotoUploadCacheSchema['entries'],
+): Promise<void> {
+  await writeFile(
+    cachePath,
+    JSON.stringify(
+      {
+        version: 2,
+        entries,
+      },
+      null,
+      2,
+    ),
+    'utf8',
+  )
 }
 
 async function createLocalPhoto(photoPath: string): Promise<Buffer> {
-  let photoBuffer = await sharp({
-    create: {
-      background: {
-        g: 120,
-        b: 220,
-        r: 20,
-      },
-      height: 1000,
-      width: 2000,
-      channels: 3,
-    },
-  })
-    .jpeg()
-    .toBuffer()
+  let photoBuffer = await createTestImage().jpeg().toBuffer()
 
   await writeFile(photoPath, photoBuffer)
 
   return photoBuffer
 }
 
-async function createTemporaryDirectory(): Promise<string> {
-  let temporaryDirectory = await mkdtemp(join(tmpdir(), 'pinbook-drive-photo-'))
-
-  temporaryDirectories.push(temporaryDirectory)
-
-  return temporaryDirectory
+function mockAccessTokenResponse(): void {
+  fetchMock.mockResolvedValueOnce(
+    createJsonResponse({
+      // eslint-disable-next-line camelcase
+      access_token: 'access-token',
+    }),
+  )
 }
 
 describe('resolveGoogleDrivePhotos', () => {
@@ -72,14 +133,7 @@ describe('resolveGoogleDrivePhotos', () => {
     globalThis.fetch = fetchMock
   })
 
-  afterEach(async () => {
-    await Promise.all(
-      temporaryDirectories.map(directory =>
-        rm(directory, { recursive: true, force: true }),
-      ),
-    )
-
-    temporaryDirectories = []
+  afterEach(() => {
     globalThis.fetch = originalFetch
   })
 
@@ -105,34 +159,12 @@ describe('resolveGoogleDrivePhotos', () => {
   })
 
   it('throws when local photo uploads are needed but Drive config is missing', async () => {
-    let temporaryDirectory = await createTemporaryDirectory()
-    let cachePath = join(temporaryDirectory, 'photo-cache.json')
-    let photoPath = join(temporaryDirectory, 'kyoto.jpg')
-
-    await createLocalPhoto(photoPath)
+    let { cachePath, photoPath } = await createLocalPhotoFixture()
 
     await expect(
-      resolveGoogleDrivePhotos(
-        {
-          pins: [
-            {
-              coords: [35.0116, 135.7681],
-              title: 'Kyoto Station',
-              id: 'kyoto-station',
-              icon: 'shapes-pin',
-              photo: photoPath,
-              color: 'red-500',
-            },
-          ],
-          map: {
-            title: 'Kyoto',
-          },
-          layers: [],
-        },
-        {
-          cachePath,
-        },
-      ),
+      resolveGoogleDrivePhotos(createKyotoStationConfig(photoPath), {
+        cachePath,
+      }),
     ).rejects.toMatchObject({
       missingVariables: [
         'GOOGLE_DRIVE_CLIENT_ID',
@@ -148,32 +180,10 @@ describe('resolveGoogleDrivePhotos', () => {
     let cachePath = join(temporaryDirectory, 'photo-cache.json')
 
     await expect(
-      resolveGoogleDrivePhotos(
-        {
-          pins: [
-            {
-              photo: '/missing/kyoto.jpg',
-              coords: [35.0116, 135.7681],
-              title: 'Kyoto Station',
-              id: 'kyoto-station',
-              icon: 'shapes-pin',
-              color: 'red-500',
-            },
-          ],
-          map: {
-            title: 'Kyoto',
-          },
-          layers: [],
-        },
-        {
-          googleDriveConfig: {
-            clientSecret: 'client-secret',
-            refreshToken: 'refresh-token',
-            clientId: 'client-id',
-          },
-          cachePath,
-        },
-      ),
+      resolveGoogleDrivePhotos(createKyotoStationConfig('/missing/kyoto.jpg'), {
+        googleDriveConfig,
+        cachePath,
+      }),
     ).rejects.toMatchObject({
       name: 'LocalPhotoFileNotFoundError',
       photoPath: '/missing/kyoto.jpg',
@@ -183,87 +193,34 @@ describe('resolveGoogleDrivePhotos', () => {
   })
 
   it('uploads local photos into Pinbook/{Map title}, caches their metadata, and rewrites them to public URLs', async () => {
-    let temporaryDirectory = await createTemporaryDirectory()
-    let cachePath = join(temporaryDirectory, 'photo-cache.json')
-    let photoPath = join(temporaryDirectory, 'kyoto.jpg')
-    let photoBuffer = await createLocalPhoto(photoPath)
+    let { photoBuffer, cachePath, photoPath } = await createLocalPhotoFixture()
     let preparedPhoto = await preparePhotoForGoogleDrive({
       buffer: photoBuffer,
       photoPath,
     })
 
+    mockAccessTokenResponse()
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          // eslint-disable-next-line camelcase
-          access_token: 'access-token',
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        files: [],
+      }),
     )
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          files: [],
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        id: 'pinbook-folder-id',
+      }),
     )
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'pinbook-folder-id',
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        files: [],
+      }),
     )
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          files: [],
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        id: 'kyoto-folder-id',
+      }),
     )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'kyoto-folder-id',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'drive-file-id',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          webContentLink: 'https://drive.example/kyoto.jpg',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
+    mockPhotoUploadResponses('drive-file-id', 'https://drive.example/kyoto.jpg')
 
     await expect(
       resolveGoogleDrivePhotos(
@@ -299,11 +256,7 @@ describe('resolveGoogleDrivePhotos', () => {
           layers: [],
         },
         {
-          googleDriveConfig: {
-            clientSecret: 'client-secret',
-            refreshToken: 'refresh-token',
-            clientId: 'client-id',
-          },
+          googleDriveConfig,
           cachePath,
         },
       ),
@@ -344,7 +297,7 @@ describe('resolveGoogleDrivePhotos', () => {
 
     expect(fetchMock).toHaveBeenCalledTimes(8)
 
-    let rootFolderLookupRequestUrl = getFetchCallUrl(1)
+    let rootFolderLookupRequestUrl = getFetchCallUrl(fetchMock, 1)
 
     expect(rootFolderLookupRequestUrl.searchParams.get('q')).toBe(
       "mimeType = 'application/vnd.google-apps.folder' and name = 'Pinbook' and 'root' in parents and trashed = false",
@@ -358,7 +311,7 @@ describe('resolveGoogleDrivePhotos', () => {
       method: 'POST',
     })
 
-    let mapFolderLookupRequestUrl = getFetchCallUrl(3)
+    let mapFolderLookupRequestUrl = getFetchCallUrl(fetchMock, 3)
 
     expect(mapFolderLookupRequestUrl.searchParams.get('q')).toBe(
       "mimeType = 'application/vnd.google-apps.folder' and name = 'Kyoto' and 'pinbook-folder-id' in parents and trashed = false",
@@ -409,64 +362,20 @@ describe('resolveGoogleDrivePhotos', () => {
   })
 
   it('uploads local photos into {configured folder}/{Map title} when GOOGLE_DRIVE_FOLDER_ID is set', async () => {
-    let temporaryDirectory = await createTemporaryDirectory()
-    let cachePath = join(temporaryDirectory, 'photo-cache.json')
-    let photoPath = join(temporaryDirectory, 'kyoto.jpg')
+    let { cachePath, photoPath } = await createLocalPhotoFixture()
 
-    await createLocalPhoto(photoPath)
-
+    mockAccessTokenResponse()
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          // eslint-disable-next-line camelcase
-          access_token: 'access-token',
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        files: [],
+      }),
     )
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          files: [],
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        id: 'map-folder-id',
+      }),
     )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'map-folder-id',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'drive-file-id',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          webContentLink: 'https://drive.example/kyoto.jpg',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
+    mockPhotoUploadResponses('drive-file-id', 'https://drive.example/kyoto.jpg')
 
     await expect(
       resolveGoogleDrivePhotos(
@@ -487,12 +396,7 @@ describe('resolveGoogleDrivePhotos', () => {
           layers: [],
         },
         {
-          googleDriveConfig: {
-            clientSecret: 'client-secret',
-            refreshToken: 'refresh-token',
-            clientId: 'client-id',
-            folderId: 'folder-id',
-          },
+          googleDriveConfig: googleDriveConfigWithFolder,
           cachePath,
         },
       ),
@@ -506,7 +410,7 @@ describe('resolveGoogleDrivePhotos', () => {
 
     expect(fetchMock).toHaveBeenCalledTimes(6)
 
-    let mapFolderLookupRequestUrl = getFetchCallUrl(1)
+    let mapFolderLookupRequestUrl = getFetchCallUrl(fetchMock, 1)
 
     expect(mapFolderLookupRequestUrl.searchParams.get('q')).toBe(
       "mimeType = 'application/vnd.google-apps.folder' and name = 'Kyoto 2026' and 'folder-id' in parents and trashed = false",
@@ -530,184 +434,53 @@ describe('resolveGoogleDrivePhotos', () => {
   })
 
   it('reuses the cached public URL when the local photo hash is unchanged', async () => {
-    let temporaryDirectory = await createTemporaryDirectory()
-    let cachePath = join(temporaryDirectory, 'photo-cache.json')
-    let photoPath = join(temporaryDirectory, 'kyoto.jpg')
-    let photoBuffer = await createLocalPhoto(photoPath)
+    let { photoBuffer, cachePath, photoPath } = await createLocalPhotoFixture()
     let preparedPhoto = await preparePhotoForGoogleDrive({
       buffer: photoBuffer,
       photoPath,
     })
 
-    await writeFile(
-      cachePath,
-      JSON.stringify(
-        {
-          entries: {
-            [photoPath]: {
-              publicUrl: 'https://drive.example/kyoto.jpg',
-              hash: preparedPhoto.hash,
-            },
-          },
-          version: 2,
-        },
-        null,
-        2,
-      ),
-      'utf8',
-    )
-    await expect(
-      resolveGoogleDrivePhotos(
-        {
-          pins: [
-            {
-              coords: [35.0116, 135.7681],
-              title: 'Kyoto Station',
-              id: 'kyoto-station',
-              icon: 'shapes-pin',
-              photo: photoPath,
-              color: 'red-500',
-            },
-          ],
-          map: {
-            title: 'Kyoto',
-          },
-          layers: [],
-        },
-        {
-          googleDriveConfig: {
-            clientSecret: 'client-secret',
-            refreshToken: 'refresh-token',
-            clientId: 'client-id',
-          },
-          cachePath,
-        },
-      ),
-    ).resolves.toEqual({
-      pins: [
-        {
-          photo: 'https://drive.example/kyoto.jpg',
-          coords: [35.0116, 135.7681],
-          title: 'Kyoto Station',
-          id: 'kyoto-station',
-          icon: 'shapes-pin',
-          color: 'red-500',
-        },
-      ],
-      map: {
-        title: 'Kyoto',
+    await writePhotoUploadCache(cachePath, {
+      [photoPath]: {
+        publicUrl: 'https://drive.example/kyoto.jpg',
+        hash: preparedPhoto.hash,
       },
-      layers: [],
     })
+    await expect(
+      resolveGoogleDrivePhotos(createKyotoStationConfig(photoPath), {
+        googleDriveConfig,
+        cachePath,
+      }),
+    ).resolves.toEqual(
+      createKyotoStationConfig('https://drive.example/kyoto.jpg'),
+    )
 
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
   it('uploads a changed photo, updates the cache, and deletes the stale Drive file', async () => {
-    let temporaryDirectory = await createTemporaryDirectory()
-    let cachePath = join(temporaryDirectory, 'photo-cache.json')
-    let photoPath = join(temporaryDirectory, 'kyoto.jpg')
-    let photoBuffer = await createLocalPhoto(photoPath)
+    let { photoBuffer, cachePath, photoPath } = await createLocalPhotoFixture()
     let preparedPhoto = await preparePhotoForGoogleDrive({
       buffer: photoBuffer,
       photoPath,
     })
 
-    await writeFile(
-      cachePath,
-      JSON.stringify(
-        {
-          entries: {
-            [photoPath]: {
-              publicUrl: 'https://drive.example/old-kyoto.jpg',
-              fileId: 'old-drive-file-id',
-              hash: 'old-hash',
-            },
-          },
-          version: 2,
-        },
-        null,
-        2,
-      ),
-      'utf8',
-    )
+    await writePhotoUploadCache(cachePath, {
+      [photoPath]: {
+        publicUrl: 'https://drive.example/old-kyoto.jpg',
+        fileId: 'old-drive-file-id',
+        hash: 'old-hash',
+      },
+    })
 
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          // eslint-disable-next-line camelcase
-          access_token: 'access-token',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          files: [
-            {
-              id: 'map-folder-id',
-            },
-          ],
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'new-drive-file-id',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          webContentLink: 'https://drive.example/new-kyoto.jpg',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
+    mockReplacementUploadResponses()
     fetchMock.mockResolvedValueOnce(new Response(null, { status: 204 }))
 
     await expect(
-      resolveGoogleDrivePhotos(
-        {
-          pins: [
-            {
-              coords: [35.0116, 135.7681],
-              title: 'Kyoto Station',
-              id: 'kyoto-station',
-              icon: 'shapes-pin',
-              photo: photoPath,
-              color: 'red-500',
-            },
-          ],
-          map: {
-            title: 'Kyoto',
-          },
-          layers: [],
-        },
-        {
-          googleDriveConfig: {
-            clientSecret: 'client-secret',
-            refreshToken: 'refresh-token',
-            clientId: 'client-id',
-            folderId: 'folder-id',
-          },
-          cachePath,
-        },
-      ),
+      resolveGoogleDrivePhotos(createKyotoStationConfig(photoPath), {
+        googleDriveConfig: googleDriveConfigWithFolder,
+        cachePath,
+      }),
     ).resolves.toMatchObject({
       pins: [
         {
@@ -741,104 +514,22 @@ describe('resolveGoogleDrivePhotos', () => {
   })
 
   it('uploads a changed photo without deleting when the old cache entry has no file id', async () => {
-    let temporaryDirectory = await createTemporaryDirectory()
-    let cachePath = join(temporaryDirectory, 'photo-cache.json')
-    let photoPath = join(temporaryDirectory, 'kyoto.jpg')
+    let { cachePath, photoPath } = await createLocalPhotoFixture()
 
-    await createLocalPhoto(photoPath)
-    await writeFile(
-      cachePath,
-      JSON.stringify(
-        {
-          entries: {
-            [photoPath]: {
-              publicUrl: 'https://drive.example/old-kyoto.jpg',
-              hash: 'old-hash',
-            },
-          },
-          version: 2,
-        },
-        null,
-        2,
-      ),
-      'utf8',
-    )
+    await writePhotoUploadCache(cachePath, {
+      [photoPath]: {
+        publicUrl: 'https://drive.example/old-kyoto.jpg',
+        hash: 'old-hash',
+      },
+    })
 
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          // eslint-disable-next-line camelcase
-          access_token: 'access-token',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          files: [
-            {
-              id: 'map-folder-id',
-            },
-          ],
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'new-drive-file-id',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          webContentLink: 'https://drive.example/new-kyoto.jpg',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
+    mockReplacementUploadResponses()
 
     await expect(
-      resolveGoogleDrivePhotos(
-        {
-          pins: [
-            {
-              coords: [35.0116, 135.7681],
-              title: 'Kyoto Station',
-              id: 'kyoto-station',
-              icon: 'shapes-pin',
-              photo: photoPath,
-              color: 'red-500',
-            },
-          ],
-          map: {
-            title: 'Kyoto',
-          },
-          layers: [],
-        },
-        {
-          googleDriveConfig: {
-            clientSecret: 'client-secret',
-            refreshToken: 'refresh-token',
-            clientId: 'client-id',
-            folderId: 'folder-id',
-          },
-          cachePath,
-        },
-      ),
+      resolveGoogleDrivePhotos(createKyotoStationConfig(photoPath), {
+        googleDriveConfig: googleDriveConfigWithFolder,
+        cachePath,
+      }),
     ).resolves.toMatchObject({
       pins: [
         {
@@ -851,119 +542,35 @@ describe('resolveGoogleDrivePhotos', () => {
   })
 
   it('warns and continues when stale Drive photo deletion fails', async () => {
-    let temporaryDirectory = await createTemporaryDirectory()
-    let cachePath = join(temporaryDirectory, 'photo-cache.json')
-    let photoPath = join(temporaryDirectory, 'kyoto.jpg')
+    let { cachePath, photoPath } = await createLocalPhotoFixture()
     let onWarning = vi.fn<(message: string) => void>()
 
-    await createLocalPhoto(photoPath)
-    await writeFile(
-      cachePath,
-      JSON.stringify(
-        {
-          entries: {
-            [photoPath]: {
-              publicUrl: 'https://drive.example/old-kyoto.jpg',
-              fileId: 'old-drive-file-id',
-              hash: 'old-hash',
-            },
-          },
-          version: 2,
-        },
-        null,
-        2,
-      ),
-      'utf8',
-    )
+    await writePhotoUploadCache(cachePath, {
+      [photoPath]: {
+        publicUrl: 'https://drive.example/old-kyoto.jpg',
+        fileId: 'old-drive-file-id',
+        hash: 'old-hash',
+      },
+    })
 
+    mockReplacementUploadResponses()
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          // eslint-disable-next-line camelcase
-          access_token: 'access-token',
-        }),
+      createJsonResponse(
         {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          files: [
-            {
-              id: 'map-folder-id',
-            },
-          ],
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'new-drive-file-id',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          webContentLink: 'https://drive.example/new-kyoto.jpg',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
           error: {
             message: 'delete failed',
           },
-        }),
-        {
-          status: 500,
         },
+        500,
       ),
     )
 
     await expect(
-      resolveGoogleDrivePhotos(
-        {
-          pins: [
-            {
-              coords: [35.0116, 135.7681],
-              title: 'Kyoto Station',
-              id: 'kyoto-station',
-              icon: 'shapes-pin',
-              photo: photoPath,
-              color: 'red-500',
-            },
-          ],
-          map: {
-            title: 'Kyoto',
-          },
-          layers: [],
-        },
-        {
-          googleDriveConfig: {
-            clientSecret: 'client-secret',
-            refreshToken: 'refresh-token',
-            clientId: 'client-id',
-            folderId: 'folder-id',
-          },
-          onWarning,
-          cachePath,
-        },
-      ),
+      resolveGoogleDrivePhotos(createKyotoStationConfig(photoPath), {
+        googleDriveConfig: googleDriveConfigWithFolder,
+        onWarning,
+        cachePath,
+      }),
     ).resolves.toMatchObject({
       pins: [
         {
@@ -978,108 +585,26 @@ describe('resolveGoogleDrivePhotos', () => {
   })
 
   it('warns with a fallback message when stale Drive photo deletion throws a non-Error value', async () => {
-    let temporaryDirectory = await createTemporaryDirectory()
-    let cachePath = join(temporaryDirectory, 'photo-cache.json')
-    let photoPath = join(temporaryDirectory, 'kyoto.jpg')
+    let { cachePath, photoPath } = await createLocalPhotoFixture()
     let onWarning = vi.fn<(message: string) => void>()
 
-    await createLocalPhoto(photoPath)
-    await writeFile(
-      cachePath,
-      JSON.stringify(
-        {
-          entries: {
-            [photoPath]: {
-              publicUrl: 'https://drive.example/old-kyoto.jpg',
-              fileId: 'old-drive-file-id',
-              hash: 'old-hash',
-            },
-          },
-          version: 2,
-        },
-        null,
-        2,
-      ),
-      'utf8',
-    )
+    await writePhotoUploadCache(cachePath, {
+      [photoPath]: {
+        publicUrl: 'https://drive.example/old-kyoto.jpg',
+        fileId: 'old-drive-file-id',
+        hash: 'old-hash',
+      },
+    })
 
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          // eslint-disable-next-line camelcase
-          access_token: 'access-token',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          files: [
-            {
-              id: 'map-folder-id',
-            },
-          ],
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'new-drive-file-id',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          webContentLink: 'https://drive.example/new-kyoto.jpg',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
+    mockReplacementUploadResponses()
     fetchMock.mockRejectedValueOnce('delete failed')
 
     await expect(
-      resolveGoogleDrivePhotos(
-        {
-          pins: [
-            {
-              coords: [35.0116, 135.7681],
-              title: 'Kyoto Station',
-              id: 'kyoto-station',
-              icon: 'shapes-pin',
-              photo: photoPath,
-              color: 'red-500',
-            },
-          ],
-          map: {
-            title: 'Kyoto',
-          },
-          layers: [],
-        },
-        {
-          googleDriveConfig: {
-            clientSecret: 'client-secret',
-            refreshToken: 'refresh-token',
-            clientId: 'client-id',
-            folderId: 'folder-id',
-          },
-          onWarning,
-          cachePath,
-        },
-      ),
+      resolveGoogleDrivePhotos(createKyotoStationConfig(photoPath), {
+        googleDriveConfig: googleDriveConfigWithFolder,
+        onWarning,
+        cachePath,
+      }),
     ).resolves.toMatchObject({
       pins: [
         {
@@ -1094,10 +619,7 @@ describe('resolveGoogleDrivePhotos', () => {
   })
 
   it('emits progress updates while local photos are processed', async () => {
-    let temporaryDirectory = await createTemporaryDirectory()
-    let cachePath = join(temporaryDirectory, 'photo-cache.json')
-    let photoPath = join(temporaryDirectory, 'kyoto.jpg')
-    let photoBuffer = await createLocalPhoto(photoPath)
+    let { photoBuffer, cachePath, photoPath } = await createLocalPhotoFixture()
     let preparedPhoto = await preparePhotoForGoogleDrive({
       buffer: photoBuffer,
       photoPath,
@@ -1109,52 +631,19 @@ describe('resolveGoogleDrivePhotos', () => {
       onProgressSpy(event)
     }
 
-    await writeFile(
-      cachePath,
-      JSON.stringify(
-        {
-          entries: {
-            [photoPath]: {
-              publicUrl: 'https://drive.example/kyoto.jpg',
-              hash: preparedPhoto.hash,
-            },
-          },
-          version: 2,
-        },
-        null,
-        2,
-      ),
-      'utf8',
-    )
+    await writePhotoUploadCache(cachePath, {
+      [photoPath]: {
+        publicUrl: 'https://drive.example/kyoto.jpg',
+        hash: preparedPhoto.hash,
+      },
+    })
 
     await expect(
-      resolveGoogleDrivePhotos(
-        {
-          pins: [
-            {
-              coords: [35.0116, 135.7681],
-              title: 'Kyoto Station',
-              id: 'kyoto-station',
-              icon: 'shapes-pin',
-              photo: photoPath,
-              color: 'red-500',
-            },
-          ],
-          map: {
-            title: 'Kyoto',
-          },
-          layers: [],
-        },
-        {
-          googleDriveConfig: {
-            clientSecret: 'client-secret',
-            refreshToken: 'refresh-token',
-            clientId: 'client-id',
-          },
-          onProgress,
-          cachePath,
-        },
-      ),
+      resolveGoogleDrivePhotos(createKyotoStationConfig(photoPath), {
+        googleDriveConfig,
+        onProgress,
+        cachePath,
+      }),
     ).resolves.toMatchObject({
       pins: [
         {
@@ -1218,15 +707,10 @@ describe('resolveGoogleDrivePhotos', () => {
 
       if (url.pathname === '/token') {
         return Promise.resolve(
-          new Response(
-            JSON.stringify({
-              // eslint-disable-next-line camelcase
-              access_token: 'access-token',
-            }),
-            {
-              status: 200,
-            },
-          ),
+          createJsonResponse({
+            // eslint-disable-next-line camelcase
+            access_token: 'access-token',
+          }),
         )
       }
 
@@ -1237,14 +721,9 @@ describe('resolveGoogleDrivePhotos', () => {
         folderLookupCount += 1
 
         return Promise.resolve(
-          new Response(
-            JSON.stringify({
-              files: [],
-            }),
-            {
-              status: 200,
-            },
-          ),
+          createJsonResponse({
+            files: [],
+          }),
         )
       }
 
@@ -1255,14 +734,9 @@ describe('resolveGoogleDrivePhotos', () => {
         folderCreateCount += 1
 
         return Promise.resolve(
-          new Response(
-            JSON.stringify({
-              id: 'map-folder-id',
-            }),
-            {
-              status: 200,
-            },
-          ),
+          createJsonResponse({
+            id: 'map-folder-id',
+          }),
         )
       }
 
@@ -1270,33 +744,23 @@ describe('resolveGoogleDrivePhotos', () => {
         uploadCount += 1
 
         return Promise.resolve(
-          new Response(
-            JSON.stringify({
-              id: `drive-file-id-${uploadCount}`,
-            }),
-            {
-              status: 200,
-            },
-          ),
+          createJsonResponse({
+            id: `drive-file-id-${uploadCount}`,
+          }),
         )
       }
 
       if (url.pathname.endsWith('/permissions')) {
-        return Promise.resolve(new Response('{}', { status: 200 }))
+        return Promise.resolve(createJsonResponse({}))
       }
 
       if (url.pathname.startsWith('/drive/v3/files/')) {
         let fileId = url.pathname.split('/').at(-1)
 
         return Promise.resolve(
-          new Response(
-            JSON.stringify({
-              webContentLink: `https://drive.example/${fileId}.jpg`,
-            }),
-            {
-              status: 200,
-            },
-          ),
+          createJsonResponse({
+            webContentLink: `https://drive.example/${fileId}.jpg`,
+          }),
         )
       }
 
@@ -1329,12 +793,7 @@ describe('resolveGoogleDrivePhotos', () => {
         layers: [],
       },
       {
-        googleDriveConfig: {
-          clientSecret: 'client-secret',
-          refreshToken: 'refresh-token',
-          clientId: 'client-id',
-          folderId: 'folder-id',
-        },
+        googleDriveConfig: googleDriveConfigWithFolder,
         onProgress,
         cachePath,
       },
@@ -1367,51 +826,23 @@ describe('resolveGoogleDrivePhotos', () => {
   })
 
   it('surfaces Google authentication failures', async () => {
-    let temporaryDirectory = await createTemporaryDirectory()
-    let cachePath = join(temporaryDirectory, 'photo-cache.json')
-    let photoPath = join(temporaryDirectory, 'kyoto.jpg')
-
-    await createLocalPhoto(photoPath)
+    let { cachePath, photoPath } = await createLocalPhotoFixture()
 
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
+      createJsonResponse(
+        {
           // eslint-disable-next-line camelcase
           error_description: 'bad refresh token',
-        }),
-        {
-          status: 400,
         },
+        400,
       ),
     )
 
     await expect(
-      resolveGoogleDrivePhotos(
-        {
-          pins: [
-            {
-              coords: [35.0116, 135.7681],
-              title: 'Kyoto Station',
-              id: 'kyoto-station',
-              icon: 'shapes-pin',
-              photo: photoPath,
-              color: 'red-500',
-            },
-          ],
-          map: {
-            title: 'Kyoto',
-          },
-          layers: [],
-        },
-        {
-          googleDriveConfig: {
-            clientSecret: 'client-secret',
-            refreshToken: 'refresh-token',
-            clientId: 'client-id',
-          },
-          cachePath,
-        },
-      ),
+      resolveGoogleDrivePhotos(createKyotoStationConfig(photoPath), {
+        googleDriveConfig,
+        cachePath,
+      }),
     ).rejects.toMatchObject({
       message: 'Google Drive authentication failed: bad refresh token',
       name: 'GoogleDrivePhotoUploadError',

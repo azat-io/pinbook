@@ -1,26 +1,30 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 
 import { getGoogleDriveUploadContext } from '../../resolvers/get-google-drive-upload-context'
+import { createJsonResponse } from '../helpers/create-json-response'
+import { getFetchCallUrl } from '../helpers/get-fetch-call-url'
 
 let fetchMock = vi.fn<typeof fetch>()
 let originalFetch = fetch
 
-function getFetchCallUrl(callIndex: number): URL {
-  let input = fetchMock.mock.calls[callIndex]?.[0]
+let googleDriveConfig = {
+  clientSecret: 'client-secret',
+  refreshToken: 'refresh-token',
+  clientId: 'client-id',
+}
 
-  if (input instanceof URL) {
-    return input
-  }
+let googleDriveConfigWithParentFolder = {
+  ...googleDriveConfig,
+  folderId: 'parent-folder-id',
+}
 
-  if (input instanceof Request) {
-    return new URL(input.url)
-  }
-
-  if (typeof input === 'string') {
-    return new URL(input)
-  }
-
-  throw new TypeError(`Expected fetch call ${callIndex} to contain a URL.`)
+function mockAccessTokenResponse(): void {
+  fetchMock.mockResolvedValueOnce(
+    createJsonResponse({
+      // eslint-disable-next-line camelcase
+      access_token: 'access-token',
+    }),
+  )
 }
 
 describe('getGoogleDriveUploadContext', () => {
@@ -69,115 +73,61 @@ describe('getGoogleDriveUploadContext', () => {
   })
 
   it('creates Pinbook/{Map title} in Drive root when no parent folder is configured', async () => {
+    mockAccessTokenResponse()
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          // eslint-disable-next-line camelcase
-          access_token: 'access-token',
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        files: [],
+      }),
     )
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          files: [],
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        id: 'pinbook-folder-id',
+      }),
     )
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'pinbook-folder-id',
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        files: [],
+      }),
     )
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          files: [],
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'map-folder-id',
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        id: 'map-folder-id',
+      }),
     )
 
     await expect(
       getGoogleDriveUploadContext(undefined, {
-        googleDriveConfig: {
-          clientSecret: 'client-secret',
-          refreshToken: 'refresh-token',
-          clientId: 'client-id',
-        },
         mapTitle: String.raw`Kyoto's \ Trip`,
+        googleDriveConfig,
       }),
     ).resolves.toEqual({
       targetFolderId: 'map-folder-id',
       accessToken: 'access-token',
     })
 
-    expect(getFetchCallUrl(1).searchParams.get('q')).toBe(
+    expect(getFetchCallUrl(fetchMock, 1).searchParams.get('q')).toBe(
       "mimeType = 'application/vnd.google-apps.folder' and name = 'Pinbook' and 'root' in parents and trashed = false",
     )
-    expect(getFetchCallUrl(3).searchParams.get('q')).toBe(
+    expect(getFetchCallUrl(fetchMock, 3).searchParams.get('q')).toBe(
       String.raw`mimeType = 'application/vnd.google-apps.folder' and name = 'Kyoto\'s \\ Trip' and 'pinbook-folder-id' in parents and trashed = false`,
     )
   })
 
   it('reuses an existing map folder inside the configured parent folder', async () => {
+    mockAccessTokenResponse()
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          // eslint-disable-next-line camelcase
-          access_token: 'access-token',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          files: [
-            {
-              id: 'existing-map-folder-id',
-            },
-          ],
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        files: [
+          {
+            id: 'existing-map-folder-id',
+          },
+        ],
+      }),
     )
 
     await expect(
       getGoogleDriveUploadContext(undefined, {
-        googleDriveConfig: {
-          clientSecret: 'client-secret',
-          refreshToken: 'refresh-token',
-          folderId: 'parent-folder-id',
-          clientId: 'client-id',
-        },
+        googleDriveConfig: googleDriveConfigWithParentFolder,
         mapTitle: 'Japan',
       }),
     ).resolves.toEqual({
@@ -186,43 +136,23 @@ describe('getGoogleDriveUploadContext', () => {
     })
 
     expect(fetchMock).toHaveBeenCalledTimes(2)
-    expect(getFetchCallUrl(1).searchParams.get('q')).toBe(
+    expect(getFetchCallUrl(fetchMock, 1).searchParams.get('q')).toBe(
       "mimeType = 'application/vnd.google-apps.folder' and name = 'Japan' and 'parent-folder-id' in parents and trashed = false",
     )
   })
 
   it('creates a missing map folder when folder lookup returns no files array', async () => {
+    mockAccessTokenResponse()
+    fetchMock.mockResolvedValueOnce(createJsonResponse({}))
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          // eslint-disable-next-line camelcase
-          access_token: 'access-token',
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'map-folder-id',
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        id: 'map-folder-id',
+      }),
     )
 
     await expect(
       getGoogleDriveUploadContext(undefined, {
-        googleDriveConfig: {
-          clientSecret: 'client-secret',
-          refreshToken: 'refresh-token',
-          folderId: 'parent-folder-id',
-          clientId: 'client-id',
-        },
+        googleDriveConfig: googleDriveConfigWithParentFolder,
         mapTitle: 'Japan',
       }),
     ).resolves.toEqual({
@@ -232,46 +162,21 @@ describe('getGoogleDriveUploadContext', () => {
   })
 
   it('creates a missing map folder when folder lookup returns files without ids', async () => {
+    mockAccessTokenResponse()
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          // eslint-disable-next-line camelcase
-          access_token: 'access-token',
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        files: [{}],
+      }),
     )
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          files: [{}],
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'map-folder-id',
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        id: 'map-folder-id',
+      }),
     )
 
     await expect(
       getGoogleDriveUploadContext(undefined, {
-        googleDriveConfig: {
-          clientSecret: 'client-secret',
-          refreshToken: 'refresh-token',
-          folderId: 'parent-folder-id',
-          clientId: 'client-id',
-        },
+        googleDriveConfig: googleDriveConfigWithParentFolder,
         mapTitle: 'Japan',
       }),
     ).resolves.toEqual({
@@ -282,61 +187,39 @@ describe('getGoogleDriveUploadContext', () => {
 
   it('surfaces a Google auth error response', async () => {
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          error: 'bad_refresh',
-        }),
+      createJsonResponse(
         {
-          status: 400,
+          error: 'bad_refresh',
         },
+        400,
       ),
     )
 
     await expect(
       getGoogleDriveUploadContext(undefined, {
-        googleDriveConfig: {
-          clientSecret: 'client-secret',
-          refreshToken: 'refresh-token',
-          clientId: 'client-id',
-        },
         mapTitle: 'Japan',
+        googleDriveConfig,
       }),
     ).rejects.toThrow('Google Drive authentication failed: bad_refresh')
   })
 
   it('surfaces a folder lookup failure', async () => {
+    mockAccessTokenResponse()
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          // eslint-disable-next-line camelcase
-          access_token: 'access-token',
-        }),
+      createJsonResponse(
         {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
           error: {
             message: 'lookup failed',
           },
-        }),
-        {
-          status: 500,
         },
+        500,
       ),
     )
 
     await expect(
       getGoogleDriveUploadContext(undefined, {
-        googleDriveConfig: {
-          clientSecret: 'client-secret',
-          refreshToken: 'refresh-token',
-          clientId: 'client-id',
-        },
         mapTitle: 'Japan',
+        googleDriveConfig,
       }),
     ).rejects.toThrow(
       'Google Drive folder lookup failed for "Pinbook": lookup failed',
@@ -344,83 +227,43 @@ describe('getGoogleDriveUploadContext', () => {
   })
 
   it('surfaces folder creation failures and missing ids', async () => {
+    mockAccessTokenResponse()
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          // eslint-disable-next-line camelcase
-          access_token: 'access-token',
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        files: [],
+      }),
     )
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          files: [],
-        }),
+      createJsonResponse(
         {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
           message: 'create failed',
-        }),
-        {
-          status: 500,
         },
+        500,
       ),
     )
 
     await expect(
       getGoogleDriveUploadContext(undefined, {
-        googleDriveConfig: {
-          clientSecret: 'client-secret',
-          refreshToken: 'refresh-token',
-          clientId: 'client-id',
-        },
         mapTitle: 'Japan',
+        googleDriveConfig,
       }),
     ).rejects.toThrow(
       'Google Drive folder creation failed for "Pinbook": create failed',
     )
 
     fetchMock.mockReset()
+    mockAccessTokenResponse()
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          // eslint-disable-next-line camelcase
-          access_token: 'access-token',
-        }),
-        {
-          status: 200,
-        },
-      ),
+      createJsonResponse({
+        files: [],
+      }),
     )
-    fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          files: [],
-        }),
-        {
-          status: 200,
-        },
-      ),
-    )
-    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
+    fetchMock.mockResolvedValueOnce(createJsonResponse({}))
 
     await expect(
       getGoogleDriveUploadContext(undefined, {
-        googleDriveConfig: {
-          clientSecret: 'client-secret',
-          refreshToken: 'refresh-token',
-          clientId: 'client-id',
-        },
         mapTitle: 'Japan',
+        googleDriveConfig,
       }),
     ).rejects.toThrow(
       'Google Drive folder creation failed for "Pinbook": missing folder id in response.',

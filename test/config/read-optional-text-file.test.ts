@@ -1,31 +1,11 @@
-import { writeFile, mkdtemp, mkdir, rm } from 'node:fs/promises'
-import { afterEach, describe, expect, it } from 'vitest'
-import { tmpdir } from 'node:os'
+import { writeFile, mkdir } from 'node:fs/promises'
+import { describe, expect, it } from 'vitest'
 import { join } from 'node:path'
 
+import { createTemporaryDirectory } from '../helpers/create-temporary-directory'
 import { readOptionalTextFile } from '../../config/read-optional-text-file'
 
-let temporaryDirectories: string[] = []
-
-async function createTemporaryDirectory(): Promise<string> {
-  let temporaryDirectory = await mkdtemp(join(tmpdir(), 'pinbook-read-file-'))
-
-  temporaryDirectories.push(temporaryDirectory)
-
-  return temporaryDirectory
-}
-
 describe('readOptionalTextFile', () => {
-  afterEach(async () => {
-    await Promise.all(
-      temporaryDirectories.map(directory =>
-        rm(directory, { recursive: true, force: true }),
-      ),
-    )
-
-    temporaryDirectories = []
-  })
-
   it('reads the contents of an existing UTF-8 text file', async () => {
     let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, 'notes.txt')

@@ -1,33 +1,13 @@
-import { writeFile, readFile, mkdtemp, rm } from 'node:fs/promises'
-import { afterEach, describe, expect, it } from 'vitest'
-import { tmpdir } from 'node:os'
+import { writeFile, readFile } from 'node:fs/promises'
+import { describe, expect, it } from 'vitest'
 import { join } from 'node:path'
 
+import { createTemporaryDirectory } from '../helpers/create-temporary-directory'
 import { saveGoogleDriveConfig } from '../../config/save-google-drive-config'
 
-let temporaryDirectories: string[] = []
-
-async function createTemporaryConfigDirectory(): Promise<string> {
-  let temporaryDirectory = await mkdtemp(join(tmpdir(), 'pinbook-drive-save-'))
-
-  temporaryDirectories.push(temporaryDirectory)
-
-  return temporaryDirectory
-}
-
 describe('saveGoogleDriveConfig', () => {
-  afterEach(async () => {
-    await Promise.all(
-      temporaryDirectories.map(directory =>
-        rm(directory, { recursive: true, force: true }),
-      ),
-    )
-
-    temporaryDirectories = []
-  })
-
   it('writes Google Drive credentials to the local .env file', async () => {
-    let temporaryDirectory = await createTemporaryConfigDirectory()
+    let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, 'index.yaml')
 
     await saveGoogleDriveConfig(filePath, {
@@ -54,7 +34,7 @@ describe('saveGoogleDriveConfig', () => {
   })
 
   it('updates existing variables without removing an existing folder id', async () => {
-    let temporaryDirectory = await createTemporaryConfigDirectory()
+    let temporaryDirectory = await createTemporaryDirectory()
     let filePath = join(temporaryDirectory, 'index.yaml')
 
     await writeFile(

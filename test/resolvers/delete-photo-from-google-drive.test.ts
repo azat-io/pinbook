@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 
 import { deletePhotoFromGoogleDrive } from '../../resolvers/delete-photo-from-google-drive'
+import { createJsonResponse } from '../helpers/create-json-response'
 
 let fetchMock = vi.fn<typeof fetch>()
 let originalFetch = fetch
@@ -38,15 +39,13 @@ describe('deletePhotoFromGoogleDrive', () => {
 
   it('surfaces a Google Drive deletion failure', async () => {
     fetchMock.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
+      createJsonResponse(
+        {
           error: {
             message: 'delete failed',
           },
-        }),
-        {
-          status: 500,
         },
+        500,
       ),
     )
 

@@ -1,6 +1,7 @@
 import type { AddressInfo } from 'node:net'
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { EventEmitter } from 'node:events'
 import { log } from '@clack/prompts'
 
 import { exchangeAuthorizationCodeForRefreshToken } from '../../../commands/drive-auth/exchange-authorization-code-for-refresh-token'
@@ -37,22 +38,8 @@ vi.mock(
   }),
 )
 
-type MockListener = (...arguments_: unknown[]) => void
-
-class MockServer {
-  private readonly listeners = new Map<string, { listener: MockListener }[]>()
-
-  public off = vi.fn((eventName: string, listener: MockListener) => {
-    let listeners = this.listeners.get(eventName) ?? []
-
-    this.listeners.set(
-      eventName,
-      listeners.filter(entry => entry.listener !== listener),
-    )
-
-    return this
-  })
-
+// eslint-disable-next-line unicorn/prefer-event-target
+class MockServer extends EventEmitter {
   public address = vi.fn<() => AddressInfo | string | null>(() => ({
     address: '127.0.0.1',
     family: 'IPv4',
@@ -72,27 +59,6 @@ class MockServer {
 
     return this
   })
-
-  public emit(eventName: string, ...arguments_: unknown[]): void {
-    let listeners = this.listeners.get(eventName) ?? []
-
-    this.listeners.delete(eventName)
-
-    for (let entry of listeners) {
-      entry.listener(...arguments_)
-    }
-  }
-
-  public once(eventName: string, listener: MockListener): this {
-    let listeners = this.listeners.get(eventName) ?? []
-
-    listeners.push({
-      listener,
-    })
-    this.listeners.set(eventName, listeners)
-
-    return this
-  }
 }
 
 describe('requestGoogleDriveRefreshToken', () => {
